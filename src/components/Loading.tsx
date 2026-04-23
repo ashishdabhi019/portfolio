@@ -2,134 +2,162 @@ import { useEffect, useState } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
 
-import Marquee from "react-fast-marquee";
+const STATUS_LABELS = [
+  { threshold: 75, label: "Almost there…"   },
+  { threshold: 50, label: "Building scene…" },
+  { threshold: 25, label: "Loading assets…" },
+  { threshold: 0,  label: "Starting up…"    },
+];
+
+function getStatus(pct: number) {
+  return pct >= 100
+    ? "Ready"
+    : STATUS_LABELS.find((s) => pct >= s.threshold)?.label ?? "Starting up…";
+}
+
+/* ─────────────────────────────────────────────────────── */
 
 const Loading = ({ percent }: { percent: number }) => {
   const { setIsLoading } = useLoading();
-  const [loaded, setLoaded] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [clicked, setClicked] = useState(false);
 
-  if (percent >= 100) {
+  const [loaded,   setLoaded]   = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [clicked,  setClicked]  = useState(false);
+
+  /* stage 1 */
+  if (percent >= 100 && !loaded) {
     setTimeout(() => {
       setLoaded(true);
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 1000);
-    }, 600);
+      setTimeout(() => setIsLoaded(true), 800);
+    }, 400);
   }
 
+  /* stage 2 — expand pill then unmount */
   useEffect(() => {
+    if (!isLoaded) return;
     import("./utils/initialFX").then((module) => {
-      if (isLoaded) {
-        setClicked(true);
-        setTimeout(() => {
-          if (module.initialFX) {
-            module.initialFX();
-          }
-          setIsLoading(false);
-        }, 900);
-      }
+      setClicked(true);
+      setTimeout(() => {
+        module.initialFX?.();
+        setIsLoading(false);
+      }, 900);
     });
   }, [isLoaded]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    const { currentTarget: target } = e;
-    const rect = target.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    target.style.setProperty("--mouse-x", `${x}px`);
-    target.style.setProperty("--mouse-y", `${y}px`);
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
   }
 
+  const clamped = Math.min(100, Math.max(0, percent));
+
   return (
-    <>
-      <div className="loading-header">
-        <a href="/#" className="loader-title" data-cursor="disable">
-          RC
-        </a>
-        <div className={`loaderGame ${clicked && "loader-out"}`}>
-          <div className="loaderGame-container">
-            <div className="loaderGame-in">
-              {[...Array(27)].map((_, index) => (
-                <div className="loaderGame-line" key={index}></div>
-              ))}
-            </div>
-            <div className="loaderGame-ball"></div>
-          </div>
+    <div className="loading-screen">
+      <div className="loading-glow" />
+
+      {/* ── hero stack ── */}
+      <div className={`loading-hero ${clicked ? "hero-exit" : ""}`}>
+
+        {/* big heading */}
+        <div className="loading-welcome">Welcome</div>
+
+        {/* professional greeting block */}
+        <div className="loading-greeting-block">
+          <div className="loading-greeting-title">Ashish Dabhi &nbsp;·&nbsp; AI / ML Engineer</div>
+          <p className="loading-greeting-sub">
+            Welcome to my digital portfolio — an interactive showcase of my
+            engineering expertise in artificial intelligence, machine learning,
+            and scalable full-stack architecture.
+          </p>
         </div>
-      </div>
-      <div className="loading-screen">
-        <div className="loading-marquee">
-          <Marquee>
-            <span> Full Stack Developer</span> <span>Software Engineer</span>
-            <span> Full Stack Developer</span> <span>Software Engineer</span>
-          </Marquee>
-        </div>
+
+        {/* glass pill with spinner */}
         <div
-          className={`loading-wrap ${clicked && "loading-clicked"}`}
-          onMouseMove={(e) => handleMouseMove(e)}
+          className={`loading-wrap ${clicked ? "loading-clicked" : ""}`}
+          onMouseMove={handleMouseMove}
         >
-          <div className="loading-hover"></div>
-          <div className={`loading-button ${loaded && "loading-complete"}`}>
-            <div className="loading-container">
-              <div className="loading-content">
-                <div className="loading-content-in">
-                  Loading <span>{percent}%</span>
-                </div>
-              </div>
-              <div className="loading-box"></div>
+          <div className="loading-hover" />
+
+          <div className={`loading-pill ${loaded ? "loading-complete" : ""}`}>
+
+            {/* arc spinner */}
+            <div className={`l-spinner ${loaded ? "spinner-done" : ""}`}>
+              <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="15"
+                  stroke="rgba(255,255,255,0.1)" strokeWidth="2.5" />
+                <circle cx="18" cy="18" r="15"
+                  stroke="var(--accent)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray="94.2"
+                  strokeDashoffset={94.2 - (94.2 * clamped) / 100}
+                  transform="rotate(-90 18 18)"
+                  style={{ transition: "stroke-dashoffset 0.3s ease" }}
+                />
+                {loaded && (
+                  <polyline
+                    points="13,18 17,22 23,16"
+                    stroke="var(--accent)"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="check-draw"
+                  />
+                )}
+              </svg>
             </div>
-            <div className="loading-content2">
-              <span>Welcome</span>
+
+            {/* label */}
+            <div className="l-pill-text">
+              <span className="l-status">{getStatus(clamped)}</span>
+              <span className="l-percent">{clamped}%</span>
             </div>
+
           </div>
         </div>
+
       </div>
-    </>
+
+      {/* corners */}
+      <div className="loading-corner loading-corner-left">
+        <span className="loading-dot" />Live
+      </div>
+      <div className="loading-corner">Portfolio · 2025</div>
+    </div>
   );
 };
 
 export default Loading;
 
+/* ─── setProgress (unchanged API) ────────────────────── */
 export const setProgress = (setLoading: (value: number) => void) => {
-  let percent: number = 0;
+  let percent = 0;
 
   let interval = setInterval(() => {
     if (percent <= 50) {
-      let rand = Math.round(Math.random() * 5);
-      percent = percent + rand;
+      percent = Math.min(50, percent + Math.round(Math.random() * 5));
       setLoading(percent);
     } else {
       clearInterval(interval);
       interval = setInterval(() => {
-        percent = percent + Math.round(Math.random());
+        percent = Math.min(91, percent + Math.round(Math.random()));
         setLoading(percent);
-        if (percent > 91) {
-          clearInterval(interval);
-        }
+        if (percent > 91) clearInterval(interval);
       }, 2000);
     }
   }, 100);
 
-  function clear() {
-    clearInterval(interval);
-    setLoading(100);
-  }
+  const clear = () => { clearInterval(interval); setLoading(100); };
 
-  function loaded() {
-    return new Promise<number>((resolve) => {
+  const loaded = (): Promise<number> =>
+    new Promise((resolve) => {
       clearInterval(interval);
       interval = setInterval(() => {
-        if (percent < 100) {
-          percent++;
-          setLoading(percent);
-        } else {
-          resolve(percent);
-          clearInterval(interval);
-        }
+        if (percent < 100) { percent++; setLoading(percent); }
+        else { resolve(percent); clearInterval(interval); }
       }, 2);
     });
-  }
+
   return { loaded, percent, clear };
 };

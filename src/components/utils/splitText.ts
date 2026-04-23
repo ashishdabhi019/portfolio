@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger, ScrollSmoother, SplitText);
 
 export default function setSplitText() {
   ScrollTrigger.config({ ignoreMobileResize: true });
-  if (window.innerWidth < 900) return;
+  // if (window.innerWidth < 900) return; // Allow animations on mobile screens
   const paras: NodeListOf<ParaElement> = document.querySelectorAll(".para");
   const titles: NodeListOf<ParaElement> = document.querySelectorAll(".title");
 
@@ -49,6 +49,12 @@ export default function setSplitText() {
     );
   });
   titles.forEach((title: ParaElement) => {
+    // Skip Work section title — show it as static gradient, no animation
+    if (title.closest(".work-section")) {
+      title.style.opacity = "1";
+      return;
+    }
+
     if (title.anim) {
       title.anim.progress(1).kill();
       title.split?.revert();

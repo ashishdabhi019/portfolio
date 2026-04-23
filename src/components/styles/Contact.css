@@ -1,7 +1,8 @@
 .contact-section {
   margin: auto;
   padding-bottom: 100px;
-  margin-top: 100px;
+  /* margin-top: 100px; */
+  padding-top: 105px;
   position: relative;
   z-index: 2;
   background-color: var(--backgroundColor);
@@ -12,6 +13,7 @@
   font-weight: 400;
   text-transform: uppercase;
   margin: 0;
+  padding-bottom: 20px;
 }
 
 .contact-flex {
@@ -46,8 +48,28 @@ a.contact-social {
   margin: 0;
 }
 
-.contact-box h2>span {
+.contact-box h2 > span {
   color: var(--accentColor);
+}
+
+/* 🔒 Secret easter egg — "Ashish Dabhi" in footer */
+.secret-name {
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--accentColor), #a855f7, var(--accentColor));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: secret-shimmer 4s linear infinite;
+  transition: letter-spacing 0.3s;
+  display: inline-block;
+}
+.secret-name:hover {
+  letter-spacing: 0.5px;
+}
+@keyframes secret-shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .contact-box h5 {
@@ -112,5 +134,11 @@ a.contact-social {
 
   .contact-container {
     width: calc(100% - 25px);
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .contact-section h3 {
+    font-size: 36px;
   }
 }

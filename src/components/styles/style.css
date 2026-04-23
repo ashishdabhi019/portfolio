@@ -14,7 +14,8 @@
   top: 100%;
   left: 0;
 }
-.hover-link:hover .hover-in {
+.hover-link:hover .hover-in,
+.nav-item-link:hover .hover-in {
   transform: translateY(-100%);
   color: var(--accentColor);
 }

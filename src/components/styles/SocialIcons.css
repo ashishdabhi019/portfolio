@@ -3,10 +3,14 @@
   max-width: var(--cMaxWidth);
   width: var(--cWidth);
   bottom: 0;
-  z-index: 99;
+  z-index: 10001;
+  /* Elevate above cursor (9999) */
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: none;
+  /* Let clicks pass through empty space */
 }
+
 .social-icons {
   position: absolute;
   left: -20px;
@@ -16,21 +20,28 @@
   gap: 8px;
   z-index: 999;
   padding: 10px;
+  pointer-events: auto;
+  /* Enable clicks only on actual buttons */
 }
+
 .social-icons:hover {
   transition: 0.3s;
-  color: var(--backgroundColor);
 }
+
 .social-icons a:hover {
-  color: var(--backgroundColor);
-  /* transform: scale(1.2); */
+  color: var(--accentColor);
+  /* Bright cyan accent on hover sitting on the glass */
+  text-shadow: 0 0 15px rgba(94, 234, 212, 0.5);
+  /* extra glow on top of the glass filter! */
 }
+
 .social-icons span {
   width: 50px;
   height: 50px;
   position: relative;
   display: flex;
 }
+
 .social-icons a {
   --siLeft: 50%;
   --siTop: 50%;
@@ -41,8 +52,11 @@
   display: flex;
   font-size: 23px;
   will-change: left, top;
-  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, color 0.3s ease;
+  z-index: 10000;
+  /* Float clearly above the heavy frosted glass cursor */
 }
+
 .resume-button {
   position: absolute;
   z-index: 99;
@@ -61,10 +75,14 @@
   transition: 0.5s;
   transform-origin: left bottom;
   transform: translateX(100%) rotateZ(-90deg);
+  pointer-events: auto;
+  /* IMPORTANT: Re-enable clicks! */
 }
+
 .resume-button:hover {
   color: #fff;
 }
+
 div.resume-button span {
   color: #fff;
   font-size: 17px;
@@ -72,6 +90,7 @@ div.resume-button span {
   display: flex;
   align-items: center;
 }
+
 .check-line {
   position: fixed;
   top: 655px;
@@ -81,21 +100,25 @@ div.resume-button span {
   width: 100%;
   z-index: 99999;
 }
+
 @media only screen and (min-width: 900px) {
   .social-icons {
     display: flex;
     gap: 20px;
   }
+
   .social-icons a {
     font-size: 28px;
   }
 }
+
 @media only screen and (min-width: 768px) {
   .resume-button {
     transform: none;
     font-size: 20px;
     line-height: 20px;
   }
+
   div.resume-button span {
     font-size: 23px;
     margin-top: -1.5px;

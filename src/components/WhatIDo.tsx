@@ -8,29 +8,39 @@ const WhatIDo = () => {
     containerRef.current[index] = el;
   };
   useEffect(() => {
-    if (ScrollTrigger.isTouch) {
+    const clickHandlers = new Map<HTMLDivElement, () => void>();
+
+    // Use window.innerWidth as a fallback for ScrollTrigger.isTouch on responsive views
+    if (ScrollTrigger.isTouch || window.innerWidth <= 1024) {
       containerRef.current.forEach((container) => {
         if (container) {
           container.classList.remove("what-noTouch");
-          container.addEventListener("click", () => handleClick(container));
+
+          const handler = () => handleClick(container);
+          clickHandlers.set(container, handler);
+          container.addEventListener("click", handler);
         }
       });
     }
+
     return () => {
       containerRef.current.forEach((container) => {
         if (container) {
-          container.removeEventListener("click", () => handleClick(container));
+          const handler = clickHandlers.get(container);
+          if (handler) {
+            container.removeEventListener("click", handler);
+          }
         }
       });
     };
   }, []);
   return (
-    <div className="whatIDO">
+    <div id="whatido" className="whatIDO">
       <div className="what-box">
         <h2 className="title">
-          W<span className="hat-h2">HAT</span>
+          W<span className="hat-h2">hat</span>
           <div>
-            I<span className="do-h2"> DO</span>
+            I<span className="do-h2"> Do</span>
           </div>
         </h2>
       </div>
@@ -87,22 +97,23 @@ const WhatIDo = () => {
             <div className="what-corner"></div>
 
             <div className="what-content-in">
-              <h3>FRONTEND</h3>
-              <h4>Building Interactive UIs</h4>
+              <h3>AI / ML</h3>
+              <h4>Intelligent Product Development</h4>
               <p>
-                Crafting performant, responsive interfaces with modern frameworks.
-                From SPAs to micro-frontends, I deliver pixel-perfect experiences.
+                Designing intelligent AI systems — autonomous agents, workflow
+                automations, and RAG pipelines that think, reason, and act.
+                Turning complex AI research into production-ready solutions.
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">React.js</div>
-                <div className="what-tags">Angular</div>
-                <div className="what-tags">Next.js</div>
-                <div className="what-tags">TypeScript</div>
-                <div className="what-tags">JavaScript</div>
-                <div className="what-tags">Material UI</div>
-                <div className="what-tags">HTML5</div>
-                <div className="what-tags">CSS3</div>
+                <div className="what-tags">Python</div>
+                <div className="what-tags">LangChain</div>
+                <div className="what-tags">LangGraph</div>
+                <div className="what-tags">CrewAI</div>
+                <div className="what-tags">OpenAI</div>
+                <div className="what-tags">Hugging Face</div>
+                <div className="what-tags">N8N</div>
+                <div className="what-tags">RAG</div>
               </div>
               <div className="what-arrow"></div>
             </div>
@@ -126,22 +137,23 @@ const WhatIDo = () => {
             </div>
             <div className="what-corner"></div>
             <div className="what-content-in">
-              <h3>BACKEND</h3>
-              <h4>Scalable Server Architecture</h4>
+              <h3>FULL-STACK</h3>
+              <h4>End-to-End Web Development</h4>
               <p>
-                Designing robust APIs and microservices. From CMS platforms to
-                complex business logic, I build backends that scale.
+                Developing full-stack applications with modern frameworks —
+                from real-time data platforms to RESTful APIs and interactive
+                frontends.
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
+                <div className="what-tags">Django</div>
+                <div className="what-tags">FastAPI</div>
+                <div className="what-tags">Flask</div>
+                <div className="what-tags">React</div>
                 <div className="what-tags">Node.js</div>
-                <div className="what-tags">NestJS</div>
-                <div className="what-tags">Express.js</div>
-                <div className="what-tags">MongoDB</div>
                 <div className="what-tags">PostgreSQL</div>
+                <div className="what-tags">MongoDB</div>
                 <div className="what-tags">REST APIs</div>
-                <div className="what-tags">Microservices</div>
-                <div className="what-tags">Python</div>
               </div>
               <div className="what-arrow"></div>
             </div>

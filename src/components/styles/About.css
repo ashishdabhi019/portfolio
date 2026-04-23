@@ -9,18 +9,28 @@
   width: var(--cWidth);
   margin: auto;
 }
+
 .about-me {
   padding: 50px 0px;
   padding-bottom: 0;
   width: 500px;
   max-width: calc(100% - 15px);
 }
-.about-me h3 {
-  font-size: 25px;
-  text-transform: uppercase;
-  letter-spacing: 7px;
+
+.about-me h2 {
+  font-size: 70px;
   font-weight: 400;
-  color: var(--accentColor);
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.about-me h2,
+.about-me h2 div {
+  background: linear-gradient(0deg, #0d9488, #ffffff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .about-me p {
@@ -30,21 +40,39 @@
   letter-spacing: 1px;
 }
 
+@media only screen and (max-width: 600px) {
+  .about-me {
+    padding: 30px 0;
+  }
+
+  .about-me h2 {
+    font-size: 36px;
+  }
+
+  .about-me p {
+    font-size: 22px;
+    line-height: 28px;
+  }
+}
+
 @media only screen and (min-width: 600px) {
   .about-section {
     justify-content: center;
   }
 }
+
 @media only screen and (min-width: 768px) {
   .about-me {
     width: 500px;
     max-width: calc(100% - 70px);
     transform: translateY(0%);
   }
+
   .about-section {
     opacity: 1;
   }
 }
+
 @media only screen and (min-width: 1025px) {
   .about-section {
     width: var(--cWidth);
@@ -54,15 +82,18 @@
     padding: 0px;
     opacity: 1;
   }
+
   .about-me {
     padding: 0px;
     width: 50%;
   }
+
   .about-me p {
     font-size: 1.9vw;
     line-height: 2.3vw;
   }
 }
+
 @media only screen and (min-width: 1950px) {
   .about-me p {
     font-size: 2.5rem;

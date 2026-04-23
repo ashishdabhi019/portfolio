@@ -1,0 +1,812 @@
+/* ===================================================
+   Contact Form – matches portfolio dark / teal theme
+   =================================================== */
+
+/* cf-inner sits inside .contact-container (same as Contact.tsx)
+   so spacing, padding, width are already inherited */
+.cf-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* ── Heading ─────────────────────────── */
+.cf-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cf-heading-title-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.cf-heading h3 {
+  font-size: 64px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  margin: 0;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.cf-heading p {
+  font-size: 16px;
+  opacity: 0.55;
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* ── Card ────────────────────────────── */
+.cf-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 48px;
+  overflow: visible;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: transform 0.6s var(--spring);
+}
+
+.cf-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Clipping container for decorative orbs since card is now overflow: visible */
+.cf-orb-clipper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Decorative glow orbs */
+.cf-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cf-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(94, 234, 212, 0.12) 0%, transparent 70%);
+  top: -150px;
+  right: -100px;
+  animation: cf-float-1 20s ease-in-out infinite;
+}
+
+.cf-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
+  bottom: -100px;
+  left: -50px;
+  animation: cf-float-2 15s ease-in-out infinite alternate;
+}
+
+@keyframes cf-float-1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(30px, 50px) rotate(10deg);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) rotate(-5deg);
+  }
+}
+
+@keyframes cf-float-2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(-40px, -30px) scale(1.2);
+  }
+}
+
+/* ── Form ────────────────────────────── */
+.cf-form {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.cf-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.cf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cf-field-full {
+  width: 100%;
+}
+
+.cf-field label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  color: #eae5ec;
+  margin: 0;
+}
+
+.cf-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cf-label-icon {
+  font-size: 16px;
+  color: var(--accentColor);
+  opacity: 0.75;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cf-field:focus-within .cf-label-icon {
+  color: var(--accentColor);
+  opacity: 1;
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px rgba(94, 234, 212, 0.4));
+}
+
+.cf-field:focus-within label {
+  opacity: 0.9;
+  color: var(--accentColor);
+}
+
+.cf-field input,
+.cf-field textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 14px 18px;
+  color: #eae5ec;
+  font-family: "Geist", sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    box-shadow 0.25s;
+  resize: none;
+  width: 100%;
+  box-sizing: border-box;
+  caret-color: var(--accentColor);
+}
+
+.cf-field input::placeholder,
+.cf-field textarea::placeholder {
+  opacity: 0.3;
+  color: #eae5ec;
+}
+
+/* ── Phone Input with Country Selector ── */
+.cf-phone-input-wrapper {
+  display: flex;
+  gap: 12px;
+  position: relative;
+  align-items: stretch; /* Ensures uniform height */
+}
+
+.cf-country-selector-container {
+  position: relative;
+  min-width: 100px;
+}
+
+.cf-selected-country {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px; /* Smoother radius */
+  padding: 0 16px;
+  cursor: pointer;
+  height: 52px; /* Precision height matching other inputs */
+  box-sizing: border-box;
+  transition: all 0.4s var(--ease);
+}
+
+.cf-selected-country:hover,
+.cf-selected-country.active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accentColor);
+  transform: translateY(-1px);
+}
+
+.cf-flag {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accentColor);
+  background: rgba(94, 234, 212, 0.12);
+  padding: 2px 6px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.cf-dial-code {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.cf-dropdown-icon {
+  font-size: 18px;
+  color: #eae5ec;
+  opacity: 0.4;
+  transition: transform 0.4s var(--spring);
+}
+
+.cf-selected-country.active .cf-dropdown-icon {
+  transform: rotate(180deg);
+  color: var(--accentColor);
+  opacity: 1;
+}
+
+/* ── Location Field Customizations ── */
+.cf-location-field {
+  position: relative;
+}
+
+.cf-location-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.cf-location-dropdown {
+  width: 100%; /* Match the width of the location field */
+  max-height: 250px;
+}
+
+.cf-no-suggestions {
+  padding: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: center;
+  font-style: italic;
+}
+
+/* Frosted Glass Dropdown – High Contrast Aesthetic */
+.cf-country-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  width: 280px;
+  
+  /* Premium dark glass optimized for text legibility to mask underlying text */
+  background: rgba(18, 22, 30, 0.85);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px;
+  
+  /* Refined shadow stack for better lift and definition */
+  box-shadow: 
+    0 40px 100px -20px rgba(0, 0, 0, 0.95),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    
+  z-index: 1000;
+  overflow: hidden;
+  animation: cf-dropdown-slide 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top center;
+}
+
+@keyframes cf-dropdown-slide {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9) perspective(1000px) rotateX(-15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) perspective(1000px) rotateX(0);
+  }
+}
+
+/* ── Dropdown Search Bar ── */
+.cf-country-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.cf-country-search:focus-within {
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom-color: var(--accentColor);
+  box-shadow: 0 10px 30px -10px rgba(94, 234, 212, 0.2);
+}
+
+.cf-search-icon {
+  font-size: 20px;
+  color: var(--accentColor);
+  opacity: 0.8;
+}
+
+.cf-country-search input {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  color: #fff !important;
+  width: 100% !important;
+  box-shadow: none !important;
+  transform: none !important;
+  font-weight: 500;
+}
+
+.cf-country-search input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 1;
+}
+
+/* ── Country List Scroll Area ── */
+.cf-country-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* Elite Glass Scrollbar */
+.cf-country-list::-webkit-scrollbar {
+  width: 6px;
+}
+.cf-country-list::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 10px 0;
+}
+.cf-country-list::-webkit-scrollbar-thumb {
+  background: rgba(94, 234, 212, 0.2);
+  border-radius: 100px; /* Full pill shape */
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: all 0.3s ease;
+}
+.cf-country-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(94, 234, 212, 0.5);
+  border-radius: 100px;
+  background-clip: content-box;
+}
+
+.cf-country-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  /* Ultra-soft "Quart Out" style transition */
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  background: transparent;
+}
+
+.cf-country-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(8px) scale(1.02);
+}
+
+.cf-country-option.selected {
+  background: rgba(94, 234, 212, 0.08);
+  box-shadow: 0 0 0 1px rgba(94, 234, 212, 0.15) inset;
+}
+
+.cf-option-flag {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accentColor);
+  background: rgba(94, 234, 212, 0.12);
+  padding: 3px 6px;
+  border-radius: 5px;
+  width: 24px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cf-option-name {
+  flex: 1;
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 500;
+  opacity: 0.7;
+  transition: all 0.4s ease;
+}
+
+.cf-option-code {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+  font-feature-settings: "tnum";
+}
+
+.cf-country-option:hover .cf-option-name {
+  color: #fff;
+  opacity: 1;
+}
+
+.cf-country-option.selected .cf-option-name {
+  color: var(--accentColor);
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* Glow stripe on indicator - softened expansion */
+.cf-country-option::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 3px;
+  height: 0%;
+  background: var(--accentColor);
+  box-shadow: 0 0 12px var(--accentColor);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: translateY(-50%);
+  border-radius: 0 4px 4px 0;
+  opacity: 0;
+}
+
+.cf-country-option:hover::after {
+  height: 60%;
+  opacity: 1;
+}
+
+.cf-field input:focus,
+.cf-field textarea:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accentColor);
+  box-shadow:
+    0 0 0 4px rgba(94, 234, 212, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ── Entrance Animations ────────────── */
+.cf-row:nth-child(1) {
+  animation: cf-fade-in 0.8s ease backwards 0.2s;
+}
+
+.cf-row:nth-child(2) {
+  animation: cf-fade-in 0.8s ease backwards 0.3s;
+}
+
+.cf-field-full {
+  animation: cf-fade-in 0.8s ease backwards 0.4s;
+}
+
+.cf-btn {
+  animation: cf-fade-in 0.8s ease backwards 0.5s;
+}
+
+@keyframes cf-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* ── Submit button ───────────────────── */
+.cf-btn {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 38px;
+  border-radius: 12px;
+  color: #fff;
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.4s ease,
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
+
+  /* Liquid Glass Base - Intense Depth */
+  background: linear-gradient(135deg,
+      rgba(94, 234, 212, 0.22) 0%,
+      rgba(56, 189, 248, 0.15) 50%,
+      rgba(94, 234, 212, 0.1) 100%);
+  backdrop-filter: blur(24px) saturate(220%) brightness(1.25);
+  -webkit-backdrop-filter: blur(24px) saturate(220%) brightness(1.25);
+
+  /* Glass Edge Definition */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Top-left light catch */
+.cf-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.05) 40%,
+      transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Shimmer streak that sweeps across on hover */
+.cf-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(110deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.18) 50%,
+      transparent 100%);
+  transform: skewX(-25deg);
+  transition: left 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cf-btn:hover::after {
+  left: 160%;
+}
+
+.cf-btn-text {
+  position: relative;
+  z-index: 1;
+}
+
+.cf-btn-icon {
+  font-size: 18px;
+  color: #fff;
+  transition: transform 0.4s ease-out;
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+/* ── Hover: grow + glow sweep ── */
+.cf-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(94, 234, 212, 0.4);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(94, 234, 212, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.25) inset;
+}
+
+.cf-btn:hover:not(:disabled) .cf-btn-text {
+  color: var(--accentColor);
+}
+
+.cf-btn:hover:not(:disabled) .cf-btn-icon {
+  transform: translateX(8px) scale(1.1);
+  color: var(--accentColor);
+  filter: drop-shadow(0 0 12px rgba(94, 234, 212, 0.6));
+}
+
+/* ── Click: compress ── */
+.cf-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.cf-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.cf-btn--loading {
+  padding: 12px 32px;
+  justify-content: center;
+}
+
+/* Spinner */
+.cf-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(234, 229, 236, 0.3);
+  border-top-color: #eae5ec;
+  border-radius: 50%;
+  animation: cf-spin 0.7s linear infinite;
+}
+
+@keyframes cf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Toast notifications ─────────────── */
+.cf-toast {
+  position: relative;
+  z-index: 2;
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: cf-slide-up 0.3s ease;
+}
+
+@keyframes cf-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-toast--success {
+  background: rgba(94, 234, 212, 0.12);
+  border: 1px solid rgba(94, 234, 212, 0.3);
+  color: var(--accentColor);
+}
+
+.cf-toast--success svg {
+  font-size: 18px;
+}
+
+.cf-toast--error {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.cf-toast--error svg {
+  font-size: 18px;
+}
+
+/* ── Responsive ──────────────────────── */
+@media only screen and (max-width: 1600px) {
+  .cf-heading h3 {
+    font-size: 50px;
+  }
+}
+
+@media only screen and (max-width: 1300px) {
+  .cf-heading h3 {
+    font-size: 42px;
+    letter-spacing: -0.03em;
+  }
+
+  .cf-heading-title-row {
+    gap: 12px;
+  }
+
+  .cf-card {
+    padding: 36px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .cf-wrapper {
+    padding-bottom: 80px;
+  }
+
+  .cf-heading h3 {
+    color: #ffffff;
+    background: none;
+    -webkit-text-fill-color: initial;
+  }
+
+  .cf-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .cf-card {
+    padding: 30px 20px;
+  }
+
+  .cf-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 18px 32px;
+    /* Slightly taller for mobile comfort */
+    font-size: 15px;
+    /* Slightly larger for mobile readability */
+    border-radius: 12px;
+  }
+
+  .cf-btn:hover:not(:disabled) {
+    transform: none;
+    /* Keep grow minimal as requested */
+  }
+
+  .cf-btn:active:not(:disabled) {
+    transform: scale(0.96);
+    /* Tactical click feedback */
+  }
+
+  /* Increase dropdown opacity for better legibility on mobile */
+  .cf-country-dropdown {
+    background: rgba(18, 22, 30, 0.90);
+    backdrop-filter: blur(50px) saturate(200%);
+    -webkit-backdrop-filter: blur(50px) saturate(200%);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+}
+
+@media only screen and (max-width: 600px) {
+  .cf-heading h3 {
+    font-size: 36px;
+    color: #ffffff;
+    background: none;
+    -webkit-text-fill-color: initial;
+  }
+
+  .cf-card {
+    border-radius: 14px;
+    padding: 30px 15px;
+  }
+}
+

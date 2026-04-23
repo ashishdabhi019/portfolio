@@ -24,6 +24,16 @@
   --vh: 100svh;
 }
 
+html {
+  scroll-padding-top: 100px;
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 140px; /* Accounts for floating mobile navigation pill */
+  }
+}
+
 h1,
 h2,
 h3,
@@ -118,10 +128,10 @@ body {
   text-align: center;
   position: absolute;
   width: 100%;
-  top: 120px;
+  top: 110px;
   left: 0;
   font-weight: 400;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 @media screen and (min-width: 768px) {
@@ -134,4 +144,186 @@ body {
   .techstack h2 {
     font-size: 40px;
   }
+}
+
+/* ─── Mobile Tech Stack ─────────────────────────────────────────────────────── */
+.mobile-techstack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 0 28px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.mobile-techstack-title {
+  font-size: 36px;
+  font-weight: 400;
+  text-align: center;
+  text-transform: none;
+  margin: 0 0 16px;
+  background: linear-gradient(0deg, #0d9488, #ffffff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  letter-spacing: 0.06em;
+}
+
+/* Fix GSAP SplitText: gradient must apply to inner char/line divs too */
+.techstack h2.title div,
+.techstack h2.title .split-line,
+.mobile-techstack-title.title div,
+.mobile-techstack-title.title .split-line {
+  background: linear-gradient(0deg, #0d9488, #ffffff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ── Fan stage — fixed height, cards positioned relative to center ── */
+.fan-stage {
+  width: 100vw;
+  max-width: 800px;
+  height: 200px;
+  position: relative;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+.fan-stage:active {
+  cursor: grabbing;
+}
+
+/* Each icon item — absolute, centred at bottom ── */
+.fan-item {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  margin-left: -40px;
+  /* half card width */
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  will-change: transform, opacity;
+  transform-origin: bottom center;
+}
+
+/* Card itself - Matches Navbar Pills exactly */
+.fan-card {
+  width: 95px;
+  height: 106px;
+  border-radius: 24px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.5s cubic-bezier(0.32, 0.72, 0, 1), background 0.5s cubic-bezier(0.32, 0.72, 0, 1), border-color 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.fan-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.18) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* Base overlay for subtle, natural color reflection inside the glass */
+.fan-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--fan-color, #ffffff) 0%, transparent 70%);
+  opacity: 0.08;
+  /* Barely there, highly refined tint */
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.5s ease;
+}
+
+/* User wants no artificial shine streak, so we remove the ::after/shine element */
+.fan-item:hover .fan-card {
+  transform: translateY(-8px) scale(1.06);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--fan-color, rgba(94, 234, 212, 0.8));
+  box-shadow:
+    var(--glass-shadow),
+    0 0 16px var(--fan-color, rgba(94, 234, 212, 0.3)),
+    0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.fan-item .fan-card.gemini-border::after {
+  content: "";
+  position: absolute;
+  inset: 0px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #fbbc04);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 10;
+}
+
+.fan-item:hover .fan-card.gemini-border::after {
+  opacity: 1;
+}
+
+.fan-item:hover .fan-card.gemini-border {
+  border-color: transparent !important;
+  box-shadow: var(--glass-shadow), 0 16px 48px rgba(0, 0, 0, 0.4) !important;
+}
+
+.fan-item:hover .fan-glow {
+  opacity: 0.15;
+  /* Glow subtly intensifies inside the glass */
+}
+
+.fan-icon {
+  width: 44px;
+  height: 44px;
+  font-size: 44px;
+  position: relative;
+  z-index: 1;
+  /* Clean drop shadow for the icon against the frosted glass */
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fan-item:hover .fan-icon {
+  transform: scale(1.1) translateY(-2px);
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
+}
+
+.fan-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Drag hint */
+.ring-hint {
+  font-size: 11px;
+  color: rgba(94, 234, 212, 0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 10px 0 0;
+  font-weight: 500;
 }
