@@ -30,9 +30,7 @@
 
 .social-icons a:hover {
   color: var(--accentColor);
-  /* Bright cyan accent on hover sitting on the glass */
-  text-shadow: 0 0 15px rgba(94, 234, 212, 0.5);
-  /* extra glow on top of the glass filter! */
+  text-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
 }
 
 .social-icons span {

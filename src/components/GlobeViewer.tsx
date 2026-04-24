@@ -71,8 +71,8 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
       transparent: true,
       uniforms: {
         maskTex: { value: null as THREE.Texture | null },
-        landColor: { value: new THREE.Color(0x00f2ff) }, // UI Cyan
-        waterColor: { value: new THREE.Color(0x0a0f17) } // User requested site background
+        landColor: { value: new THREE.Color(0x7C3AED) }, // Electric Violet
+        waterColor: { value: new THREE.Color(0x0a0f17) } // Site background
       },
       vertexShader: `
         varying vec2 vUv;
@@ -99,7 +99,7 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
           // Atmospheric Rim Glow
           float rim = 1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0);
           rim = smoothstep(0.6, 1.0, rim);
-          vec3 rimColor = vec3(0.0, 0.95, 1.0) * rim * 0.4;
+          vec3 rimColor = vec3(0.55, 0.23, 0.93) * rim * 0.5; // Violet rim glow
 
           // Watermask is black (0) for land, white (1) for water
           if (m < 0.5) {

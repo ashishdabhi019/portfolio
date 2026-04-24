@@ -55,7 +55,7 @@ a.contact-social {
 /* 🔒 Secret easter egg — "Ashish Dabhi" in footer */
 .secret-name {
   cursor: pointer;
-  background: linear-gradient(90deg, var(--accentColor), #a855f7, var(--accentColor));
+  background: linear-gradient(90deg, #7C3AED, #a855f7, #7C3AED);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

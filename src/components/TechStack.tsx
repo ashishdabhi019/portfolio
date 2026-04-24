@@ -521,7 +521,7 @@ const TechStack = () => {
         zIndex: 2,
         marginBottom: 0,
         marginTop: 0,
-        background: "linear-gradient(0deg, #0d9488, #ffffff)",
+        background: "linear-gradient(0deg, #5b21b6, #ffffff)",
         backgroundClip: "text",
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
