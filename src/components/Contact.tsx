@@ -79,7 +79,6 @@ const Contact = () => {
                 <span
                   className="secret-name"
                   onClick={() => setShowModal(true)}
-                  title="✨ Click me"
                 >
                   Ashish Dabhi
                 </span>
