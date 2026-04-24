@@ -25,6 +25,8 @@ interface Props { selectedLocation: string | null; visible: boolean; }
 
 const GlobeViewer = ({ selectedLocation, visible }: Props) => {
   const mountRef = useRef<HTMLDivElement>(null);
+  const selectedLocationRef = useRef<string | null>(null);
+  selectedLocationRef.current = selectedLocation;
   const s = useRef({
     renderer: null as THREE.WebGLRenderer | null,
     globe: null as THREE.Mesh | null,
@@ -127,15 +129,15 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
 
     // Pin (child of globe — rotates with it)
     const pin = new THREE.Group();
-    const headColor = 0xef4444; // Red
-    const stemColor = 0xd1d5db; // Silver
+    const headColor = 0xffffff; // White pin head
+    const stemColor = 0xe2e8f0; // Light silver stem
     
-    const stemMat = new THREE.MeshPhongMaterial({ color: stemColor, emissive: 0x222222, shininess: 100 });
+    const stemMat = new THREE.MeshPhongMaterial({ color: stemColor, emissive: 0x444444, shininess: 120 });
     const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.0035, 0.18, 8), stemMat);
     stick.position.y = 0.09;
     pin.add(stick);
     
-    const headMat = new THREE.MeshPhongMaterial({ color: headColor, emissive: 0x440000, emissiveIntensity: 0.3, shininess: 120 });
+    const headMat = new THREE.MeshPhongMaterial({ color: headColor, emissive: 0x888888, emissiveIntensity: 0.4, shininess: 160 });
     const head = new THREE.Mesh(new THREE.SphereGeometry(0.042, 16, 16), headMat);
     head.position.y = 0.21;
     pin.add(head);
@@ -145,7 +147,7 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
     ring.rotation.x = -Math.PI / 2;
     pin.add(ring);
     
-    const pinLight = new THREE.PointLight(headColor, 1.5, 0.85);
+    const pinLight = new THREE.PointLight(0xffffff, 1.5, 0.85);
     pinLight.position.y = 0.21;
     pin.add(pinLight);
     pin.visible = false;
@@ -206,10 +208,11 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
     };
     const onUp = () => { dragging = false; };
 
-    // Double tap/click to return to pin
+    // Double tap/click to return to pin location
     const onDblClick = () => {
-      if (!selectedLocation) return;
-      const coords = LOCATION_COORDS[selectedLocation];
+      const loc = selectedLocationRef.current;
+      if (!loc) return;
+      const coords = LOCATION_COORDS[loc];
       if (!coords) return;
       const [lat, lng] = coords;
       const ty = -(lng + 90) * (Math.PI / 180);

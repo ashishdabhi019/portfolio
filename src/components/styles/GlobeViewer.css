@@ -65,13 +65,13 @@
   width: 8px; 
   height: 8px;
   border-radius: 50%;
-  background: #ef4444; /* Matches red pin */
-  box-shadow: 0 0 10px #ef4444, 0 0 4px #ef4444;
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 4px #ffffff;
   animation: dot-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 @keyframes dot-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #ef4444; }
-  50%      { opacity: 0.3; transform: scale(0.65); box-shadow: 0 0 2px #ef4444; }
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
+  50%      { opacity: 0.3; transform: scale(0.65); box-shadow: 0 0 2px rgba(255,255,255,0.4); }
 }
 .globe-badge span:last-child {
   font-size: 13px; 

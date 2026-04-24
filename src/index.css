@@ -117,11 +117,12 @@ body {
 .techstack {
   width: 100%;
   position: relative;
-  overflow: clip;
+  overflow: hidden;
   height: var(--vh);
   margin: auto;
   margin-top: 50px;
-  margin-bottom: -100px;
+  margin-bottom: 0;
+  clip-path: inset(0 0 0 0);
 }
 
 .techstack h2 {
@@ -264,29 +265,49 @@ body {
     0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
+/* Gemini rainbow border — hover only */
 .fan-item .fan-card.gemini-border::after {
   content: "";
   position: absolute;
-  inset: 0px;
+  inset: -1px;
   border-radius: inherit;
-  padding: 2px;
-  background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #fbbc04);
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    #4285f4, #9b72cb, #d96570, #fbbc04, #34a853, #4285f4
+  );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.5s ease;
   z-index: 10;
+  transition: opacity 0.4s ease;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gemini-spin {
+  to { --angle: 360deg; }
 }
 
 .fan-item:hover .fan-card.gemini-border::after {
   opacity: 1;
+  animation: gemini-spin 2s linear infinite;
 }
 
 .fan-item:hover .fan-card.gemini-border {
   border-color: transparent !important;
-  box-shadow: var(--glass-shadow), 0 16px 48px rgba(0, 0, 0, 0.4) !important;
+  box-shadow:
+    var(--glass-shadow),
+    0 0 30px rgba(66, 133, 244, 0.45),
+    0 0 45px rgba(155, 114, 203, 0.35),
+    0 0 30px rgba(217, 101, 112, 0.35),
+    0 16px 48px rgba(0, 0, 0, 0.4) !important;
 }
 
 .fan-item:hover .fan-glow {
