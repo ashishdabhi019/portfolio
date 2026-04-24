@@ -390,10 +390,10 @@
   }
   .pg-grid {
     columns: 3 110px;
-    column-gap: 18px;
+    column-gap: 15px;
   }
   .pg-card {
-    margin-bottom: 18px;
+    margin-bottom: 15px;
   }
 }
 
