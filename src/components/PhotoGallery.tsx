@@ -30,6 +30,9 @@ function Lightbox({ photos, startIdx, onClose, onDelete }: {
   const [showHint, setShowHint] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
   const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   const prev = useCallback(() => {
     setDirection("prev");
@@ -65,11 +68,36 @@ function Lightbox({ photos, startIdx, onClose, onDelete }: {
     return () => window.removeEventListener("keydown", h);
   }, [showConfirm, prev, next, onClose]);
 
-  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
-  const onTouchEnd = (e: React.TouchEvent) => {
+  const onTouchStart = (e: React.TouchEvent) => { 
+    touchStartX.current = e.touches[0].clientX; 
+    touchStartY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
     if (showConfirm) return;
+    const dy = e.touches[0].clientY - touchStartY.current;
+    if (dy > 0) setDragY(dy);
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (showConfirm) {
+      setIsDragging(false);
+      setDragY(0);
+      return;
+    }
     const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(dx) > 40) dx < 0 ? next() : prev();
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+
+    if (dy > 120) {
+      onClose();
+    } else if (Math.abs(dx) > 40 && Math.abs(dy) < 60) {
+      dx < 0 ? next() : prev();
+      setDragY(0);
+    } else {
+      setDragY(0);
+    }
+    setIsDragging(false);
   };
 
   const confirmDelete = () => {
@@ -81,7 +109,18 @@ function Lightbox({ photos, startIdx, onClose, onDelete }: {
   };
 
   return (
-    <div className="lb-overlay" onClick={showConfirm ? undefined : onClose} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+    <div 
+      className="lb-overlay" 
+      onClick={showConfirm ? undefined : onClose} 
+      onTouchStart={onTouchStart} 
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{
+        transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+        transition: isDragging ? "none" : "transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease",
+        opacity: isDragging ? Math.max(0.4, 1 - dragY / 500) : 1
+      }}
+    >
 
       {/* Integrated Header Pill — top center (Unified) */}
       <div className="lb-header-pill">
@@ -170,6 +209,10 @@ export default function PhotoGallery({ onClose }: Props) {
   const [deletingUrl, setDeletingUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartY = useRef(0);
+
   // Upload
   const handleUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -208,10 +251,46 @@ export default function PhotoGallery({ onClose }: Props) {
     return () => window.removeEventListener("keydown", h);
   }, [onClose, lightboxIdx]);
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    // Only allow drag-to-dismiss if we are at the top of the scroll
+    const scrollEl = e.currentTarget.querySelector(".pg-scroll");
+    if (scrollEl && scrollEl.scrollTop > 0) return;
+
+    touchStartY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const dy = e.touches[0].clientY - touchStartY.current;
+    if (dy > 0) setDragY(dy);
+  };
+
+  const onTouchEnd = () => {
+    if (dragY > 150) {
+      onClose();
+    } else {
+      setDragY(0);
+    }
+    setIsDragging(false);
+  };
+
   return (
     <>
-      <div className="pg-overlay">
+      <div 
+        className="pg-overlay"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        style={{
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: isDragging ? "none" : "transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease",
+          opacity: isDragging ? Math.max(0.4, 1 - dragY / 600) : 1
+        }}
+      >
         <header className="pg-header">
+          {/* Mobile handle indicator */}
+          <div className="pg-drag-handle" />
           <div className="pg-header-left">
             <MdPhotoLibrary className="pg-header-icon" />
             <span className="pg-title">Ashish's Gallery</span>

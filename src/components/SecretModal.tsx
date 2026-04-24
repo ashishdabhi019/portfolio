@@ -15,9 +15,37 @@ export default function SecretModal({ onUnlock, onClose }: Props) {
   const [status, setStatus] = useState<"idle" | "wrong" | "unlocking">("idle");
   const overlayRef = useRef<HTMLDivElement>(null);
 
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startY = useRef(0);
+
   // Close on backdrop click
   const handleBackdrop = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) onClose();
+  };
+
+  // Drag to dismiss (mobile only logic)
+  const onTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+    setIsDragging(true);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY.current;
+    if (diff > 0) {
+      setDragY(diff);
+    }
+  };
+
+  const onTouchEnd = () => {
+    if (dragY > 100) {
+      onClose();
+    } else {
+      setDragY(0);
+    }
+    setIsDragging(false);
   };
 
   const addDigit = (d: string) => {
@@ -66,7 +94,17 @@ export default function SecretModal({ onUnlock, onClose }: Props) {
 
   return (
     <div className="sm-overlay" ref={overlayRef} onClick={handleBackdrop}>
-      <div className={`sm-card ${shake ? "sm-shake" : ""} ${status === "unlocking" ? "sm-unlock" : ""}`}>
+      <div 
+        className={`sm-card ${shake ? "sm-shake" : ""} ${status === "unlocking" ? "sm-unlock" : ""}`}
+        style={{ 
+          transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
+          transition: isDragging ? "none" : "transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.38s ease"
+        }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Lock icon */}
         <div className="sm-lock-icon">
           {status === "unlocking"
