@@ -497,7 +497,8 @@
 }
 
 .cf-field input:focus,
-.cf-field textarea:focus {
+.cf-field textarea:focus,
+.cf-field.active-dropdown input {
   background: rgba(255, 255, 255, 0.06);
   border-color: var(--accentColor);
   box-shadow:
@@ -724,6 +725,50 @@
   font-size: 18px;
 }
 
+/* ── Globe + Form layout wrapper ─────────────────────── */
+.cf-card-globe-wrapper {
+  display: flex;
+  gap: 0px;
+  align-items: center;
+  transition: gap 0.65s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.cf-card-globe-wrapper.globe-mode {
+  gap: 24px;
+}
+
+.cf-card-globe-wrapper .cf-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.cf-card {
+  flex: 1;
+  min-width: 0;
+  /* Even slower, smoother 'liquid' transition */
+  transition: flex 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cf-card-globe-wrapper.globe-mode .cf-card {
+  flex: 2.0;
+}
+
+.globe-wrap {
+  width: 0;
+  flex: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: flex 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.globe-wrap--visible {
+  width: 480px; /* Slightly larger globe container */
+  min-width: 400px;
+  flex: 1;
+}
 /* ── Responsive ──────────────────────── */
 @media only screen and (max-width: 1600px) {
   .cf-heading h3 {
@@ -747,66 +792,26 @@
 }
 
 @media only screen and (max-width: 900px) {
-  .cf-wrapper {
-    padding-bottom: 80px;
+  .cf-card-globe-wrapper,
+  .cf-card-globe-wrapper.globe-mode {
+    display: block !important;
+    gap: 0 !important;
   }
-
-  .cf-heading h3 {
-    color: #ffffff;
-    background: none;
-    -webkit-text-fill-color: initial;
+  .cf-globe-column, .globe-wrap, .globe-wrap--visible {
+    display: none !important;
   }
-
   .cf-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr; /* Stack fields one per row on mobile */
+    gap: 20px;
   }
-
   .cf-card {
-    padding: 30px 20px;
+    padding: 32px 24px; /* Slightly less padding on mobile for better fit */
+    flex: 1 !important;
+    max-width: 100% !important;
   }
-
   .cf-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 18px 32px;
-    /* Slightly taller for mobile comfort */
-    font-size: 15px;
-    /* Slightly larger for mobile readability */
-    border-radius: 12px;
-  }
-
-  .cf-btn:hover:not(:disabled) {
-    transform: none;
-    /* Keep grow minimal as requested */
-  }
-
-  .cf-btn:active:not(:disabled) {
-    transform: scale(0.96);
-    /* Tactical click feedback */
-  }
-
-  /* Increase dropdown opacity for better legibility on mobile */
-  .cf-country-dropdown {
-    background: rgba(18, 22, 30, 0.90);
-    backdrop-filter: blur(50px) saturate(200%);
-    -webkit-backdrop-filter: blur(50px) saturate(200%);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-
-}
-
-@media only screen and (max-width: 600px) {
-  .cf-heading h3 {
-    font-size: 36px;
-    color: #ffffff;
-    background: none;
-    -webkit-text-fill-color: initial;
-  }
-
-  .cf-card {
-    border-radius: 14px;
-    padding: 30px 15px;
+    width: 100%; /* Make send button full width on mobile */
+    justify-content: center; /* Center the text and icon inside */
+    margin-top: 10px;
   }
 }
-

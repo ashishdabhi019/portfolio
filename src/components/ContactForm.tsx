@@ -12,6 +12,7 @@ import {
 import { MdKeyboardArrowDown, MdSearch, MdLocationOn } from "react-icons/md";
 import "./styles/ContactForm.css";
 import { COUNTRIES, LOCATION_SUGGESTIONS } from "../data/formOptions";
+import GlobeViewer from "./GlobeViewer";
 
 
 // ──────────────────────────────────────────────────────────────
@@ -40,6 +41,8 @@ const ContactForm = () => {
     const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
     const [searchQuery, setSearchQuery] = useState("");
     const [locationSearchQuery, setLocationSearchQuery] = useState("");
+    const [globeActive, setGlobeActive] = useState(false);
+    const [selectedGlobeLocation, setSelectedGlobeLocation] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         from_name: "",
         from_email: "",
@@ -56,6 +59,7 @@ const ContactForm = () => {
             }
             if (locationRef.current && !locationRef.current.contains(event.target as Node)) {
                 setShowLocationDropdown(false);
+                // setGlobeActive(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -74,10 +78,32 @@ const ContactForm = () => {
         }
     }, [showLocationDropdown]);
 
+    useEffect(() => {
+        if (!formData.location) {
+            setSelectedGlobeLocation(null);
+        }
+    }, [formData.location]);
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const fieldName = e.target.name === "mobile_only" ? "mobile" : e.target.name;
+        let value = e.target.value;
+
+        // Logic for phone number: max 10 digits, numbers only, space after 5 digits
+        if (fieldName === "mobile") {
+            const digits = value.replace(/\D/g, ""); // Get raw digits
+            if (digits.length > 10) return; // Block input beyond 10 digits
+            
+            // Format: XXXXX XXXXX (space after 5th digit)
+            if (digits.length > 5) {
+                value = digits.slice(0, 5) + " " + digits.slice(5);
+            } else {
+                value = digits;
+            }
+        }
+
+        setFormData({ ...formData, [fieldName]: value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -153,6 +179,9 @@ const ContactForm = () => {
                     </p>
                 </div>
 
+                {/* Card + Globe wrapper */}
+                <div className={`cf-card-globe-wrapper ${globeActive ? "globe-mode" : ""}`}>
+
                 {/* Card */}
                 <div className="cf-card">
                     {/* Glow orbs - wrapped in a clipper so they don't leak when card overflow is visible */}
@@ -182,6 +211,9 @@ const ContactForm = () => {
                                     placeholder="Ashish Dabhi"
                                     value={formData.from_name}
                                     onChange={handleChange}
+                                    onFocus={() => {
+                                        if (window.innerWidth > 900) setGlobeActive(false);
+                                    }}
                                     required
                                     data-cursor="disable"
                                 />
@@ -198,6 +230,9 @@ const ContactForm = () => {
                                     placeholder="you@example.com"
                                     value={formData.from_email}
                                     onChange={handleChange}
+                                    onFocus={() => {
+                                        if (window.innerWidth > 900) setGlobeActive(false);
+                                    }}
                                     required
                                     data-cursor="disable"
                                 />
@@ -257,19 +292,27 @@ const ContactForm = () => {
                                             </div>
                                         )}
                                     </div>
+                                    <input type="hidden" name="country_code" value={selectedCountry.code} />
+                                    <input type="hidden" name="country_name" value={selectedCountry.name} />
+                                    <input type="hidden" name="mobile" value={`${selectedCountry.code} ${formData.mobile}`} />
                                     <input
                                         id="cf-mobile"
                                         type="tel"
-                                        name="mobile"
+                                        name="mobile_only"
                                         placeholder="98765 43210"
                                         value={formData.mobile}
                                         onChange={handleChange}
+                                        onFocus={() => {
+                                            if (window.innerWidth > 900) setGlobeActive(false);
+                                        }}
                                         required
+                                        pattern="[0-9]{5} [0-9]{5}"
+                                        title="Please enter a complete 10-digit number"
                                         data-cursor="disable"
                                     />
                                 </div>
                             </div>
-                            <div className="cf-field cf-location-field" ref={locationRef}>
+                            <div className={`cf-field cf-location-field ${showLocationDropdown ? "active-dropdown" : ""}`} ref={locationRef}>
                                 <div className="cf-label-row">
                                     <HiOutlineMapPin className="cf-label-icon" />
                                     <label htmlFor="cf-location">Location</label>
@@ -285,7 +328,10 @@ const ContactForm = () => {
                                             handleChange(e);
                                             setShowLocationDropdown(true);
                                         }}
-                                        onFocus={() => setShowLocationDropdown(true)}
+                                        onFocus={() => {
+                                            setShowLocationDropdown(true);
+                                            if (window.innerWidth > 900) setGlobeActive(true);
+                                        }}
                                         required
                                         data-cursor="disable"
                                         autoComplete="off"
@@ -315,6 +361,7 @@ const ContactForm = () => {
                                                             className={`cf-country-option ${formData.location === suggestion ? "selected" : ""}`}
                                                             onClick={() => {
                                                                 setFormData(prev => ({ ...prev, location: suggestion }));
+                                                                setSelectedGlobeLocation(suggestion);
                                                                 setShowLocationDropdown(false);
                                                             }}
                                                         >
@@ -345,6 +392,9 @@ const ContactForm = () => {
                                 placeholder="Tell me about your project or idea…"
                                 value={formData.message}
                                 onChange={handleChange}
+                                onFocus={() => {
+                                    if (window.innerWidth > 900) setGlobeActive(false);
+                                }}
                                 data-cursor="disable"
                             />
                         </div>
@@ -381,6 +431,14 @@ const ContactForm = () => {
                         </div>
                     )}
                 </div>
+
+                {/* 3D Globe */}
+                <GlobeViewer
+                    selectedLocation={selectedGlobeLocation}
+                    visible={globeActive}
+                />
+
+                </div>{/* end cf-card-globe-wrapper */}
             </div>
         </div>
     );
