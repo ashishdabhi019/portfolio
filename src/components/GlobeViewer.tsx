@@ -59,7 +59,7 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
     const sun = new THREE.DirectionalLight(0xffffff, 1.5);
     sun.position.set(5, 3, 5);
     scene.add(sun);
-    const rim = new THREE.DirectionalLight(0x38bdf8, 0.4);
+    const rim = new THREE.DirectionalLight(0x7C3AED, 0.4);
     rim.position.set(-4, -2, -3);
     scene.add(rim);
 
@@ -71,7 +71,7 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
       transparent: true,
       uniforms: {
         maskTex: { value: null as THREE.Texture | null },
-        landColor: { value: new THREE.Color(0x7C3AED) }, // Electric Violet
+        landColor: { value: new THREE.Color(0xA855F7) }, // Bright Electric Violet
         waterColor: { value: new THREE.Color(0x0a0f17) } // Site background
       },
       vertexShader: `

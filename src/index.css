@@ -257,10 +257,10 @@ body {
 .fan-item:hover .fan-card {
   transform: translateY(-8px) scale(1.06);
   background: rgba(255, 255, 255, 0.12);
-  border-color: var(--fan-color, rgba(94, 234, 212, 0.8));
+  border-color: var(--fan-color, rgba(124, 58, 237, 0.8));
   box-shadow:
-    var(--glass-shadow),
-    0 0 16px var(--fan-color, rgba(94, 234, 212, 0.3)),
+    0 0 24px var(--fan-color, rgba(124, 58, 237, 0.4)),
+    0 0 16px var(--fan-color, rgba(124, 58, 237, 0.3)),
     0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
