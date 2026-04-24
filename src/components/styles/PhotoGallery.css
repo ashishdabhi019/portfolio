@@ -385,44 +385,44 @@
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .pg-scroll {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 18px;
+    padding-right: 18px;
   }
   .pg-grid {
     columns: 3 110px;
-    column-gap: 20px;
+    column-gap: 15px;
   }
   .pg-card {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 }
 
 @media (max-width: 600px) {
   .pg-scroll {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .pg-grid {
     columns: 2 120px;
-    column-gap: 20px;
+    column-gap: 15px;
   }
 
   .pg-card {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 }
 
 @media (max-width: 400px) {
   .pg-scroll {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   .pg-grid {
     columns: 2 90px;
-    column-gap: 20px;
+    column-gap: 15px;
   }
   .pg-card {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 }
 
