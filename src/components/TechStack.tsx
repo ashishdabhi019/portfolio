@@ -3,7 +3,7 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { EffectComposer, N8AO } from "@react-three/postprocessing";
-import { SiTensorflow, SiPytorch, SiAnthropic } from "react-icons/si";
+import { SiTensorflow, SiPytorch } from "react-icons/si";
 import {
   BallCollider,
   Physics,
@@ -148,7 +148,7 @@ function Pointer({ vec = new THREE.Vector3(), isActive }: PointerProps) {
 import {
   SiReact, SiNextdotjs, SiNodedotjs, SiExpress,
   SiMongodb, SiMysql, SiTypescript, SiJavascript,
-  SiPython, SiOpenai, SiHtml5, SiOllama,
+  SiOpenai, SiHtml5, SiOllama,
 } from "react-icons/si";
 
 const CursorIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
