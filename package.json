@@ -1,5 +1,6 @@
 {
   "name": "portfolio",
+  "homepage": "https://www.ashishdabhi.in",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,7 +10,9 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -22,8 +25,7 @@
     "@types/three": "^0.168.0",
     "@vercel/analytics": "^1.4.1",
     "emailjs-com": "^3.2.0",
-    "gsap": "^3.12.7",
-    "gsap-trial": "^3.12.7",
+    "gsap": "^3.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-fast-marquee": "^1.6.5",
@@ -42,6 +44,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "express": "^5.2.1",
+    "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
     "multer": "^2.1.1",
     "typescript": "^5.5.3",
