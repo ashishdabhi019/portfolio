@@ -1,84 +1,76 @@
-// server.js — Photo upload backend
-// Saves uploaded photos to src/assets/photos/ permanently
-import express from "express";
-import multer from "multer";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PHOTO_DIR = path.join(__dirname, "src", "assets", "photos");
+// server.js — Cloudinary-powered media backend
+import express from "express";
+import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
+
 const PORT = 3001;
 
-// Ensure photo dir exists
-if (!fs.existsSync(PHOTO_DIR)) fs.mkdirSync(PHOTO_DIR, { recursive: true });
+// ── Cloudinary Config ─────────────────────────────────────────────────────────
+cloudinary.config({
+  cloud_name: "dm0ocjzhd",
+  api_key: "984136927672923",
+  api_secret: process.env.CLOUDINARY_SECRET || "fxAMcCGSvUYrmU6VM4HNnon9U_s",
+});
 
 const app = express();
-
-// Allow requests from Vite dev server (any port/host)
 app.use(cors());
+app.use(express.json());
 
-// Save uploaded files directly to src/assets/photos/
-const storage = multer.diskStorage({
-  destination: PHOTO_DIR,
-  filename: (req, file, cb) => {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e6);
-    const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
-    cb(null, `upload-${unique}${ext}`);
-  },
-});
+// ── GET /api/media — List all media from Cloudinary ──────────────────────────
+app.get("/api/media", async (req, res) => {
+  try {
+    const [images, videos, raws] = await Promise.all([
+      cloudinary.api.resources({ resource_type: "image", max_results: 500, type: "upload" }),
+      cloudinary.api.resources({ resource_type: "video", max_results: 500, type: "upload" }),
+      cloudinary.api.resources({ resource_type: "raw",   max_results: 500, type: "upload" }),
+    ]);
 
-const upload = multer({
-  storage,
-  fileFilter: (req, file, cb) => {
-    const ok = /image\/(jpeg|jpg|png|webp|gif|heic)/.test(file.mimetype);
-    cb(null, ok);
-  },
-  limits: { fileSize: 30 * 1024 * 1024 }, // 30 MB per file
-});
+    const format = (resources, type) =>
+      resources.map(r => ({
+        url: r.secure_url,
+        publicId: r.public_id,
+        resourceType: type,
+        format: r.format,
+        filename: r.filename || r.public_id.split("/").pop(),
+      }));
 
-// Serve photos as static files (so frontend can display them by URL)
-app.use("/photos", express.static(PHOTO_DIR));
+    const media = [
+      ...format(images.resources, "image"),
+      ...format(videos.resources, "video"),
+      ...format(raws.resources, "raw"),
+    ];
 
-// Upload endpoint — accepts multiple files
-app.post("/api/upload", upload.array("photos", 50), (req, res) => {
-  const files = req.files;
-  if (!files || files.length === 0) {
-    return res.status(400).json({ error: "No valid image files received" });
+    res.json({ media });
+  } catch (err) {
+    console.error("List error:", err);
+    res.status(500).json({ error: "Failed to fetch media" });
   }
-  const host = req.headers.host?.split(":")[0] || "localhost";
-  const urls = files.map(
-    (f) => `http://${host}:${PORT}/photos/${f.filename}`
-  );
-  console.log(`✅ Saved ${files.length} photo(s):`, files.map((f) => f.filename));
-  res.json({ urls });
 });
 
-// Delete endpoint — removes a photo from src/assets/photos/
-app.delete("/api/photo/:filename", (req, res) => {
-  // path.basename prevents directory traversal (e.g. ../../etc/passwd)
-  const safe = path.basename(req.params.filename);
-  const filePath = path.join(PHOTO_DIR, safe);
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "File not found" });
-  }
+// ── DELETE /api/media/:publicId — Delete from Cloudinary ─────────────────────
+app.delete("/api/media/:publicId", async (req, res) => {
+  // publicId may contain slashes, decode it
+  const publicId = decodeURIComponent(req.params.publicId);
+  const resourceType = req.body?.resourceType || "image";
 
   try {
-    fs.unlinkSync(filePath);
-    console.log(`🗑️  Deleted: ${safe}`);
-    res.json({ ok: true });
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+      invalidate: true,
+    });
+    console.log(`🗑️  Deleted: ${publicId} (${result.result})`);
+    res.json({ ok: true, result: result.result });
   } catch (err) {
-    console.error("Delete failed:", err);
+    console.error("Delete error:", err);
     res.status(500).json({ error: "Could not delete file" });
   }
 });
 
-// Health check
-app.get("/api/health", (req, res) => res.json({ ok: true }));
+// ── Health check ──────────────────────────────────────────────────────────────
+app.get("/api/health", (req, res) => res.json({ ok: true, cloudinary: "connected" }));
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`📸 Photo server → http://localhost:${PORT}`);
-  console.log(`   Saving to: ${PHOTO_DIR}`);
+  console.log(`📸 Cloudinary server → http://localhost:${PORT}`);
+  console.log(`   Cloud: dm0ocjzhd`);
 });
