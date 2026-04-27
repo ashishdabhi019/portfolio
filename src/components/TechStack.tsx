@@ -14,27 +14,27 @@ import {
 
 const textureLoader = new THREE.TextureLoader();
 const imageUrls = [
-  "/images/react2.webp",
-  "/images/next2.webp",
-  "/images/node2.webp",
-  "/images/express.webp",
-  "/images/mongo.webp",
-  "/images/mysql.webp",
-  "/images/typescript.webp",
-  "/images/javascript.webp",
-  "/images/python2.png",
-  "/images/openai2.png",
-  "/images/html2.png",
-  "/images/ollama2.png",
-  "/images/tensorflow2.png",
-  "/images/pytorch2.png",
-  "/images/ragflow2.png",
-  "/images/claude2.png",
-  "/images/gemini2.png",
-  "/images/cline2.png",
-  "/images/cursor2.png",
-  "/images/n8n2.png",
-  "/images/openclaw2.png",
+  "images/react2.webp",
+  "images/next2.webp",
+  "images/node2.webp",
+  "images/express.webp",
+  "images/mongo.webp",
+  "images/mysql.webp",
+  "images/typescript.webp",
+  "images/javascript.webp",
+  "images/python2.png",
+  "images/openai2.png",
+  "images/html2.png",
+  "images/ollama2.png",
+  "images/tensorflow2.png",
+  "images/pytorch2.png",
+  "images/ragflow2.png",
+  "images/claude2.png",
+  "images/gemini2.png",
+  "images/cline2.png",
+  "images/cursor2.png",
+  "images/n8n2.png",
+  "images/openclaw2.png",
 ];
 
 
@@ -152,35 +152,35 @@ import {
 } from "react-icons/si";
 
 const CursorIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/cursor.png" alt="Cursor" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/cursor.png" alt="Cursor" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const ClineIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/cline.png" alt="Cline" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/cline.png" alt="Cline" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const GeminiIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/gemini.webp" alt="Gemini" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/gemini.webp" alt="Gemini" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const ClaudeIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/claude.png" alt="Claude" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/claude.png" alt="Claude" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const N8nIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/n8n.png" alt="n8n" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/n8n.png" alt="n8n" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const OpenClawIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/openclaw.png" alt="Open Claw" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/openclaw.png" alt="Open Claw" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const PythonIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/python.svg" alt="Python" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/python.svg" alt="Python" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const RagflowIcon = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
-  <img src="/images/ragflow.png" alt="RAGFlow" className={className} style={{ ...style, objectFit: "contain" }} />
+  <img src="images/ragflow.png" alt="RAGFlow" className={className} style={{ ...style, objectFit: "contain" }} />
 );
 
 const mobileIcons = [
@@ -560,7 +560,7 @@ const TechStack = () => {
           ))}
         </Physics>
         <Environment
-          files="/models/char_enviorment.hdr"
+          files="models/char_enviorment.hdr"
           environmentIntensity={0.5}
           environmentRotation={[0, 4, 2]}
         />
