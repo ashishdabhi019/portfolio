@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { IoClose, IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { MdPhotoLibrary, MdAdd, MdDelete, MdPlayCircle, MdInsertDriveFile, MdRefresh } from "react-icons/md";
+import { MdPhotoLibrary, MdAdd, MdDelete, MdPlayCircle, MdInsertDriveFile } from "react-icons/md";
 import { RiImageLine, RiVideoLine, RiApps2Line } from "react-icons/ri";
 import "./styles/PhotoGallery.css";
 
 const CLOUD_NAME = "dm0ocjzhd";
 const UPLOAD_PRESET = "portfolio_uploads";
 const SERVER_URL = (import.meta as any).env?.VITE_SERVER_URL || "http://localhost:3001";
-const POLL_INTERVAL = 10_000; // check every 10 seconds
+
 
 interface MediaItem {
   url: string;
@@ -25,28 +25,6 @@ function shuffle<T>(arr: T[]): T[] {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
-}
-
-// ── New Media Toast ───────────────────────────────────────────────────────────
-function NewMediaToast({ count, onRefresh, onDismiss }: {
-  count: number;
-  onRefresh: () => void;
-  onDismiss: () => void;
-}) {
-  return (
-    <div className="pg-toast pg-toast--visible">
-      <span className="pg-toast-dot" />
-      <span className="pg-toast-msg">
-        {count} new {count === 1 ? "item" : "items"} added
-      </span>
-      <button className="pg-toast-refresh" onClick={onRefresh}>
-        <MdRefresh /> Show
-      </button>
-      <button className="pg-toast-dismiss" onClick={onDismiss}>
-        <IoClose />
-      </button>
-    </div>
-  );
 }
 
 // ── Media Thumbnail ───────────────────────────────────────────────────────────
@@ -244,16 +222,17 @@ export default function PhotoGallery({ onClose }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // ── Sync state ────────────────────────────────────────────────────────────
-  const [newMediaCount, setNewMediaCount] = useState(0);   // how many new items detected
-  const [pendingMedia, setPendingMedia] = useState<MediaItem[]>([]); // new items waiting to show
-  const lastKnownTotal = useRef(0);                        // last count we showed the user
-  const lastKnownLatestAt = useRef("");                    // latest timestamp we showed
+  const lastKnownTotal = useRef(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const xhrRef = useRef<XMLHttpRequest | null>(null);
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const touchStartY = useRef(0);
+
+  // ── Ref to always access current media inside polling without stale closure
+  const mediaRef = useRef<MediaItem[]>([]);
+  useEffect(() => { mediaRef.current = media; }, [media]);
 
   // ── Initial load ──────────────────────────────────────────────────────────
   const loadMedia = useCallback(async () => {
@@ -263,9 +242,6 @@ export default function PhotoGallery({ onClose }: Props) {
       const items: MediaItem[] = data.media || [];
       setMedia(shuffle(items));
       lastKnownTotal.current = items.length;
-      // Store the latest timestamp
-      const latest = items.reduce((l, m) => (m.createdAt && m.createdAt > l ? m.createdAt : l), "");
-      lastKnownLatestAt.current = latest;
     } catch {
       const saved = localStorage.getItem("cloudinary_media");
       if (saved) {
@@ -280,62 +256,35 @@ export default function PhotoGallery({ onClose }: Props) {
 
   useEffect(() => { loadMedia(); }, [loadMedia]);
 
-  // ── Auto-polling: check for new media every 10 seconds ───────────────────
+  // ── Auto-polling: full sync every 5s — detects additions AND deletions ────
   useEffect(() => {
     const poll = async () => {
       try {
-        const res = await fetch(`${SERVER_URL}/api/media/sync`);
+        const res = await fetch(`${SERVER_URL}/api/media`);
+        if (!res.ok) return;
         const data = await res.json();
+        const serverItems: MediaItem[] = data.media || [];
 
-        const serverTotal: number = data.total ?? 0;
-        const serverLatestAt: string = data.latestAt ?? "";
+        const current = mediaRef.current;
+        const currentIds = new Set(current.map(m => m.publicId));
+        const serverIds = new Set(serverItems.map(m => m.publicId));
 
-        // New items detected if total increased OR a newer item exists
-        const hasNew = serverTotal > lastKnownTotal.current ||
-          (serverLatestAt && serverLatestAt > lastKnownLatestAt.current);
+        const hasAddition = serverItems.some(m => !currentIds.has(m.publicId));
+        const hasDeletion = current.some(m => !serverIds.has(m.publicId));
 
-        if (hasNew) {
-          // Fetch the full updated list silently
-          const fullRes = await fetch(`${SERVER_URL}/api/media`);
-          const fullData = await fullRes.json();
-          const allItems: MediaItem[] = fullData.media || [];
-
-          // Find the NEW items (not in current media)
-          const currentIds = new Set(media.map(m => m.publicId));
-          const newItems = allItems.filter(m => !currentIds.has(m.publicId));
-
-          if (newItems.length > 0) {
-            setPendingMedia(allItems); // store full updated list
-            setNewMediaCount(newItems.length);
-          }
-
-          // Update our reference points regardless
-          lastKnownTotal.current = serverTotal;
-          lastKnownLatestAt.current = serverLatestAt;
+        if (hasAddition || hasDeletion) {
+          setMedia(serverItems);
+          localStorage.setItem("cloudinary_media", JSON.stringify(serverItems));
+          lastKnownTotal.current = serverItems.length;
         }
       } catch {
-        // Silent fail — polling errors don't affect UX
+        // Silent fail
       }
     };
 
-    const interval = setInterval(poll, POLL_INTERVAL);
+    const interval = setInterval(poll, 5_000); // every 5 seconds
     return () => clearInterval(interval);
-  }, [media]); // re-register when media changes so currentIds is fresh
-
-  // ── User accepts new media ────────────────────────────────────────────────
-  const handleShowNewMedia = useCallback(() => {
-    if (pendingMedia.length > 0) {
-      setMedia(pendingMedia);
-      localStorage.setItem("cloudinary_media", JSON.stringify(pendingMedia));
-    }
-    setNewMediaCount(0);
-    setPendingMedia([]);
-  }, [pendingMedia]);
-
-  const handleDismissToast = useCallback(() => {
-    setNewMediaCount(0);
-    setPendingMedia([]);
-  }, []);
+  }, []); // empty deps — uses mediaRef to avoid stale closure
 
   // ── Save to localStorage whenever media changes ───────────────────────────
   useEffect(() => {
@@ -373,9 +322,7 @@ export default function PhotoGallery({ onClose }: Props) {
               };
               setMedia(prev => {
                 const updated = [newItem, ...prev];
-                // Update sync refs immediately so we don't see our own upload as "new"
                 lastKnownTotal.current = updated.length;
-                lastKnownLatestAt.current = newItem.createdAt!;
                 return updated;
               });
               resolve();
@@ -479,14 +426,6 @@ export default function PhotoGallery({ onClose }: Props) {
 
         </div>
 
-        {/* ── New Media Toast ── */}
-        {newMediaCount > 0 && (
-          <NewMediaToast
-            count={newMediaCount}
-            onRefresh={handleShowNewMedia}
-            onDismiss={handleDismissToast}
-          />
-        )}
 
         <input ref={fileInputRef} type="file"
           accept="image/*,video/*,.pdf,.doc,.docx,.zip,.mp3,.wav"
