@@ -420,7 +420,7 @@ function MobileTechStack() {
   void tick; // consumed only to trigger re-render
 
   return (
-    <div id="techstack" className="mobile-techstack">
+    <div className="mobile-techstack">
       <h2 className="mobile-techstack-title">Tech Stack</h2>
       <div
         ref={stageRef}
@@ -513,7 +513,7 @@ const TechStack = () => {
   }
 
   return (
-    <div id="techstack" className="techstack">
+    <div className="techstack">
       <h2 className="title" style={{
         fontSize: "70px",
         fontWeight: 400,
