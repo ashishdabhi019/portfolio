@@ -44,8 +44,8 @@ const MainContainer = ({ children }: PropsWithChildren) => {
             <WhatIDo />
             <Career />
             <Work />
-            <div id="techstack" style={{ minHeight: "100vh", position: "relative" }}>
-              <Suspense fallback={<div style={{ height: "100vh" }}>Loading...</div>}>
+            <div id="techstack" style={{ minHeight: isDesktopView ? "100vh" : "360px", position: "relative" }}>
+              <Suspense fallback={<div style={{ height: isDesktopView ? "100vh" : "360px" }}>Loading...</div>}>
                 <TechStack />
               </Suspense>
             </div>
