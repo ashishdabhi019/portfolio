@@ -121,9 +121,9 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  gap: 5px;
-  padding: 5px 24px; /* Extra padding as requested */
-  min-width: 100px;
+  gap: 6px;
+  padding: 7px 20px;
+  min-width: 90px;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.4);
@@ -132,23 +132,16 @@
   font-family: "Geist", sans-serif;
   cursor: pointer;
   border-radius: 50px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.3s ease, font-weight 0.2s ease;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
+  /* Ensure all content stays centred */
+  text-align: center;
 }
-
-
 
 .pg-pill-tab.active {
   color: #ffffff;
   font-weight: 600;
-}
-
-/* Desktop only adjustment */
-@media (min-width: 1024px) {
-  .pg-pill-tab.active {
-    padding-right: 14px;
-  }
 }
 
 .pg-pill-tab:hover:not(.active) {
@@ -160,28 +153,43 @@
   font-size: 16px;
   display: flex;
   align-items: center;
-  transition: all 0.2s ease;
-  padding-inline-start: 5px;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 .pg-pill-tab.active .tab-icon { transform: scale(1.05); }
 
-
-.pg-pill-tab .tab-label { font-size: 12px; }
+.pg-pill-tab .tab-label {
+  font-size: 12px;
+  flex-shrink: 0;
+}
 
 .pg-pill-tab .tab-count {
   font-size: 11px;
   font-weight: 700;
   background: rgba(0, 0, 0, 0.35);
   color: rgba(255, 255, 255, 0.6);
-  padding: 4px;
+  padding: 2px 7px;
   border-radius: 20px;
   min-width: 22px;
   text-align: center;
+  flex-shrink: 0;
   transition: all 0.3s ease;
 }
 .pg-pill-tab.active .tab-count {
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.3);
   color: #ffffff;
+}
+
+/* Mobile: keep labels visible and equally spaced */
+@media (max-width: 600px) {
+  .pg-pill-tab {
+    padding: 7px 14px;
+    min-width: 0;
+    gap: 5px;
+  }
+  .pg-pill-tab .tab-label { font-size: 11px; }
+  .pg-pill-tab .tab-count { font-size: 10px; min-width: 18px; padding: 2px 5px; }
 }
 
 
@@ -378,8 +386,6 @@
 @media (max-width: 600px) {
   .pg-grid { columns: 2 120px; column-gap: 10px; }
   .pg-header { padding: 6px 6px 6px 12px; gap: 6px; }
-  .pg-pill-tab .tab-label { display: none; }
-  .pg-pill-tab { padding: 5px 8px; }
 }
 @media (max-width: 400px) {
   .pg-grid { columns: 2 90px; }
