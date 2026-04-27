@@ -6,7 +6,9 @@ import "./styles/PhotoGallery.css";
 
 const CLOUD_NAME = "dm0ocjzhd";
 const UPLOAD_PRESET = "portfolio_uploads";
-const SERVER_URL = (import.meta as any).env?.VITE_SERVER_URL || "http://localhost:3001";
+// Use the live Render backend URL in production, or localhost during local development.
+const SERVER_URL = (import.meta as any).env?.VITE_SERVER_URL || 
+  (import.meta.env.PROD ? "https://portfolio-n9c9.onrender.com" : "http://localhost:3001");
 
 
 interface MediaItem {
