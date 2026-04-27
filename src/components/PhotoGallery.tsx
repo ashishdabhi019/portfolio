@@ -278,13 +278,33 @@ export default function PhotoGallery({ onClose }: Props) {
           lastKnownTotal.current = serverItems.length;
         }
       } catch {
-        // Silent fail
+        // Fallback to localStorage sync for cross-tab updates when server is unreachable
+        const saved = localStorage.getItem("cloudinary_media");
+        if (saved) {
+          try {
+            const localItems = JSON.parse(saved);
+            if (localItems.length !== mediaRef.current.length) {
+              setMedia(localItems);
+            }
+          } catch (e) {}
+        }
       }
     };
 
     const interval = setInterval(poll, 5_000); // every 5 seconds
     return () => clearInterval(interval);
   }, []); // empty deps — uses mediaRef to avoid stale closure
+
+  // ── Sync across tabs instantly using Storage Event ────────────────────────
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "cloudinary_media" && e.newValue) {
+        try { setMedia(JSON.parse(e.newValue)); } catch {}
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   // ── Save to localStorage whenever media changes ───────────────────────────
   useEffect(() => {
