@@ -20,11 +20,10 @@ const setCharacter = (
           "/models/character.enc?v=2",
           "MyCharacter12"
         );
-        const blobUrl = URL.createObjectURL(new Blob([encryptedBlob]));
-
         let character: THREE.Object3D;
-        loader.load(
-          blobUrl,
+        loader.parse(
+          encryptedBlob,
+          "",
           async (gltf) => {
             character = gltf.scene;
             await renderer.compileAsync(character, camera, scene);
@@ -60,9 +59,8 @@ const setCharacter = (
 
             dracoLoader.dispose();
           },
-          undefined,
           (error) => {
-            console.error("Error loading GLTF model:", error);
+            console.error("Error parsing GLTF model:", error);
             reject(error);
           }
         );

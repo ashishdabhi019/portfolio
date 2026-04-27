@@ -15,29 +15,33 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ── Helper: fetch all media ───────────────────────────────────────────────────
+// ── Cache & Helper: fetch all media ───────────────────────────────────────────
+let mediaCache = { data: null, lastFetch: 0 };
+const CACHE_TTL = 30000; // 30 seconds
+
 async function fetchAllMedia() {
-  const [images, videos, raws] = await Promise.all([
-    cloudinary.api.resources({ resource_type: "image", max_results: 500, type: "upload" }),
-    cloudinary.api.resources({ resource_type: "video", max_results: 500, type: "upload" }),
-    cloudinary.api.resources({ resource_type: "raw",   max_results: 500, type: "upload" }),
-  ]);
+  if (mediaCache.data && Date.now() - mediaCache.lastFetch < CACHE_TTL) {
+    return mediaCache.data;
+  }
 
-  const fmt = (resources, type) =>
-    resources.map(r => ({
-      url: r.secure_url,
-      publicId: r.public_id,
-      resourceType: type,
-      format: r.format,
-      filename: r.filename || r.public_id.split("/").pop(),
-      createdAt: r.created_at,  // ← include timestamp for sync detection
-    }));
+  // Use Search API (5000 limits) instead of Admin API (500 limits) to prevent crashes
+  const result = await cloudinary.search
+    .expression("")
+    .sort_by("created_at", "desc")
+    .max_results(500)
+    .execute();
 
-  return [
-    ...fmt(images.resources, "image"),
-    ...fmt(videos.resources, "video"),
-    ...fmt(raws.resources, "raw"),
-  ];
+  const formatted = result.resources.map(r => ({
+    url: r.secure_url,
+    publicId: r.public_id,
+    resourceType: r.resource_type,
+    format: r.format,
+    filename: r.filename || r.public_id.split("/").pop(),
+    createdAt: r.created_at,
+  }));
+
+  mediaCache = { data: formatted, lastFetch: Date.now() };
+  return formatted;
 }
 
 // ── GET /api/media — Full media list ─────────────────────────────────────────
@@ -47,27 +51,20 @@ app.get("/api/media", async (req, res) => {
     res.json({ media, total: media.length, fetchedAt: new Date().toISOString() });
   } catch (err) {
     console.error("List error:", err);
-    res.status(500).json({ error: "Failed to fetch media" });
+    // If rate limited but we have cache, return cache
+    if (mediaCache.data) {
+      return res.json({ media: mediaCache.data, total: mediaCache.data.length, fetchedAt: new Date().toISOString(), cached: true });
+    }
+    res.status(500).json({ error: "Failed to fetch media", details: err.message });
   }
 });
 
 // ── GET /api/media/sync — Lightweight sync check ──────────────────────────────
-// Returns only count + latest item timestamp. Used for polling without fetching all data.
 app.get("/api/media/sync", async (req, res) => {
   try {
-    const [images, videos] = await Promise.all([
-      cloudinary.api.resources({ resource_type: "image", max_results: 500, type: "upload" }),
-      cloudinary.api.resources({ resource_type: "video", max_results: 500, type: "upload" }),
-    ]);
-
-    const allResources = [...images.resources, ...videos.resources];
-    const total = allResources.length;
-
-    // Find the most recently created item
-    const latestAt = allResources.reduce((latest, r) => {
-      return r.created_at > latest ? r.created_at : latest;
-    }, "");
-
+    const media = await fetchAllMedia();
+    const total = media.length;
+    const latestAt = media.length > 0 ? media[0].createdAt : "";
     res.json({ total, latestAt, checkedAt: new Date().toISOString() });
   } catch (err) {
     res.status(500).json({ error: "Sync check failed" });
