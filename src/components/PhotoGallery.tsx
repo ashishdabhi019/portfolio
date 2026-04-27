@@ -909,12 +909,13 @@ export default function PhotoGallery({ onClose }: Props) {
             style={{ transform: `translateX(calc(${activeTabIndex * 100}% + ${activeTabIndex * 6}px))` }} />
           {tabs.map(({ key, icon, label }) => (
             <button key={key} className={`pg-pill-tab ${filter === key ? "active" : ""}`}
-              onClick={() => { setFilter(key); setIsMenuOpen(false); }}>
+              onClick={() => setFilter(key)}>
               <span className="tab-icon">{icon}</span>
               <span className="tab-label">{label}</span>
               {counts[key] > 0 && <span className="tab-count">{counts[key]}</span>}
             </button>
           ))}
+
         </div>
 
         {/* ── New Media Toast ── */}

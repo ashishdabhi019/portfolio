@@ -296,19 +296,20 @@
   inset: 0;
   background: linear-gradient(
     110deg,
-    transparent 30%,
-    rgba(167,139,250,0.06) 48%,
-    rgba(167,139,250,0.12) 50%,
-    rgba(167,139,250,0.06) 52%,
-    transparent 70%calc
+    transparent 20%,
+    rgba(167, 139, 250, 0.05) 45%,
+    rgba(167, 139, 250, 0.15) 50%,
+    rgba(167, 139, 250, 0.05) 55%,
+    transparent 80%
   );
-  background-size: 250% 100%;
-  animation: pg-shimmer 2.2s ease-in-out infinite;
+  background-size: 200% 100%;
+  animation: pg-shimmer 1.8s infinite linear;
 }
 @keyframes pg-shimmer {
-  0%   { background-position: 250% 0; }
-  100% { background-position: -250% 0; }
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
+
 
 /* Video card */
 .pg-card--video { background: #000; }
@@ -757,11 +758,6 @@
 .lb-confirm-cancel:active { transform: scale(0.95); }
 
 
-
-
-/* ══════════════════════════════════════════════════════════════
-   ADD THESE STYLES TO THE BOTTOM OF YOUR PhotoGallery.css
-══════════════════════════════════════════════════════════════ */
 
 /* ── New Media Toast ─────────────────────────────────────────── */
 .pg-toast {
