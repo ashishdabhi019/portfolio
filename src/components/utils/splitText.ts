@@ -32,9 +32,10 @@ export default function setSplitText() {
       linesClass: "split-line",
     });
 
+    const isMobile = window.innerWidth <= 1024;
     para.anim = gsap.fromTo(
       para.split.words,
-      { autoAlpha: 0, y: 80 },
+      { autoAlpha: 0, y: isMobile ? 30 : 80 },
       {
         autoAlpha: 1,
         scrollTrigger: {
@@ -42,7 +43,7 @@ export default function setSplitText() {
           toggleActions: ToggleAction,
           start: TriggerStart,
         },
-        duration: 1,
+        duration: isMobile ? 0.6 : 1,
         ease: "power3.out",
         y: 0,
         stagger: 0.02,
@@ -64,9 +65,10 @@ export default function setSplitText() {
       type: "chars,lines",
       linesClass: "split-line",
     });
+    const isMobile = window.innerWidth <= 1024;
     title.anim = gsap.fromTo(
       title.split.chars,
-      { autoAlpha: 0, y: 80, rotate: 10 },
+      { autoAlpha: 0, y: isMobile ? 30 : 80, rotate: isMobile ? 0 : 10 },
       {
         autoAlpha: 1,
         scrollTrigger: {
@@ -74,7 +76,7 @@ export default function setSplitText() {
           toggleActions: ToggleAction,
           start: TriggerStart,
         },
-        duration: 0.8,
+        duration: isMobile ? 0.5 : 0.8,
         ease: "power2.inOut",
         y: 0,
         rotate: 0,
