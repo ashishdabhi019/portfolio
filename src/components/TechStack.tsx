@@ -282,56 +282,31 @@ function playPickerTick(ctx: AudioContext, direction: 1 | -1 = 1) {
   if (ctx.state !== "running") return;
 
   const now = ctx.currentTime;
-  const fwd = direction === 1; // forward swipe = higher pitch
 
-  // ── Layer 1: Triangle oscillator — warm, present click body ──────────────
-  const osc1 = ctx.createOscillator();
-  osc1.type = "triangle";
-  osc1.frequency.setValueAtTime(fwd ? 950 : 800, now);
-  osc1.frequency.exponentialRampToValueAtTime(fwd ? 280 : 240, now + 0.028);
+  // ── Pleasant UI "Bubble Pop" / Droplet ─────────────────────────────────────
+  // A soft sine wave that sweeps slightly up in pitch for a modern, friendly feel
 
-  // ── Layer 2: Bandpass-filtered noise — woody/glass "thock" texture ────────
-  const noiseSamples = Math.floor(ctx.sampleRate * 0.025); // 25 ms
-  const noiseBuf = ctx.createBuffer(1, noiseSamples, ctx.sampleRate);
-  const nd = noiseBuf.getChannelData(0);
-  for (let i = 0; i < noiseSamples; i++) nd[i] = Math.random() * 2 - 1;
-  const noise = ctx.createBufferSource();
-  noise.buffer = noiseBuf;
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  
+  // Base pitch depends on drag direction
+  const baseFreq = direction === 1 ? 450 : 380;
+  osc.frequency.setValueAtTime(baseFreq, now);
+  // Pitch sweeps UP rapidly to create a "bloop" / bubble effect
+  osc.frequency.exponentialRampToValueAtTime(baseFreq * 1.6, now + 0.03);
 
-  const bpf = ctx.createBiquadFilter();
-  bpf.type = "bandpass";
-  bpf.frequency.value = fwd ? 1800 : 1400;
-  bpf.Q.value = 4.5; // tight band = glassy/crystalline quality
-  noise.connect(bpf);
+  // Soft envelope to avoid harsh clicking sounds
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.35, now + 0.005); // slightly soft attack
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04); // smooth tail
 
-  // ── Layer 3: Sub oscillator — subtle low-end punch ───────────────────────
-  const osc2 = ctx.createOscillator();
-  osc2.type = "sine";
-  osc2.frequency.setValueAtTime(fwd ? 120 : 100, now);
-  osc2.frequency.exponentialRampToValueAtTime(fwd ? 60 : 50, now + 0.02);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
 
-  // ── Master gain envelope — 1 ms attack, 30 ms exponential tail ───────────
-  const masterGain = ctx.createGain();
-  masterGain.gain.setValueAtTime(0, now);
-  masterGain.gain.linearRampToValueAtTime(0.28, now + 0.001); // snap attack
-  masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.032);
-
-  // Sub has its own quieter gain
-  const subGain = ctx.createGain();
-  subGain.gain.setValueAtTime(0.08, now);
-  subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
-
-  // ── Routing ───────────────────────────────────────────────────────────────
-  osc1.connect(masterGain);
-  bpf.connect(masterGain);
-  osc2.connect(subGain);
-  subGain.connect(masterGain);
-  masterGain.connect(ctx.destination);
-
-  // ── Schedule ──────────────────────────────────────────────────────────────
-  osc1.start(now); osc1.stop(now + 0.032);
-  noise.start(now); noise.stop(now + 0.025);
-  osc2.start(now); osc2.stop(now + 0.02);
+  // Play for 40ms
+  osc.start(now);
+  osc.stop(now + 0.04);
 }
 
 function MobileTechStack() {
@@ -397,7 +372,7 @@ function MobileTechStack() {
         }
         // Apple-style tick sound
         if (audioReady.current) playPickerTick(audioReady.current, dragDir.current);
-
+        
         lastIndex.current = currentIndex;
       }
     };
