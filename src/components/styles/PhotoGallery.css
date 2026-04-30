@@ -221,6 +221,42 @@
 .pg-close:hover { background: rgba(255,255,255,0.2); color: #fff; transform: rotate(90deg) scale(1.05); }
 .pg-close:active { transform: rotate(90deg) scale(0.9); }
 
+/* Mobile-only floating close pill — hidden on tablet + desktop */
+.pg-mobile-close { display: none; }
+
+@media (max-width: 600px) {
+  .pg-close { display: none; }
+
+  .pg-mobile-close {
+    display: flex;
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    z-index: 10020;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow:
+      0 2px 12px rgba(0,0,0,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.85);
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .pg-mobile-close:active {
+    transform: scale(0.88) rotate(90deg);
+    background: rgba(255,255,255,0.14);
+  }
+}
+
 /* Hidden file input */
 .pg-upload-input { display: none; }
 

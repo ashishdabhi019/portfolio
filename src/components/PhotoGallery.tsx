@@ -418,6 +418,11 @@ export default function PhotoGallery({ onClose }: Props) {
           <button className="pg-close" onClick={onClose} aria-label="Close"><IoClose /></button>
         </header>
 
+        {/* ── Mobile-only floating close pill (top-right) ── */}
+        <button className="pg-mobile-close" onClick={onClose} aria-label="Close gallery">
+          <IoClose />
+        </button>
+
         {/* ── Filter Pill (drops below on click) ── */}
         <div className={`pg-filter-pill ${isMenuOpen ? "show" : "hide"}`}>
           <div className="pg-pill-slider"
