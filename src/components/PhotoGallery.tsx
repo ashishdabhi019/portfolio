@@ -177,27 +177,12 @@ function UploadModal({ progress, filename, onCancel }: { progress: number; filen
   return (
     <div className="pg-upload-overlay">
       <div className="pg-upload-card">
-        <div className="pg-cloud-scene">
-          <div className="pg-dot pg-dot--1" />
-          <div className="pg-dot pg-dot--2" />
-          <div className="pg-dot pg-dot--3" />
-          <div className="pg-dot pg-dot--4" />
-          <svg className="pg-cloud-svg" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="cg1" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#a855f7" />
-                <stop offset="100%" stopColor="#7c3aed" />
-              </linearGradient>
-            </defs>
-            <ellipse cx="50" cy="42" rx="38" ry="24" fill="url(#cg1)" />
-            <ellipse cx="34" cy="44" rx="20" ry="16" fill="url(#cg1)" />
-            <ellipse cx="66" cy="44" rx="20" ry="16" fill="url(#cg1)" />
-            <ellipse cx="50" cy="30" rx="24" ry="20" fill="url(#cg1)" />
-          </svg>
-          <svg className="pg-arrow-up" viewBox="0 0 24 24" fill="none">
-            <path d="M12 20V4M5 11l7-7 7 7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
+        <img
+          src="/images/Uploading to cloud.gif"
+          alt="Uploading to cloud"
+          className="pg-cloud-gif"
+        />
+
         <p className="pg-upload-label">Uploading to Cloud</p>
         <p className="pg-upload-fname">{filename}</p>
         <div className="pg-upload-track">
