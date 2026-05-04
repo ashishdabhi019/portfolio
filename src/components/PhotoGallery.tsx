@@ -413,7 +413,7 @@ export default function PhotoGallery({ onClose }: Props) {
           <div className="pg-header-left" onClick={() => setIsMenuOpen(!isMenuOpen)} role="button" tabIndex={0}>
             <MdPhotoLibrary className="pg-header-icon" />
             <span className="pg-title">Ashish's Gallery</span>
-            {media.length > 0 && <span className="pg-count">{media.length}</span>}
+            <span className="pg-count">{media.length}</span>
           </div>
           <button className="pg-close" onClick={onClose} aria-label="Close"><IoClose /></button>
         </header>
@@ -432,7 +432,7 @@ export default function PhotoGallery({ onClose }: Props) {
               onClick={() => setFilter(key)}>
               <span className="tab-icon">{icon}</span>
               <span className="tab-label">{label}</span>
-              {counts[key] > 0 && <span className="tab-count">{counts[key]}</span>}
+              <span className="tab-count">{counts[key]}</span>
             </button>
           ))}
 
