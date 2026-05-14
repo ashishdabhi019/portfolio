@@ -1,4 +1,4 @@
-# Ashish Dabhi - Personal Portfolio
+# Ashish Dabhi - Portfolio
 > A stunning, high-performance 3D interactive portfolio built with React and Three.js.
 
 ## 🚀 Live Demo
