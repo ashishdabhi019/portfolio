@@ -6,7 +6,7 @@ const About = () => {
       <div className="about-me">
         <h2 className="title">About Me</h2>
         <p className="para">
-          AI/ML Engineer with 1+ year of experience building intelligent products
+          AI/ML Engineer with 2+ years of experience building intelligent products
           using Python, LangChain, and scikit-learn. Skilled in RAG systems,
           model deployment on edge hardware, and full-stack development. Passionate
           about turning cutting-edge AI research into real-world solutions.
