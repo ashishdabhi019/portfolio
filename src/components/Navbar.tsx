@@ -245,7 +245,6 @@ const Navbar = () => {
   const navLinks = [
     { label: "ABOUT", href: "#about" },
     { label: "WORK", href: "#work" },
-    { label: "GREO", href: "https://greo.in" },
     { label: "CONTACT", href: "#contact" },
   ];
 
@@ -440,14 +439,7 @@ const Navbar = () => {
               <IoLayersOutline className="menu-icon" />
               <span>Tech Stack</span>
             </a>
-            <a
-              href="https://greo.in"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <IoLayersOutline className="menu-icon" />
-              <span>Greo AI</span>
-            </a>
+
             <a
               href="#contact"
               onClick={(e) => {
