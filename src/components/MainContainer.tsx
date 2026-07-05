@@ -4,6 +4,7 @@ import Career from "./Career";
 import Contact from "./Contact";
 import ContactForm from "./ContactForm";
 import Cursor from "./Cursor";
+import GreoChatArea from "./greo-chat-area";
 import Landing from "./Landing";
 import Navbar from "./Navbar";
 import SocialIcons from "./SocialIcons";
@@ -34,6 +35,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     <div className="container-main">
       <Cursor />
       <Navbar />
+      <GreoChatArea />
       <SocialIcons />
       {isDesktopView && children}
       <div id="smooth-wrapper">

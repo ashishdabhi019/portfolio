@@ -245,6 +245,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "ABOUT", href: "#about" },
     { label: "WORK", href: "#work" },
+    { label: "GREO", href: "https://greo.in" },
     { label: "CONTACT", href: "#contact" },
   ];
 
@@ -353,7 +354,10 @@ const Navbar = () => {
             <li key={label}>
               <a
                 href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                 onClick={(e) => {
+                  if (href.startsWith("/") || href.startsWith("http")) return; // let browser navigate to new page
                   e.preventDefault();
                   scrollTo(href);
                 }}
@@ -435,6 +439,14 @@ const Navbar = () => {
             >
               <IoLayersOutline className="menu-icon" />
               <span>Tech Stack</span>
+            </a>
+            <a
+              href="https://greo.in"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <IoLayersOutline className="menu-icon" />
+              <span>Greo AI</span>
             </a>
             <a
               href="#contact"

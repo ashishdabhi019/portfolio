@@ -349,3 +349,211 @@ body {
   margin: 10px 0 0;
   font-weight: 500;
 }
+/* ─── Universal Tooltips ────────────────────────────────────────────────────── */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: #2a2a2a;
+  color: #ffffff;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ─── Universal Tooltip Positions ────────────────────────────────────────── */
+.tooltip-top[data-tooltip]::after {
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+}
+.tooltip-top[data-tooltip]:hover::after {
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.tooltip-right[data-tooltip]::after {
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateX(0) translateY(-50%);
+  bottom: auto;
+}
+.tooltip-right[data-tooltip]:hover::after {
+  transform: translateX(5px) translateY(-50%);
+}
+
+.tooltip-bottom[data-tooltip]::after {
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+}
+.tooltip-bottom[data-tooltip]:hover::after {
+  transform: translateX(-50%) translateY(5px);
+}
+
+/* ─── Greo Floating Button (redirects to greo.in) ──────────────────────────── */
+#greo-trigger-wrapper {
+  position: fixed;
+  right: 32px;
+  bottom: 90px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 18px;
+  z-index: 99998;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+#greo-ring-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(2px) saturate(200%) brightness(1.28);
+  -webkit-backdrop-filter: blur(2px) saturate(200%) brightness(1.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#greo-ring-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.18) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#greo-ring-btn .greo-mob-logo {
+  position: relative;
+  z-index: 2;
+}
+
+.greo-mob-logo {
+  display: block;
+  width: 175px;
+  height: auto;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
+  transform: rotate(-23deg);
+  flex-shrink: 0;
+  margin: 0;
+}
+
+#greo-trigger-label {
+  font-family: "Geist", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(12px);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#greo-trigger-wrapper:hover #greo-ring-btn {
+  scale: 1.08;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+#greo-trigger-wrapper:hover #greo-trigger-label {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  color: rgba(255,255,255,0.85);
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  #greo-trigger-wrapper {
+    right: 24px;
+    bottom: 100px;
+    gap: 12px;
+  }
+  #greo-ring-btn {
+    width: 48px;
+    height: 48px;
+  }
+  #greo-trigger-label {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  #greo-trigger-wrapper {
+    right: auto;
+    left: 24px;
+    bottom: 37px;
+    gap: 12px;
+    flex-direction: row;
+  }
+  #greo-ring-btn {
+    width: 62px;
+    height: 62px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #greo-ring-btn:active {
+    transform: scale(0.92);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  #greo-ring-btn .greo-mob-logo {
+    display: block !important;
+    width: 125px !important;
+    height: auto;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+    transform: rotate(-23deg);
+    flex-shrink: 0;
+    margin: 0;
+  }
+  #greo-trigger-label {
+    display: none;
+  }
+}
