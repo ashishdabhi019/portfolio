@@ -15,8 +15,26 @@ const Career = () => {
           <div className="career-info-box">
             <div className="career-info-in">
               <div className="career-role">
+                <h4>AI Engineer</h4>
+                <h5>
+                  Drytis.ai<br />
+                  Remote
+                </h5>
+              </div>
+              <h3>2026</h3>
+            </div>
+            <p>
+              Working as an AI Engineer designing, building, and optimizing production-grade AI/ML pipelines and model integrations. Developing voice-based AI chatbots, conversational agents, and intelligent automation workflows to streamline business processes. Collaborating with cross-functional teams utilizing LLMs, RAG pipelines, and modern AI/ML frameworks to deliver scalable, high-performance solutions.
+            </p>
+          </div>
+          <div className="career-info-box">
+            <div className="career-info-in">
+              <div className="career-role">
                 <h4>Software Developer – Python &amp; AI/ML</h4>
-                <h5>Stackyzer Technologies, Ahmedabad</h5>
+                <h5>
+                  Stackyzer Technologies<br />
+                  Ahmedabad
+                </h5>
               </div>
               <h3>2024</h3>
             </div>
