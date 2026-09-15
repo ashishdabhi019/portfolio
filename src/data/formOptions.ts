@@ -202,7 +202,6 @@ export const COUNTRIES = [
   { code: "+1649", country: "TC", name: "Turks and Caicos Islands" },
   { code: "+688", country: "TV", name: "Tuvalu" },
   { code: "+256", country: "UG", name: "Uganda" },
-  { code: "+971", country: "AE", name: "United Arab Emirates" },
   { code: "+678", country: "VU", name: "Vanuatu" },
   { code: "+379", country: "VA", name: "Vatican City" },
   { code: "+58", country: "VE", name: "Venezuela" },

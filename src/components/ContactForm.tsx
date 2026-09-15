@@ -9,7 +9,7 @@ import {
     HiOutlineMapPin, 
     HiOutlineChatBubbleBottomCenterText 
 } from "react-icons/hi2";
-import { MdKeyboardArrowDown, MdSearch, MdLocationOn } from "react-icons/md";
+import { MdKeyboardArrowDown, MdLocationOn, MdErrorOutline } from "react-icons/md";
 import "./styles/ContactForm.css";
 import { COUNTRIES, LOCATION_SUGGESTIONS } from "../data/formOptions";
 import GlobeViewer from "./GlobeViewer";
@@ -40,7 +40,6 @@ const ContactForm = () => {
     const [showLocationDropdown, setShowLocationDropdown] = useState(false);
     const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
     const [searchQuery, setSearchQuery] = useState("");
-    const [locationSearchQuery, setLocationSearchQuery] = useState("");
     const [globeActive, setGlobeActive] = useState(false);
     const [selectedGlobeLocation, setSelectedGlobeLocation] = useState<string | null>(null);
     const [formData, setFormData] = useState({
@@ -72,11 +71,7 @@ const ContactForm = () => {
         }
     }, [showCountryDropdown]);
 
-    useEffect(() => {
-        if (!showLocationDropdown) {
-            setLocationSearchQuery("");
-        }
-    }, [showLocationDropdown]);
+
 
     useEffect(() => {
         if (!formData.location) {
@@ -241,7 +236,7 @@ const ContactForm = () => {
 
                         {/* Row 2 – Mobile & Location */}
                         <div className="cf-row">
-                            <div className="cf-field">
+                            <div className={`cf-field ${showCountryDropdown ? "active-dropdown" : ""}`}>
                                 <div className="cf-label-row">
                                     <HiOutlinePhone className="cf-label-icon" />
                                     <label htmlFor="cf-mobile">Mobile Number</label>
@@ -250,44 +245,67 @@ const ContactForm = () => {
                                     <div className="cf-country-selector-container" ref={dropdownRef}>
                                         <div 
                                             className={`cf-selected-country ${showCountryDropdown ? "active" : ""}`}
-                                            onClick={() => setShowCountryDropdown(!showCountryDropdown)}
                                             data-cursor="disable"
                                         >
                                             <span className="cf-flag">{selectedCountry.country}</span>
-                                            <span className="cf-dial-code">{selectedCountry.code}</span>
-                                            <MdKeyboardArrowDown className="cf-dropdown-icon" />
+                                            <input 
+                                                className="cf-dial-code-input"
+                                                type="text"
+                                                value={showCountryDropdown ? searchQuery : selectedCountry.code}
+                                                onChange={(e) => {
+                                                    let val = e.target.value.replace(/[^\d+]/g, '');
+                                                    if (!val.startsWith('+')) {
+                                                        val = '+' + val.replace(/\+/g, '');
+                                                    }
+                                                    setSearchQuery(val);
+                                                    setShowCountryDropdown(true);
+                                                }}
+                                                onFocus={() => {
+                                                    setSearchQuery(selectedCountry.code);
+                                                    setShowCountryDropdown(true);
+                                                }}
+                                            />
+                                            <MdKeyboardArrowDown 
+                                                className="cf-dropdown-icon" 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setShowCountryDropdown(!showCountryDropdown);
+                                                }}
+                                            />
                                         </div>
 
-                                        {showCountryDropdown && (
+                                        {showCountryDropdown && searchQuery.length > 0 && (
                                             <div className="cf-country-dropdown">
-                                                <div className="cf-country-search">
-                                                    <MdSearch className="cf-search-icon" />
-                                                    <input 
-                                                        type="text" 
-                                                        placeholder="Search country..." 
-                                                        value={searchQuery}
-                                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                                        autoFocus
-                                                    />
-                                                </div>
-                                                <div className="cf-country-list">
+                                                <div className="cf-country-list" data-lenis-prevent="true">
                                                     {COUNTRIES.filter(c => 
                                                         c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                                         c.code.includes(searchQuery)
-                                                    ).map((c) => (
-                                                        <div 
-                                                            key={`${c.country}-${c.code}`}
-                                                            className={`cf-country-option ${selectedCountry.country === c.country ? "selected" : ""}`}
-                                                            onClick={() => {
-                                                                setSelectedCountry(c);
-                                                                setShowCountryDropdown(false);
-                                                            }}
-                                                        >
-                                                            <span className="cf-option-flag">{c.country}</span>
-                                                            <span className="cf-option-name">{c.name}</span>
-                                                            <span className="cf-option-code">{c.code}</span>
+                                                    ).length > 0 ? (
+                                                        COUNTRIES.filter(c => 
+                                                            c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                                            c.code.includes(searchQuery)
+                                                        ).map((c) => (
+                                                            <div 
+                                                                key={`${c.country}-${c.code}-${c.name}`}
+                                                                className={`cf-country-option ${selectedCountry.country === c.country ? "selected" : ""}`}
+                                                                onClick={() => {
+                                                                    setSelectedCountry(c);
+                                                                    setSearchQuery("");
+                                                                    setShowCountryDropdown(false);
+                                                                }}
+                                                            >
+                                                                <span className="cf-option-flag">{c.country}</span>
+                                                                <span className="cf-option-name">{c.name}</span>
+                                                                <span className="cf-option-code">{c.code}</span>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <div className="cf-country-empty">
+                                                            <MdErrorOutline style={{ fontSize: '18px', color: '#a78bfa' }} />
+                                                            No matching country code
                                                         </div>
-                                                    ))}
+                                                    )}
+
                                                 </div>
                                             </div>
                                         )}
@@ -337,28 +355,20 @@ const ContactForm = () => {
                                         autoComplete="off"
                                     />
 
-                                    {showLocationDropdown && (
+                                    {showLocationDropdown && formData.location.trim().length > 0 && (
                                         <div className="cf-location-dropdown cf-country-dropdown">
-                                            <div className="cf-country-search">
-                                                <MdSearch className="cf-search-icon" />
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="Search location..." 
-                                                    value={locationSearchQuery}
-                                                    onChange={(e) => setLocationSearchQuery(e.target.value)}
-                                                    autoFocus
-                                                />
-                                            </div>
-                                            <div className="cf-country-list">
+                                            <div className="cf-country-list" data-lenis-prevent="true">
                                                 {LOCATION_SUGGESTIONS.filter(suggestion => 
-                                                    suggestion.toLowerCase().includes(locationSearchQuery.toLowerCase())
+                                                    suggestion.toLowerCase().includes(formData.location.toLowerCase()) &&
+                                                    suggestion !== formData.location
                                                 ).length > 0 ? (
                                                     LOCATION_SUGGESTIONS.filter(suggestion => 
-                                                        suggestion.toLowerCase().includes(locationSearchQuery.toLowerCase())
+                                                        suggestion.toLowerCase().includes(formData.location.toLowerCase()) &&
+                                                        suggestion !== formData.location
                                                     ).map((suggestion) => (
                                                         <div 
                                                             key={suggestion}
-                                                            className={`cf-country-option ${formData.location === suggestion ? "selected" : ""}`}
+                                                            className="cf-country-option"
                                                             onClick={() => {
                                                                 setFormData(prev => ({ ...prev, location: suggestion }));
                                                                 setSelectedGlobeLocation(suggestion);
@@ -370,7 +380,10 @@ const ContactForm = () => {
                                                         </div>
                                                     ))
                                                 ) : (
-                                                    <div className="cf-no-suggestions">No matches found</div>
+                                                    <div className="cf-country-empty">
+                                                        <MdErrorOutline style={{ fontSize: '18px', color: '#a78bfa' }} />
+                                                        Custom location
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
