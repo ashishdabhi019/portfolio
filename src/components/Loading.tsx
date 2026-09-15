@@ -2,18 +2,7 @@ import { useEffect, useState } from "react";
 import "./styles/Loading.css";
 import { useLoading } from "../context/LoadingProvider";
 
-const STATUS_LABELS = [
-  { threshold: 75, label: "Almost there…"   },
-  { threshold: 50, label: "Building scene…" },
-  { threshold: 25, label: "Loading assets…" },
-  { threshold: 0,  label: "Starting up…"    },
-];
 
-function getStatus(pct: number) {
-  return pct >= 100
-    ? "Ready"
-    : STATUS_LABELS.find((s) => pct >= s.threshold)?.label ?? "Starting up…";
-}
 
 /* ─────────────────────────────────────────────────────── */
 
@@ -110,7 +99,6 @@ const Loading = ({ percent }: { percent: number }) => {
 
             {/* label */}
             <div className="l-pill-text">
-              <span className="l-status">{getStatus(clamped)}</span>
               <span className="l-percent">{clamped}%</span>
             </div>
 

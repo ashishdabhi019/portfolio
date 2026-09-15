@@ -48,7 +48,6 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
     }, 1500);
 
     // Hard cap: force-complete loading after 10 seconds max
-    // This triggers the normal exit animation in Loading.tsx
     const forceComplete = setTimeout(() => {
       setLoading(100);
     }, 10000);

@@ -19,6 +19,8 @@
 .loading-screen {
   position: fixed;
   inset: 0;
+  height: 100dvh;
+  width: 100vw;
   background: var(--bg);
   z-index: 999999999;
   display: flex;
@@ -178,7 +180,7 @@
 .loading-clicked {
   transition-delay: 0ms;
   min-width: calc(100vw + 5000px);
-  min-height: calc(100vh + 500px);
+  min-height: calc(100dvh + 500px);
   border-radius: 5000px;
   box-shadow: none;
   border-color: transparent;
@@ -275,10 +277,10 @@
 .loading-complete .l-status { color: var(--accent); }
 
 .l-percent {
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   letter-spacing: 1px;
-  color: var(--muted);
+  color: var(--white);
   font-variant-numeric: tabular-nums;
 }
 
