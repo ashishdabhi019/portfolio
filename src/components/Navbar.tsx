@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
 import {
   IoPersonOutline,
   IoBriefcaseOutline,
@@ -12,8 +11,7 @@ import {
 } from "react-icons/io5";
 import "./styles/Navbar.css";
 
-gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
-export let smoother: ScrollSmoother;
+gsap.registerPlugin(ScrollTrigger);
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -70,26 +68,6 @@ const Navbar = () => {
     }),
   ];
 
-  // ── ScrollSmoother setup ──────────────────────────────
-  useEffect(() => {
-    const isDesktop = window.innerWidth > 1024;
-    smoother = ScrollSmoother.create({
-      wrapper: "#smooth-wrapper",
-      content: "#smooth-content",
-      smooth: isDesktop ? 1.7 : 0,
-      speed: isDesktop ? 1.7 : 1,
-      effects: isDesktop,
-      autoResize: true,
-      ignoreMobileResize: true,
-    });
-
-    smoother.scrollTop(0);
-    // Only pause on desktop (let scrollSmoother handle it)
-    // On tablet/mobile use native scroll
-    if (!isDesktop) smoother.paused(true);
-
-    window.addEventListener("resize", () => ScrollSmoother.refresh(true));
-  }, []);
 
   // ── Scroll → compact pill ─────────────────────────────
   useEffect(() => {
@@ -226,19 +204,10 @@ const Navbar = () => {
   // ── Section scroll helper ─────────────────────────────
   const scrollTo = (section: string | number) => {
     setMenuOpen(false);
-    const isDesktop = window.innerWidth > 1024;
-    if (isDesktop && smoother) {
-      if (typeof section === "number") {
-        smoother.scrollTo(section, true, "top top");
-      } else {
-        smoother.scrollTo(section, true, "top top");
-      }
+    if (typeof section === "string") {
+      document.querySelector(section)?.scrollIntoView({ behavior: "smooth" });
     } else {
-      if (typeof section === "string") {
-        document.querySelector(section)?.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.scrollTo({ top: section, behavior: "smooth" });
-      }
+      window.scrollTo({ top: section, behavior: "smooth" });
     }
   };
 

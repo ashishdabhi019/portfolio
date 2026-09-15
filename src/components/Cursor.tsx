@@ -1,32 +1,30 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import "./styles/Cursor.css";
-import gsap from "gsap";
 
 const Cursor = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Custom spring physics to replace GSAP delay lerping
+  const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
+  const cursorX = useSpring(mouseX, springConfig);
+  const cursorY = useSpring(mouseY, springConfig);
+
+  const [cursorType, setCursorType] = useState("");
+  const [cursorHeight, setCursorHeight] = useState("0px");
+
   useEffect(() => {
     let hover = false;
-    const cursor = cursorRef.current!;
-    const mousePos = { x: 0, y: 0 };
-    const cursorPos = { x: 0, y: 0 };
 
-    document.addEventListener("mousemove", (e) => {
-      mousePos.x = e.clientX;
-      mousePos.y = e.clientY;
-    });
-
-    requestAnimationFrame(function loop() {
+    const handleMouseMove = (e: MouseEvent) => {
       if (!hover) {
-        const delay = 3; // Tightened follow
-        cursorPos.x += (mousePos.x - cursorPos.x) / delay;
-        cursorPos.y += (mousePos.y - cursorPos.y) / delay;
-        gsap.set(cursor, { x: cursorPos.x, y: cursorPos.y }); // Instant crisp update
+        mouseX.set(e.clientX);
+        mouseY.set(e.clientY);
       }
-      requestAnimationFrame(loop);
-    });
+    };
 
-    // ── Event delegation: catches ALL data-cursor elements, even dynamic ones ──
-    document.addEventListener("mouseover", (e: MouseEvent) => {
+    const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const element = target.closest("[data-cursor]") as HTMLElement | null;
       if (!element) return;
@@ -34,29 +32,51 @@ const Cursor = () => {
       const type = element.dataset.cursor;
 
       if (type === "icons") {
-        cursor.classList.add("cursor-icons");
+        setCursorType("cursor-icons");
         const rect = element.getBoundingClientRect();
-        gsap.to(cursor, { x: rect.left, y: rect.top, duration: 0.1 });
-        cursor.style.setProperty("--cursorH", `${rect.height}px`);
+        mouseX.set(rect.left);
+        mouseY.set(rect.top);
+        setCursorHeight(`${rect.height}px`);
         hover = true;
       }
 
       if (type === "disable") {
-        cursor.classList.add("cursor-disable");
+        setCursorType("cursor-disable");
       }
-    });
+    };
 
-    document.addEventListener("mouseout", (e: MouseEvent) => {
+    const handleMouseOut = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const element = target.closest("[data-cursor]") as HTMLElement | null;
       if (!element) return;
 
-      cursor.classList.remove("cursor-disable", "cursor-icons");
+      setCursorType("");
       hover = false;
-    });
-  }, []);
+    };
 
-  return <div className="cursor-main" ref={cursorRef}></div>;
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseover", handleMouseOver);
+    document.addEventListener("mouseout", handleMouseOut);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseover", handleMouseOver);
+      document.removeEventListener("mouseout", handleMouseOut);
+    };
+  }, [mouseX, mouseY]);
+
+  return (
+    <motion.div
+      className={`cursor-main ${cursorType}`}
+      style={
+        {
+          x: cursorX,
+          y: cursorY,
+          "--cursorH": cursorHeight,
+        } as any
+      }
+    />
+  );
 };
 
 export default Cursor;
