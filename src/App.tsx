@@ -11,17 +11,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Greo status page — no loading screen, no 3D */}
-        <Route
-          path="/greo"
-          element={
-            <Suspense fallback={null}>
-              <GreoPage />
-            </Suspense>
-          }
-        />
-
-        {/* Main portfolio */}
+        {/* Main portfolio - Always rendered to preserve state & scroll */}
         <Route
           path="/*"
           element={
@@ -33,6 +23,18 @@ const App = () => {
                   </Suspense>
                 </MainContainer>
               </Suspense>
+
+              {/* Greo Overlay Route */}
+              <Routes>
+                <Route
+                  path="/greo"
+                  element={
+                    <Suspense fallback={null}>
+                      <GreoPage />
+                    </Suspense>
+                  }
+                />
+              </Routes>
             </LoadingProvider>
           }
         />

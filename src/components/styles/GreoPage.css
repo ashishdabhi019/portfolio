@@ -10,6 +10,7 @@
   justify-content: center;
   font-family: "Geist", sans-serif;
   overflow: hidden;
+  z-index: 999999;
   animation: gp-fade-in 0.4s ease both;
 }
 
@@ -136,15 +137,16 @@
   top: 24px;
   left: 28px;
   
-  /* Liquid glass styling for Desktop Pill */
-  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.08) 0%, rgba(124, 58, 237, 0.02) 100%);
+  /* Match Liquid Glass styling of the floating Try Greo button */
+  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.4), 
-    inset 0 1px 4px rgba(255, 255, 255, 0.2), 
-    inset 0 -2px 8px rgba(124, 58, 237, 0.15);
+    0 12px 32px rgba(0, 0, 0, 0.4), 
+    0 0 24px rgba(124, 58, 237, 0.2), 
+    inset 0 2px 6px rgba(255, 255, 255, 0.4), 
+    inset 0 -4px 12px rgba(124, 58, 237, 0.3);
     
   border-radius: 100px;
   color: rgba(255, 255, 255, 0.6);
@@ -161,12 +163,14 @@
   justify-content: center;
 }
 .gp-back:hover {
-  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(124, 58, 237, 0.08) 100%);
+  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(124, 58, 237, 0.15) 100%);
   color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.5), 
-    inset 0 2px 6px rgba(255, 255, 255, 0.3), 
-    inset 0 -4px 12px rgba(124, 58, 237, 0.2);
+    0 16px 48px rgba(0, 0, 0, 0.6), 
+    0 0 32px rgba(124, 58, 237, 0.4), 
+    inset 0 3px 8px rgba(255, 255, 255, 0.6), 
+    inset 0 -6px 16px rgba(124, 58, 237, 0.5);
   transform: translateY(-2px);
 }
 
@@ -185,24 +189,27 @@
     border-radius: 50%;
     
     /* Liquid glass styling */
-    background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.12) 0%, rgba(124, 58, 237, 0.05) 100%);
-    backdrop-filter: blur(8px) saturate(180%);
-    -webkit-backdrop-filter: blur(8px) saturate(180%);
+    background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 
-      0 8px 24px rgba(0, 0, 0, 0.4), 
-      inset 0 1px 4px rgba(255, 255, 255, 0.3), 
-      inset 0 -2px 8px rgba(124, 58, 237, 0.2);
+      0 12px 32px rgba(0, 0, 0, 0.4), 
+      0 0 24px rgba(124, 58, 237, 0.2), 
+      inset 0 2px 6px rgba(255, 255, 255, 0.4), 
+      inset 0 -4px 12px rgba(124, 58, 237, 0.3);
     
     color: rgba(255, 255, 255, 0.8);
   }
   .gp-back:hover {
-    background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.18) 0%, rgba(124, 58, 237, 0.1) 100%);
+    background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(124, 58, 237, 0.15) 100%);
     color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 
-      0 12px 32px rgba(0, 0, 0, 0.5), 
-      inset 0 2px 6px rgba(255, 255, 255, 0.4), 
-      inset 0 -4px 12px rgba(124, 58, 237, 0.3);
+      0 16px 48px rgba(0, 0, 0, 0.6), 
+      0 0 32px rgba(124, 58, 237, 0.4), 
+      inset 0 3px 8px rgba(255, 255, 255, 0.6), 
+      inset 0 -6px 16px rgba(124, 58, 237, 0.5);
   }
   .gp-back-text {
     display: none;
