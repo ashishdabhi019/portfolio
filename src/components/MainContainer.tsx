@@ -20,16 +20,23 @@ const MainContainer = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
+    let timeoutId: number;
     const resizeHandler = () => {
-      setSplitText();
-      setIsDesktopView(window.innerWidth > 1024);
+      clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        setIsDesktopView(window.innerWidth > 1024);
+      }, 150);
     };
-    resizeHandler();
+    
+    // Run animation setup exactly once on mount
+    setSplitText();
+    
     window.addEventListener("resize", resizeHandler);
     return () => {
       window.removeEventListener("resize", resizeHandler);
+      clearTimeout(timeoutId);
     };
-  }, [isDesktopView]);
+  }, []);
 
   return (
     <div className="container-main">

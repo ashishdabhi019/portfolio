@@ -51,39 +51,8 @@ export default function setSplitText() {
     );
   });
   titles.forEach((title: ParaElement) => {
-    // Skip Work section title — show it as static gradient, no animation
-    if (title.closest(".work-section")) {
-      title.style.opacity = "1";
-      return;
-    }
-
-    if (title.anim) {
-      title.anim.progress(1).kill();
-      title.split?.revert();
-    }
-    title.split = new SplitText(title, {
-      type: "chars,lines",
-      linesClass: "split-line",
-    });
-    const isMobile = window.innerWidth <= 1024;
-    title.anim = gsap.fromTo(
-      title.split.chars,
-      { autoAlpha: 0, y: isMobile ? 30 : 80, rotate: isMobile ? 0 : 10 },
-      {
-        autoAlpha: 1,
-        scrollTrigger: {
-          trigger: title.parentElement?.parentElement,
-          toggleActions: ToggleAction,
-          start: TriggerStart,
-        },
-        duration: isMobile ? 0.5 : 0.8,
-        ease: "power2.inOut",
-        y: 0,
-        rotate: 0,
-        stagger: 0.03,
-      }
-    );
+    // Completely skip SplitText for titles to prevent the character stacking glitch in React
+    title.style.opacity = "1";
+    return;
   });
-
-  ScrollTrigger.addEventListener("refresh", () => setSplitText());
 }

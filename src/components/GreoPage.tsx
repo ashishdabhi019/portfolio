@@ -57,7 +57,7 @@ export default function GreoPage() {
           ]}
           typingSpeed={90}
           deletingSpeed={40}
-          pauseDuration={8000}
+          pauseDuration={5000}
           showCursor={false}
           textColors={["#ffffff"]}
         />
