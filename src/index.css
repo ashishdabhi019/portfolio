@@ -579,11 +579,6 @@ body {
     margin: 0;
   }
   #greo-trigger-label {
-    display: flex;
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-    font-size: 12px;
-    padding: 7px 14px;
+    display: none;
   }
 }
