@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { IoArrowBack } from "react-icons/io5";
 import logoWhite from "../assets/logo_white.png";
 import "./styles/GreoPage.css";
 import TextType from "./TextType";
@@ -78,10 +79,7 @@ export default function GreoPage() {
         onClick={() => window.history.state && window.history.state.idx > 0 ? navigate(-1) : navigate("/")} 
         aria-label="Go Back"
       >
-        <svg className="gp-back-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
+        <IoArrowBack className="gp-back-icon" />
         <span className="gp-back-text">Back</span>
       </button>
     </div>
