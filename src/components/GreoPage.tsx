@@ -21,7 +21,7 @@ export function GreoButton() {
       <button id="greo-ring-btn" aria-label="Open Greo status">
         <img src={logoWhite} alt="Greo" className="greo-mob-logo" />
       </button>
-      <span id="greo-trigger-label">Try Greo</span>
+      <span id="greo-trigger-label">Ask Greo...</span>
     </div>
   );
 }
