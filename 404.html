@@ -4,16 +4,8 @@
   <meta charset="UTF-8" />
   <title>Ashish Dabhi | AI/ML Engineer</title>
   <script type="text/javascript">
-    // SPA redirect fix for GitHub Pages
-    // When GitHub Pages can't find a file (e.g. /greo), it serves this 404.html.
-    // We encode the path into a query string and redirect to the root index.html,
-    // where a script decodes it and restores the correct route via history.replaceState.
-    var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.host + '/?p=' +
-      encodeURIComponent(l.pathname + l.search) +
-      l.hash
-    );
+    // On refresh of any sub-route (e.g. /greo), redirect to home page
+    window.location.replace('/');
   </script>
 </head>
 <body></body>
