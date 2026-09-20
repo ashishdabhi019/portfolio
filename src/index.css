@@ -466,11 +466,12 @@ body {
 }
 
 #greo-ring-btn .greo-mob-logo {
-  position: relative;
-  top: auto;
-  left: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   z-index: 2;
-  transform: rotate(-23deg);
+  width: 140px;
+  transform: translate(-50%, -50%) rotate(-23deg);
 }
 
 .greo-mob-logo {
@@ -569,12 +570,14 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
   }
   #greo-ring-btn .greo-mob-logo {
-    display: block !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
     width: 125px !important;
     height: auto;
     opacity: 0.9;
     filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
-    transform: rotate(-23deg);
+    transform: translate(-50%, -50%) rotate(-23deg) !important;
     flex-shrink: 0;
     margin: 0;
   }

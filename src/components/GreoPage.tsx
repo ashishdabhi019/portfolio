@@ -67,10 +67,7 @@ export default function GreoPage() {
           Currently in production
         </div>
         <p className="gp-sub">
-          Come back soon at{" "}
-          <a href="https://greo.com" target="_blank" rel="noopener noreferrer">
-            greo.com
-          </a>
+          More updates coming soon.
         </p>
       </div>
 
