@@ -10,6 +10,18 @@
   <meta property="og:title" content="Ashish Dabhi | AI/ML Engineer" />
   <meta property="og:description" content="Explore the portfolio of Ashish Dabhi, showcasing expertise in AI, Machine Learning, and advanced software development." />
   <meta property="og:type" content="website" />
+  <script type="text/javascript">
+    // Decode the route encoded by 404.html and restore it so React Router works on refresh
+    (function () {
+      var p = new URLSearchParams(window.location.search).get('p');
+      if (p) {
+        window.history.replaceState(
+          null, null,
+          decodeURIComponent(p) + window.location.hash
+        );
+      }
+    })();
+  </script>
 </head>
 
 <body>
