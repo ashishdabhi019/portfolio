@@ -12,7 +12,7 @@ import Loading from "../components/LoadingCharacter";
 interface LoadingType {
   isLoading: boolean;
   setIsLoading: (state: boolean) => void;
-  setLoading: (percent: number) => void;
+  setLoading: (percent: number | ((prev: number) => number)) => void;
 }
 
 export const LoadingContext = createContext<LoadingType | null>(null);
@@ -22,10 +22,13 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(0);
   const hasRealProgress = useRef(false);
 
-  // Intercept setLoading to detect when 3D scene starts real progress
-  const setLoadingIntercepted = useCallback((value: number) => {
-    if (value > 0) hasRealProgress.current = true;
-    setLoading(value);
+  const setLoadingIntercepted = useCallback((value: number | ((prev: number) => number)) => {
+    setLoading((prev) => {
+      const nextValue = typeof value === "function" ? value(prev) : value;
+      if (nextValue > 0) hasRealProgress.current = true;
+      // Never allow the progress to go backwards (e.g. from 100 back to 51)
+      return Math.max(prev, nextValue);
+    });
   }, []);
 
   useEffect(() => {
