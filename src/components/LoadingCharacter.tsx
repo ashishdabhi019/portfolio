@@ -82,9 +82,9 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(14.5, w / h, 0.1, 1000);
     // Move camera further back (z: 150) for a much smaller character
-    // Move camera Right (x: 2.0) to shift character Left
+    // Center character horizontally (x: 0)
     // Move camera Up (y: 9.0) to shift character Down
-    camera.position.set(2.0, 9.0, 150);
+    camera.position.set(0, 9.0, 150);
     camera.zoom = 1.0;
     camera.updateProjectionMatrix();
 
@@ -126,7 +126,7 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
       .then((buffer) => {
         loader.parse(buffer, "", async (gltf) => {
           const char = gltf.scene;
-          await renderer.compileAsync(char, camera, scene);
+          try { await renderer.compileAsync(char, camera, scene); } catch(e) { console.warn("compileAsync not supported", e); }
 
           char.traverse((child: any) => {
             if (!child.isMesh) return;

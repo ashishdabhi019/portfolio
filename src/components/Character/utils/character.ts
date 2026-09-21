@@ -27,7 +27,7 @@ const setCharacter = (
           "",
           async (gltf) => {
             character = gltf.scene;
-            await renderer.compileAsync(character, camera, scene);
+            try { await renderer.compileAsync(character, camera, scene); } catch(e) { console.warn("compileAsync not supported", e); }
             character.traverse((child: any) => {
               if (child.isMesh) {
                 const mesh = child as THREE.Mesh;
