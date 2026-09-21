@@ -126,7 +126,6 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
       .then((buffer) => {
         loader.parse(buffer, "", async (gltf) => {
           const char = gltf.scene;
-          try { await renderer.compileAsync(char, camera, scene); } catch(e) { console.warn("compileAsync not supported", e); }
 
           char.traverse((child: any) => {
             if (!child.isMesh) return;
