@@ -2,7 +2,15 @@
 import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
 
+let splitInstances: any[] = [];
+
 export function initialFX() {
+  // If HMR triggers a re-run, revert previous text splits to prevent overlapping glitches
+  if (splitInstances.length > 0) {
+    splitInstances.forEach(instance => instance.revert());
+    splitInstances = [];
+  }
+
   document.body.style.overflowY = "auto";
   document.getElementsByTagName("main")[0].classList.add("main-active");
   gsap.to("body", {
@@ -74,6 +82,8 @@ export function initialFX() {
   var landingText3 = new SplitText(".landing-h2-info-1", TextProps);
   var landingText4 = new SplitText(".landing-h2-1", TextProps);
   var landingText5 = new SplitText(".landing-h2-2", TextProps);
+
+  splitInstances.push(landingText, landingText2, landingText3, landingText4, landingText5);
 
   LoopText(landingText2, landingText3);
   LoopText(landingText4, landingText5);

@@ -136,7 +136,7 @@ export const setProgress = (setLoading: (value: number) => void) => {
     }
   }, 100);
 
-  const clear = () => { clearInterval(interval); setLoading(100); };
+  const clear = () => { clearInterval(interval); };
 
   const loaded = (): Promise<number> =>
     new Promise((resolve) => {
