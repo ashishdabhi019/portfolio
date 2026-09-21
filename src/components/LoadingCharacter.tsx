@@ -126,6 +126,7 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
       .then((buffer) => {
         loader.parse(buffer, "", async (gltf) => {
           const char = gltf.scene;
+          try { await renderer.compileAsync(char, camera, scene); } catch(e) { console.warn("compileAsync not supported", e); }
 
           char.traverse((child: any) => {
             if (!child.isMesh) return;
@@ -277,19 +278,24 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
 
 export default LoadingCharacter;
 
-/* ─── setProgress ─────────────────────────────────────── */
-export const setProgress = (setLoading: (value: number) => void) => {
-  let percent = 0;
+export const setProgress = (setLoading: (value: number | ((prev: number) => number)) => void) => {
+  let internalPercent = 0;
   let interval = setInterval(() => {
-    if (percent <= 50) {
-      percent = Math.min(50, percent + Math.round(Math.random() * 5));
-      setLoading(percent);
+    if (internalPercent <= 50) {
+      internalPercent = Math.min(50, internalPercent + Math.round(Math.random() * 5));
+      setLoading((prev) => Math.max(prev, internalPercent));
     } else {
       clearInterval(interval);
       interval = setInterval(() => {
-        percent = Math.min(91, percent + Math.round(Math.random()));
-        setLoading(percent);
-        if (percent > 91) clearInterval(interval);
+        internalPercent = Math.min(91, internalPercent + Math.round(Math.random()));
+        setLoading((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return prev;
+          }
+          return Math.max(prev, internalPercent);
+        });
+        if (internalPercent > 91) clearInterval(interval);
       }, 2000);
     }
   }, 100);
@@ -299,9 +305,14 @@ export const setProgress = (setLoading: (value: number) => void) => {
     new Promise((resolve) => {
       clearInterval(interval);
       interval = setInterval(() => {
-        if (percent < 100) { percent++; setLoading(percent); }
-        else { resolve(percent); clearInterval(interval); }
+        if (internalPercent < 100) { 
+          internalPercent++; 
+          setLoading((prev) => Math.max(prev, internalPercent)); 
+        } else { 
+          resolve(internalPercent); 
+          clearInterval(interval); 
+        }
       }, 2);
     });
-  return { loaded, percent, clear };
+  return { loaded, percent: internalPercent, clear };
 };
