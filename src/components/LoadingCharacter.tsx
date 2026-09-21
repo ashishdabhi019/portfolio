@@ -82,9 +82,9 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
     const scene  = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(14.5, w / h, 0.1, 1000);
     // Move camera further back (z: 150) for a much smaller character
-    // Center character horizontally (x: 0)
+    // Move camera Right (x: 1.5) to shift character Left (visually centering it due to its rotation)
     // Move camera Up (y: 9.0) to shift character Down
-    camera.position.set(0, 9.0, 150);
+    camera.position.set(1.5, 9.0, 150);
     camera.zoom = 1.0;
     camera.updateProjectionMatrix();
 
