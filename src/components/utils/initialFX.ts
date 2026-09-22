@@ -15,8 +15,7 @@ export function initialFX() {
   document.getElementsByTagName("main")[0].classList.add("main-active");
   gsap.to("body", {
     backgroundColor: "#0a0a0f",
-    duration: 0.5,
-    delay: 1,
+    duration: 0,
   });
 
   var landingText = new SplitText(
