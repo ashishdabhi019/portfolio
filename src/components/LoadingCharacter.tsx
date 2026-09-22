@@ -57,9 +57,7 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
     if (expanding) return;
     setExpanding(true);
     setExiting(true);
-    import("./utils/initialFX").then((mod) => {
-      setTimeout(() => { mod.initialFX?.(); setIsLoading(false); }, 1200);
-    });
+    // initialFX and setIsLoading(false) are both called in onAnimationComplete below
   }
 
   /* ── THREE.JS character scene ── */
@@ -261,6 +259,14 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
       initial={{ y: 0 }}
       animate={{ y: exiting ? "-100%" : 0 }}
       transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
+      onAnimationComplete={() => {
+        if (exiting) {
+          import("./utils/initialFX").then((mod) => {
+            mod.initialFX?.();
+            setIsLoading(false);
+          });
+        }
+      }}
     >
 
       {/* ── 3D character — absolute center ── */}
