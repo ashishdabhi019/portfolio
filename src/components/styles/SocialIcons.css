@@ -1,63 +1,64 @@
 .icons-section {
   position: fixed;
-  max-width: var(--cMaxWidth);
-  width: var(--cWidth);
-  bottom: 0;
+  inset: 0;
   z-index: 10001;
-  /* Elevate above cursor (9999) */
-  left: 50%;
-  transform: translateX(-50%);
   pointer-events: none;
-  /* Let clicks pass through empty space */
 }
 
 .resume-button {
-  position: absolute;
-  z-index: 99;
-  display: flex;
+  position: fixed;
+  z-index: 10001;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  bottom: 25px;
-  right: 0;
+  gap: 7px;
+  bottom: 30px;
+  left: 20px;
   width: auto;
   text-wrap: nowrap;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
-  line-height: 15px;
+  line-height: 1;
   font-weight: 600;
+  text-transform: uppercase;
   color: rgba(255, 255, 255, 0.45);
   cursor: pointer;
   transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s ease;
-  transform-origin: left bottom;
-  transform: translateX(100%) rotateZ(-90deg);
+              opacity 0.3s ease;
+  transform-origin: left top;
+  transform: rotate(-90deg);
   pointer-events: auto;
   text-decoration: none;
 }
 
+.resume-button .resume-icon,
 .resume-button span {
   color: inherit;
-  font-size: 16px;
-  margin-top: -1px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.25s ease;
 }
 
+.resume-button .resume-icon svg,
 .resume-button span svg {
   display: block;
+  width: 15px;
+  height: 15px;
 }
 
 /* ── Hover State (Both Themes) ── */
 .resume-button:hover,
+.resume-button:hover .resume-icon,
 .resume-button:hover span {
   color: var(--accentColor, #F97316);
 }
 
+.resume-button:hover .resume-icon,
 .resume-button:hover span {
-  transform: translateY(-1px);
+  transform: translateY(-1.5px);
 }
 
 .resume-button:hover .hover-in {
@@ -70,11 +71,13 @@
   color: rgba(11, 12, 16, 0.55);
 }
 
+[data-theme="light"] .resume-button .resume-icon,
 [data-theme="light"] .resume-button span {
   color: rgba(11, 12, 16, 0.55);
 }
 
 [data-theme="light"] .resume-button:hover,
+[data-theme="light"] .resume-button:hover .resume-icon,
 [data-theme="light"] .resume-button:hover span {
   color: var(--accentColor, #F97316);
 }
@@ -84,35 +87,30 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
+[data-theme="dark"] .resume-button .resume-icon,
 [data-theme="dark"] .resume-button span {
   color: rgba(255, 255, 255, 0.45);
 }
 
 [data-theme="dark"] .resume-button:hover,
+[data-theme="dark"] .resume-button:hover .resume-icon,
 [data-theme="dark"] .resume-button:hover span {
   color: var(--accentColor, #F97316);
 }
 
-.check-line {
-  position: fixed;
-  top: 655px;
-  left: 0;
-  height: 1px;
-  background-color: #ffffff;
-  width: 100%;
-  z-index: 99999;
-}
-
-@media only screen and (min-width: 768px) {
+/* ── Responsive Screen Sizes ── */
+@media only screen and (max-width: 834px) {
   .resume-button {
-    transform: none;
-    font-size: 20px;
-    line-height: 20px;
+    left: 10px;
+    bottom: 20px;
+    font-size: 14px;
     gap: 6px;
+    letter-spacing: 1.8px;
   }
 
-  .resume-button span {
-    font-size: 20px;
-    margin-top: -1.5px;
+  .resume-button .resume-icon svg,
+  .resume-button span svg {
+    width: 14px;
+    height: 14px;
   }
 }

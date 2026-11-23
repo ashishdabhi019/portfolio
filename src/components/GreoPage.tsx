@@ -1,13 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { IoClose } from "react-icons/io5";
 import logoWhite from "../assets/logo_white.png";
 import logoBlack from "../assets/logo_black.png";
 import "./styles/GreoPage.css";
 import TextType from "./TextType";
+import GlassSurface from "./GlassSurface";
 
 /* ─────────────────────────────────────────────────────────
-   GreoModal — floating card on desktop, full drawer on mobile
+   GreoModal — floating card on desktop, full screen on mobile
    ───────────────────────────────────────────────────────── */
 export function GreoModal({
   isOpen,
@@ -16,79 +17,29 @@ export function GreoModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [shouldRender, setShouldRender] = useState(isOpen);
-  const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
-  const [origin, setOrigin] = useState<{
-    x: number;
-    y: number;
-    cardX: number;
-    cardY: number;
-  } | null>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    let rAF: number;
+    let timer: number | undefined;
+    const lenis = (window as any).__lenisInstance || (window as any).lenis;
     if (isOpen) {
-      const btn =
-        document.getElementById("greo-ring-btn") ||
-        document.getElementById("greo-trigger-wrapper");
-      if (btn) {
-        const rect = btn.getBoundingClientRect();
-        const bx = Math.round(rect.left + rect.width / 2);
-        const by = Math.round(rect.top + rect.height / 2);
-
-        // Pre-calculate card origin for desktop layout
-        const cardW = Math.min(420, window.innerWidth - 48);
-        const cardH = Math.min(640, window.innerHeight - 48);
-        const cardLeft = window.innerWidth - 30 - cardW;
-        const cardTop = window.innerHeight - 24 - cardH;
-
-        setOrigin({
-          x: bx,
-          y: by,
-          cardX: Math.round(bx - cardLeft),
-          cardY: Math.round(by - cardTop),
-        });
-      }
-      setShouldRender(true);
-      rAF = requestAnimationFrame(() => {
-        // Measure real card element once mounted for exact pixel accuracy
-        if (btn && cardRef.current) {
-          const btnRect = btn.getBoundingClientRect();
-          const cardRect = cardRef.current.getBoundingClientRect();
-          const bx = Math.round(btnRect.left + btnRect.width / 2);
-          const by = Math.round(btnRect.top + btnRect.height / 2);
-          setOrigin({
-            x: bx,
-            y: by,
-            cardX: Math.round(bx - cardRect.left),
-            cardY: Math.round(by - cardRect.top),
-          });
-        }
-        setIsAnimatingOpen(true);
-      });
       document.body.style.overflow = "hidden";
-      const lenis = (window as any).__lenisInstance || (window as any).lenis;
       if (lenis && typeof lenis.stop === "function") {
         lenis.stop();
       }
-      return () => {
-        cancelAnimationFrame(rAF);
-      };
     } else {
-      setIsAnimatingOpen(false);
-      document.body.style.overflow = "";
-      document.body.style.overflowY = "auto";
-      const lenis = (window as any).__lenisInstance || (window as any).lenis;
+      timer = window.setTimeout(() => {
+        document.body.style.overflow = "";
+      }, 500);
       if (lenis && typeof lenis.start === "function") {
         lenis.start();
       }
-      timer = setTimeout(() => {
-        setShouldRender(false);
-      }, 500);
-      return () => clearTimeout(timer);
     }
+    return () => {
+      if (timer) clearTimeout(timer);
+      document.body.style.overflow = "";
+      if (lenis && typeof lenis.start === "function") {
+        lenis.start();
+      }
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -103,32 +54,21 @@ export function GreoModal({
     };
   }, [isOpen, onClose]);
 
-  if (!shouldRender) return null;
-
   return createPortal(
     <div
-      className={`gm-overlay ${isAnimatingOpen ? "gm-overlay--open" : ""}`}
+      className={`gm-overlay ${isOpen ? "gm-overlay--open" : ""}`}
       onClick={onClose}
       data-cursor="disable"
-      data-lenis-prevent="true"
+      aria-hidden={!isOpen}
     >
       <div
-        ref={cardRef}
         className="gm-card"
-        style={
-          origin
-            ? ({
-                "--greo-origin-x": `${origin.x}px`,
-                "--greo-origin-y": `${origin.y}px`,
-                "--greo-card-x": `${origin.cardX}px`,
-                "--greo-card-y": `${origin.cardY}px`,
-              } as React.CSSProperties)
-            : undefined
-        }
         onClick={(e) => e.stopPropagation()}
         role="dialog"
-        aria-modal="true"
+        aria-modal={isOpen ? "true" : "false"}
         aria-label="Greo Status"
+        data-lenis-prevent="true"
+        tabIndex={isOpen ? 0 : -1}
       >
         <div className="gm-glow" />
 
@@ -158,6 +98,7 @@ export function GreoModal({
             onClick={onClose}
             aria-label="Close Greo window"
             data-cursor="disable"
+            tabIndex={isOpen ? 0 : -1}
           >
             <IoClose className="gm-close-icon" />
           </button>
@@ -179,6 +120,7 @@ export function GreoModal({
           </div>
 
           <TextType
+            key={isOpen ? "open" : "closed"}
             as="h2"
             className="gp-heading"
             text={[
@@ -230,8 +172,31 @@ export function GreoButton() {
         data-cursor="disable"
         onClick={() => setIsOpen((prev) => !prev)}
         style={{ cursor: "pointer" }}
-        className={isOpen ? "is-active" : ""}
+        className={isOpen ? "is-open is-active" : ""}
       >
+        {/* Soft accent glow halo radiating outward */}
+        <div className="greo-border-glow" aria-hidden="true">
+          <div className="greo-border-glow-core" />
+        </div>
+
+        {/* Real GlassSurface backdrop for the expanded pill */}
+        <div className="greo-trigger-bg" aria-hidden="true">
+          <GlassSurface
+            width="100%"
+            height="100%"
+            borderRadius={100}
+            distortionScale={-180}
+            displace={0.5}
+            backgroundOpacity={0.12}
+            className="greo-pill-glass"
+          />
+        </div>
+
+        {/* Crisp border beam / shine tracing around the perimeter */}
+        <div className="greo-border-shine" aria-hidden="true">
+          <div className="greo-border-shine-core" />
+        </div>
+
         <button id="greo-ring-btn" aria-label="Open Greo status" tabIndex={-1}>
           <img
             src={logoWhite}

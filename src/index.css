@@ -516,11 +516,11 @@ body {
   transform: translateX(-50%) translateY(5px);
 }
 
-/* ─── Greo Floating Button (redirects to greo.in) ──────────────────────────── */
+/* ─── Greo Floating Button ─────────────────────────────────────────────────── */
 #greo-trigger-wrapper {
   position: fixed;
   right: 30px;
-  bottom: 70px;
+  bottom: 25px;
   display: inline-flex;
   flex-direction: row;
   align-items: center;
@@ -530,36 +530,132 @@ body {
   border-radius: 100px;
   padding: 5px;
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
   box-shadow: none;
   transition: 
-    background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    padding 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 800ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#greo-trigger-wrapper.is-open,
+#greo-trigger-wrapper.is-active {
+  pointer-events: none !important;
+  opacity: 0 !important;
+  transform: translateY(12px) scale(0.9) !important;
 }
 
 #greo-trigger-wrapper:hover {
   padding: 5px 24px 5px 5px;
-  background: rgba(20, 21, 26, 0.78);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 16px 40px rgba(0, 0, 0, 0.55), 
-    0 4px 16px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
-[data-theme="light"] #greo-trigger-wrapper:hover {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 
-    0 16px 36px rgba(0, 0, 0, 0.08), 
-    0 4px 12px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+/* Greo unified glass surface */
+.greo-trigger-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 100px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.greo-pill-glass {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 100px !important;
+}
+
+/* ─── Greo Border Shine Beam (Traveling around the rounded perimeter) ─────── */
+.greo-border-shine {
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  border-radius: 100px;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#greo-trigger-wrapper:hover .greo-border-shine {
+  opacity: 1;
+}
+
+.greo-border-shine-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 440px;
+  height: 440px;
+  margin-top: -220px;
+  margin-left: -220px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 230deg,
+    color-mix(in srgb, var(--accentColor, #F97316) 15%, transparent) 260deg,
+    color-mix(in srgb, var(--accentColor, #F97316) 50%, transparent) 295deg,
+    var(--accentColor, #F97316) 335deg,
+    color-mix(in srgb, var(--accentColor, #F97316) 75%, #ffffff) 352deg,
+    #ffffff 360deg
+  );
+  animation: greo-beam-spin 3.2s linear infinite;
+  will-change: transform;
+}
+
+/* ─── Greo Border Ambient Glow (Soft diffused accent halo) ─────────────────── */
+.greo-border-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 100px;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  z-index: 0;
+  filter: blur(10px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#greo-trigger-wrapper:hover .greo-border-glow {
+  opacity: 0.95;
+}
+
+.greo-border-glow-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 440px;
+  height: 440px;
+  margin-top: -220px;
+  margin-left: -220px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 250deg,
+    color-mix(in srgb, var(--accentColor, #F97316) 25%, transparent) 285deg,
+    color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent) 325deg,
+    var(--accentColor, #F97316) 348deg,
+    #ffffff 360deg
+  );
+  animation: greo-beam-spin 3.2s linear infinite;
+  will-change: transform;
+}
+
+@keyframes greo-beam-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 #greo-ring-btn {
@@ -567,42 +663,19 @@ body {
   height: 65px;
   border-radius: 50%;
   position: relative;
+  z-index: 3;
   border: none;
   outline: none;
-  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 100%);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.35), 
-    inset 0 2px 5px rgba(255, 255, 255, 0.35), 
-    inset 0 -3px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  overflow: hidden;
+  overflow: visible;
   flex-shrink: 0;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-#greo-ring-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-#greo-ring-btn::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: inset 0 -2px 10px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-  z-index: 1;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #greo-ring-btn .greo-mob-logo {
@@ -644,6 +717,8 @@ body {
 }
 
 #greo-trigger-label {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -654,27 +729,24 @@ body {
   overflow: hidden;
   white-space: nowrap;
   pointer-events: none;
-  transform: translateX(10px);
+  transform: translateX(12px);
   margin-left: 0;
   transition: 
-    max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    margin-left 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-left 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #greo-trigger-wrapper:hover #greo-ring-btn {
   scale: 1.02;
-  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 100%);
-  box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.45), 
-    0 0 24px rgba(255, 255, 255, 0.15), 
-    inset 0 3px 8px rgba(255, 255, 255, 0.5), 
-    inset 0 -5px 14px rgba(0, 0, 0, 0.35);
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 #greo-trigger-wrapper:hover #greo-trigger-label {
-  max-width: 160px;
+  max-width: 180px;
   opacity: 1;
   transform: translateX(0);
   margin-left: 14px;
@@ -742,11 +814,15 @@ body {
 @media (max-width: 1024px) and (orientation: portrait) {
   #greo-trigger-wrapper {
     right: 24px;
-    bottom: 100px;
+    left: auto;
+    bottom: 25px;
     padding: 0 !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    transition: 
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   #greo-trigger-wrapper:hover {
     padding: 0 !important;
@@ -761,13 +837,17 @@ body {
   #greo-trigger-label {
     display: none !important;
   }
+  .greo-border-shine,
+  .greo-border-glow {
+    display: none !important;
+  }
 }
 
 @media (max-width: 834px) {
   #greo-trigger-wrapper {
-    right: auto;
-    left: 24px;
-    bottom: 37px;
+    right: 24px;
+    left: auto;
+    bottom: 25px;
     gap: 0;
     flex-direction: row;
     padding: 0 !important;
@@ -776,6 +856,9 @@ body {
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    transition: 
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   #greo-trigger-wrapper:hover {
     padding: 0 !important;
@@ -786,15 +869,15 @@ body {
   #greo-ring-btn {
     width: 62px;
     height: 62px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: none;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
     animation: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.3);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   #greo-ring-btn:active {
@@ -817,7 +900,12 @@ body {
   #greo-trigger-label {
     display: none !important;
   }
+  .greo-border-shine,
+  .greo-border-glow {
+    display: none !important;
+  }
 }
+
 
 /* ─── Prevent iOS Safari Viewport Auto-Zoom on Input Focus ──────────────────── */
 input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="hidden"]),
