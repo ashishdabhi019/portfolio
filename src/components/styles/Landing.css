@@ -21,27 +21,14 @@
   position: fixed;
   width: 300px;
   height: 300px;
-  background-color: #7C3AED;
-  box-shadow: inset -50px 40px 50px rgba(90, 30, 200, 0.4);
+  background-color: var(--accentColor, #F97316);
+  box-shadow: inset -50px 40px 50px color-mix(in srgb, var(--accentColor, #F97316) 70%, #000 30%);
   filter: blur(80px);
   will-change: transform, filter;
   border-radius: 50%;
   animation: loadingCircle 5s linear infinite;
   opacity: 0.4;
-}
-
-.nav-fade {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 130px;
-  background-image: linear-gradient(0deg,
-      transparent,
-      var(--backgroundColor) 70%);
-  pointer-events: none;
-  z-index: 12;
-  opacity: 0;
-  left: 0;
+  transition: background-color 0.35s ease;
 }
 
 @keyframes loadingCircle {
@@ -63,13 +50,14 @@
   display: none;
   width: 300px;
   height: 300px;
-  background-color: #7C3AED;
-  box-shadow: inset -50px 40px 50px rgba(90, 30, 200, 0.4);
+  background-color: var(--accentColor, #F97316);
+  box-shadow: inset -50px 40px 50px color-mix(in srgb, var(--accentColor, #F97316) 70%, #000 30%);
   filter: blur(80px);
   will-change: transform, filter;
   border-radius: 50%;
   animation: loadingCircle2 5s linear infinite;
   opacity: 0.35;
+  transition: background-color 0.35s ease;
 }
 
 @keyframes loadingCircle2 {
@@ -98,15 +86,16 @@
   width: 400px;
   height: 400px;
   z-index: 1;
-  background-color: #7C3AED;
+  background-color: var(--accentColor, #F97316);
   transform: translate(-50%, 36%) scaleX(1.4);
-  box-shadow: inset 66px 35px 85px 0px rgba(90, 30, 200, 0.65);
+  box-shadow: inset 66px 35px 85px 0px color-mix(in srgb, var(--accentColor, #F97316) 65%, #000);
   filter: blur(50px);
   border-radius: 50%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, 100%) scale(1.4);
   opacity: 0;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .character-model {
@@ -181,7 +170,7 @@
 
 .landing-intro h2 {
   margin: 0;
-  color: var(--accentColor);
+  color: var(--accentColor, #F97316);
   font-size: 22px;
   font-weight: 300;
   letter-spacing: 2px;
@@ -192,8 +181,9 @@
   letter-spacing: 2px;
   font-size: 28px;
   line-height: 40px;
-  font-weight: 700;
-  font-family: "Geist", sans-serif;
+  font-weight: 800;
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-stretch: 118%;
 }
 
 
@@ -210,7 +200,7 @@
   font-size: 22px;
   letter-spacing: 2px;
   font-weight: 300;
-  color: var(--accentColor);
+  color: var(--accentColor, #F97316);
   margin: 0;
 }
 
@@ -218,8 +208,9 @@
   margin: 0;
   margin-top: -20px;
   margin-left: 20px;
-  font-family: "Geist", sans-serif;
-  font-weight: 600;
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
   font-size: 32px;
   line-height: 40px;
   position: relative;
@@ -235,14 +226,16 @@
 }
 
 h2.landing-info-h2 {
-  color: #7C3AED;
+  color: var(--accentColor, #F97316);
   font-size: 42px;
   width: 120%;
   margin: 0;
-  font-family: "Geist", sans-serif;
-  font-weight: 600;
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
   position: relative;
   margin-left: -5px;
+  transition: color 0.35s ease;
 }
 
 .landing-h2-2 {
@@ -335,7 +328,7 @@ h2.landing-info-h2 {
   .landing-intro h1 {
     font-size: 40px;
     line-height: 40px;
-    font-weight: 700;
+    font-weight: 800;
   }
 
   .landing-info h3 {

@@ -1,0 +1,743 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap");
+
+/* ═══════════════════════════════════════════════
+   FOOTER — minimal portfolio footer
+   ═══════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════
+   FOOTER ROOT — unified continuous canvas (#131318)
+   Guarantees 100% identical background everywhere
+   ══════════════════════════════════════════════ */
+.footer-root {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background-color: #131318;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   CTA HERO SECTION — above footer
+   "Let's build something remarkable together."
+   ══════════════════════════════════════════════ */
+
+.footer-cta-block,
+.footer-cta-section {
+  position: relative;
+  background: transparent;
+  padding: 150px 0 65px 0;
+  overflow: hidden;
+}
+
+/* ── Ambient background glow at top center ───────────────────── */
+.footer-cta-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1400px;
+  height: 620px;
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 0%,
+    color-mix(in srgb, var(--accentColor, #F97316) 18%, transparent) 0%,
+    color-mix(in srgb, var(--accentColor, #F97316) 9%, transparent) 35%,
+    color-mix(in srgb, var(--accentColor, #F97316) 2%, transparent) 55%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.35s ease;
+}
+
+/* ── Full-width top border matching bottom divider line ── */
+.footer-cta-top-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 2;
+}
+
+.footer-cta-inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--site-max-width, 1680px);
+  margin: 0 auto;
+  padding-left: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  padding-right: var(--site-padding-x, clamp(24px, 4vw, 64px));
+}
+
+/* Eyebrow: HAVE A PROJECT IN MIND? */
+.footer-cta-eyebrow {
+  font-family: "Geist Mono", monospace, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 28px 0;
+}
+
+/* Headline — Signature Archivo display font, ultra-bold & extended */
+.footer-cta-heading {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  font-size: clamp(44px, 6.8vw, 108px);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  margin: 0 0 clamp(36px, 4.5vw, 56px) 0;
+  max-width: 1400px;
+  text-transform: none;
+}
+
+/* Clean masked line scroll font reveal (pure crisp typography, original look) */
+.title-reveal-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.title-reveal-line {
+  display: block;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.footer-cta-line {
+  display: block;
+}
+
+/* Italic serif accent word — "remarkable" in Instrument Serif */
+.footer-cta-serif {
+  font-family: "Instrument Serif", Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  font-stretch: 100% !important;
+  font-size: 1.05em;
+  color: var(--accentColor, #F97316) !important;
+  letter-spacing: -0.02em;
+  line-height: 0.94;
+  margin-right: 0.04em;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+/* Word break control for mobile vs desktop */
+.footer-cta-together--desktop {
+  display: inline;
+}
+
+.footer-cta-together--mobile-mask {
+  display: none !important;
+}
+
+/* CTA action row */
+.footer-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+/* ── "Start a project" button — EXACT same styling & hover as Send message button ── */
+.footer-cta-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--accentColor, #F97316);
+  color: #000000;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  height: 65px;
+  min-height: 65px;
+  padding: 0 32px 0 34px;
+  border-radius: 9999px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  overflow: hidden; /* Clips the white swipe-up sheet */
+  box-shadow: none;
+  transition: transform 0.2s ease;
+}
+
+/* White color swipe-up sheet from bottom (exact same as Send message & Let's talk) */
+.footer-cta-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  border-radius: inherit;
+  transform: translateY(102%);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.footer-cta-btn:hover::before {
+  transform: translateY(0);
+}
+
+.footer-cta-btn:hover {
+  transform: translateY(-1px);
+}
+
+.footer-cta-btn:active {
+  transform: translateY(0);
+}
+
+.footer-cta-btn__text {
+  position: relative;
+  z-index: 2;
+  line-height: 1;
+  color: #000000;
+  font-weight: 650;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Black circle containing dual sliding orange arrows */
+.footer-cta-btn__icon {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #000000;
+  color: var(--accentColor, #F97316);
+  overflow: hidden; /* Clips arrows within the circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 2;
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.footer-cta-arrow-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-cta-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  stroke: var(--accentColor, #F97316);
+  color: var(--accentColor, #F97316);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+/* Front arrow: sits centered at rest */
+.footer-cta-arrow--front {
+  transform: translate3d(-50%, -50%, 0);
+  opacity: 1;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+/* Back arrow: parked offscreen to the left */
+.footer-cta-arrow--back {
+  transform: translate3d(-190%, -50%, 0);
+  opacity: 0;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+/* On button hover: front arrow drives out to right like a car */
+.footer-cta-btn:hover .footer-cta-arrow--front {
+  transform: translate3d(140%, -50%, 0);
+  opacity: 0;
+}
+
+/* Back arrow drives in from left into the exact same center position */
+.footer-cta-btn:hover .footer-cta-arrow--back {
+  transform: translate3d(-50%, -50%, 0);
+  opacity: 1;
+}
+
+/* Email link */
+.footer-cta-email {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(15px, 1.15vw, 17px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color 0.25s ease;
+  line-height: 1;
+}
+
+.footer-cta-email:hover {
+  color: var(--accentColor, #F97316);
+}
+
+/* Responsive adjustments — strictly for mobile / tablet screens */
+@media only screen and (max-width: 768px) {
+  .footer-cta-block,
+  .footer-cta-section {
+    padding: 90px 0 60px;
+  }
+  .footer-cta-eyebrow {
+    margin-bottom: 24px;
+  }
+  .footer-cta-heading {
+    /* Exact formula from reference DevTools: text-[clamp(3rem,8.4vw,9.4rem)] -> 48px on mobile */
+    font-size: clamp(3rem, 8.4vw, 9.4rem);
+    margin-bottom: 36px;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+  }
+  /* On mobile, break 'together.' to line 4 so 'remarkable' & 'together.' fit punchy & large */
+  .footer-cta-together--desktop {
+    display: none !important;
+  }
+  .footer-cta-together--mobile-mask {
+    display: block !important;
+  }
+  .footer-cta-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .footer-cta-block,
+  .footer-cta-section {
+    padding: 70px 0 45px;
+  }
+}
+
+/* ════════════════════ LIGHT THEME OVERRIDES ════════════════════ */
+[data-theme="light"] .footer-root {
+  background-color: var(--backgroundColor, #f7f7fa);
+}
+
+[data-theme="light"] .footer-cta-glow {
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 0%,
+    color-mix(in srgb, var(--accentColor, #F97316) 16%, transparent) 0%,
+    color-mix(in srgb, var(--accentColor, #F97316) 8%, transparent) 35%,
+    color-mix(in srgb, var(--accentColor, #F97316) 2%, transparent) 55%,
+    transparent 75%
+  );
+}
+
+[data-theme="dark"] .footer-root {
+  background-color: #131318;
+}
+
+[data-theme="light"] .footer-cta-eyebrow {
+  color: rgba(11, 12, 16, 0.5);
+}
+
+[data-theme="light"] .footer-cta-heading {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .footer-cta-email {
+  color: rgba(11, 12, 16, 0.72);
+}
+
+[data-theme="light"] .footer-cta-email:hover {
+  color: var(--accentColor, #F97316);
+}
+
+[data-theme="light"] .footer-cta-top-border,
+[data-theme="light"] .footer-divider,
+[data-theme="light"] .footer-bottom-divider {
+  background: rgba(11, 12, 16, 0.1);
+}
+
+/* Light mode CTA button hover (black capsule, white text, white circle, orange arrows) */
+[data-theme="light"] .footer-cta-btn::before {
+  background: #000000;
+}
+
+[data-theme="light"] .footer-cta-btn:hover .footer-cta-btn__text {
+  color: #ffffff;
+}
+
+[data-theme="light"] .footer-cta-btn:hover .footer-cta-btn__icon {
+  background: #ffffff;
+}
+
+[data-theme="light"] .footer-col-label {
+  color: rgba(11, 12, 16, 0.45);
+}
+
+[data-theme="light"] .footer-link,
+[data-theme="light"] .footer-social-link {
+  color: rgba(11, 12, 16, 0.72);
+}
+
+[data-theme="light"] .footer-link:hover,
+[data-theme="light"] .footer-social-link:hover {
+  color: var(--accentColor, #F97316);
+}
+
+[data-theme="light"] .footer-location,
+[data-theme="light"] .footer-about-sub {
+  color: rgba(11, 12, 16, 0.45);
+}
+
+[data-theme="light"] .footer-about-text {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .footer-avail-text {
+  color: var(--accentColor, #F97316);
+}
+
+[data-theme="light"] .footer-letter {
+  -webkit-text-stroke: 2px rgba(11, 12, 16, 0.18);
+}
+
+.footer-main-block,
+.footer-section {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+/* ── Shared inner wrapper ── */
+.footer-inner {
+  width: 100%;
+  max-width: var(--site-max-width, 1680px);
+  margin: 0 auto;
+  padding-left: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  padding-right: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  box-sizing: border-box;
+}
+
+/* ── Full-width top divider ── */
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 56px;
+}
+
+/* ── 3-column grid (balanced Swiss editorial distribution) ── */
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(220px, max-content) minmax(140px, max-content) minmax(260px, 1fr);
+  gap: clamp(40px, 5.5vw, 84px);
+  max-width: 1200px;
+  margin-bottom: 68px;
+  align-items: start;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-col-label {
+  font-family: "Geist Mono", -apple-system, BlinkMacSystemFont, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  margin: 0 0 22px 0;
+  line-height: 1;
+}
+
+.footer-col-content {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  align-items: flex-start;
+}
+
+/* Contact links */
+.footer-link {
+  position: relative;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(14px, 1.05vw, 15px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  line-height: 1.4;
+  width: fit-content;
+  padding-bottom: 3px;
+  transition: color 0.25s ease;
+}
+
+.footer-link:hover {
+  color: var(--accentColor, #F97316);
+}
+
+.footer-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: var(--accentColor, #F97316);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.footer-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.footer-location {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(13.5px, 0.95vw, 14px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+}
+
+/* Social links (clean with directional hover underline: comes from left, leaves to right) */
+.footer-social-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(14px, 1.05vw, 15px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  line-height: 1.4;
+  width: fit-content;
+  padding-bottom: 3px;
+  transition: color 0.25s ease;
+}
+
+.footer-social-link:hover {
+  color: var(--accentColor, #F97316);
+}
+
+.footer-social-name {
+  line-height: 1;
+}
+
+.footer-social-icon {
+  font-size: 13px;
+  opacity: 0.55;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+.footer-social-link:hover .footer-social-icon {
+  opacity: 1;
+  transform: translate(2.5px, -2.5px);
+}
+
+/* Animated underline — comes in from left on hover, goes off to right on unhover */
+.footer-social-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: var(--accentColor, #F97316);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.footer-social-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Role col */
+.footer-about-text {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(14px, 1.05vw, 15px);
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.footer-about-sub {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(13px, 0.9vw, 13.5px);
+  color: rgba(255, 255, 255, 0.42);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.footer-avail-text {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(13px, 0.9vw, 13.5px);
+  font-weight: 500;
+  color: var(--accentColor, #F97316);
+  margin: 0;
+  margin-top: 4px;
+  line-height: 1.45;
+}
+
+/* ══════════════════════════════════════════════════
+   BIG NAME — per-letter gray stroke → orange fill on hover
+   Slow smooth left-to-right wave animation (perfectly centered side spacing)
+   ══════════════════════════════════════════════════ */
+
+.footer-name-wrap {
+  width: 100%;
+  overflow: visible;
+  line-height: 0.88;
+  margin-top: 28px;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Wrapper span — big bold display typography, perfectly centered without clipping */
+.footer-name {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  user-select: none;
+  line-height: 0.88;
+  white-space: nowrap;
+  text-align: center;
+  font-size: clamp(36px, 10.8vw, 208px);
+  padding: 0 16px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Each individual letter */
+.footer-letter {
+  display: inline-block;
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  letter-spacing: -0.03em;
+  line-height: 0.88;
+  text-transform: uppercase;
+
+  /* ── DEFAULT: subtle gray outline, transparent fill ── */
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.18);
+  color: transparent;
+
+  /* Slow smooth transition — duration drives the wave speed */
+  transition:
+    color 0.75s cubic-bezier(0.25, 1, 0.5, 1),
+    -webkit-text-stroke-color 0.75s cubic-bezier(0.25, 1, 0.5, 1);
+  /* transitionDelay is set inline per-letter for the left→right wave */
+}
+
+/* Space character — no stroke */
+.footer-letter-space {
+  -webkit-text-stroke: 0px transparent !important;
+  color: transparent !important;
+}
+
+/* ── HOVER: entire name hovered → all letters fill with active accent color & matching border with stagger ── */
+.footer-name:hover .footer-letter {
+  color: var(--accentColor, #F97316);
+  -webkit-text-stroke-color: var(--accentColor, #F97316);
+  /* Each letter's inline transitionDelay creates the left→right ripple */
+}
+
+/* ── Full-width edge-to-edge bottom line (100% screen width) ── */
+.footer-bottom-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin-top: 16px;
+}
+
+/* ── Bottom bar ── */
+.footer-bottom {
+  width: 100%;
+  padding: 22px 0 28px 0;
+  box-sizing: border-box;
+}
+
+.footer-bottom-inner {
+  width: 100%;
+  max-width: var(--site-max-width, 1680px);
+  margin: 0 auto;
+  padding-left: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  padding-right: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.footer-copy,
+.footer-made {
+  font-size: clamp(11px, 0.85vw, 12px);
+  opacity: 0.3;
+  color: var(--textColor);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+/* ═══════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════ */
+
+@media only screen and (max-width: 1100px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    margin-bottom: 56px;
+  }
+  .footer-col-about {
+    grid-column: 1 / -1;
+  }
+  .footer-letter {
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.18);
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 44px;
+  }
+  .footer-col-about {
+    grid-column: 1;
+  }
+  .footer-letter {
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.18);
+  }
+  .footer-bottom-inner {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .footer-letter {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.18);
+  }
+}

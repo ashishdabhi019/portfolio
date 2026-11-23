@@ -11,55 +11,12 @@
   /* Let clicks pass through empty space */
 }
 
-.social-icons {
-  position: absolute;
-  left: -20px;
-  bottom: 20px;
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 999;
-  padding: 10px;
-  pointer-events: auto;
-  /* Enable clicks only on actual buttons */
-}
-
-.social-icons:hover {
-  transition: 0.3s;
-}
-
-.social-icons a:hover {
-  color: var(--accentColor);
-  text-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
-}
-
-.social-icons span {
-  width: 50px;
-  height: 50px;
-  position: relative;
-  display: flex;
-}
-
-.social-icons a {
-  --siLeft: 50%;
-  --siTop: 50%;
-  position: absolute;
-  left: var(--siLeft, 50%);
-  top: var(--siTop, 50%);
-  transform: translate(-50%, -50%);
-  display: flex;
-  font-size: 23px;
-  will-change: left, top;
-  transition: transform 0.3s ease-out, color 0.3s ease;
-  z-index: 10000;
-  /* Float clearly above the heavy frosted glass cursor */
-}
-
 .resume-button {
   position: absolute;
   z-index: 99;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  gap: 6px;
   bottom: 40px;
   right: 0;
   width: auto;
@@ -68,25 +25,72 @@
   font-size: 15px;
   line-height: 15px;
   font-weight: 600;
-  color: #5e5e5e;
+  color: rgba(255, 255, 255, 0.45);
   cursor: pointer;
-  transition: 0.5s;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s ease;
   transform-origin: left bottom;
   transform: translateX(100%) rotateZ(-90deg);
   pointer-events: auto;
-  /* IMPORTANT: Re-enable clicks! */
+  text-decoration: none;
 }
 
-.resume-button:hover {
-  color: #fff;
-}
-
-div.resume-button span {
-  color: #fff;
+.resume-button span {
+  color: inherit;
   font-size: 17px;
   margin-top: -1px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s ease;
+}
+
+.resume-button span svg {
+  display: block;
+}
+
+/* ── Hover State (Both Themes) ── */
+.resume-button:hover,
+.resume-button:hover span {
+  color: var(--accentColor, #F97316);
+}
+
+.resume-button:hover span {
+  transform: translateY(-1px);
+}
+
+.resume-button:hover .hover-in {
+  transform: translateY(-100%);
+  color: var(--accentColor, #F97316);
+}
+
+/* ── Light Mode Specifics ── */
+[data-theme="light"] .resume-button {
+  color: rgba(11, 12, 16, 0.55);
+}
+
+[data-theme="light"] .resume-button span {
+  color: rgba(11, 12, 16, 0.55);
+}
+
+[data-theme="light"] .resume-button:hover,
+[data-theme="light"] .resume-button:hover span {
+  color: var(--accentColor, #F97316);
+}
+
+/* ── Dark Mode Specifics ── */
+[data-theme="dark"] .resume-button {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="dark"] .resume-button span {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+[data-theme="dark"] .resume-button:hover,
+[data-theme="dark"] .resume-button:hover span {
+  color: var(--accentColor, #F97316);
 }
 
 .check-line {
@@ -99,25 +103,15 @@ div.resume-button span {
   z-index: 99999;
 }
 
-@media only screen and (min-width: 900px) {
-  .social-icons {
-    display: flex;
-    gap: 20px;
-  }
-
-  .social-icons a {
-    font-size: 28px;
-  }
-}
-
 @media only screen and (min-width: 768px) {
   .resume-button {
     transform: none;
     font-size: 20px;
     line-height: 20px;
+    gap: 8px;
   }
 
-  div.resume-button span {
+  .resume-button span {
     font-size: 23px;
     margin-top: -1.5px;
   }

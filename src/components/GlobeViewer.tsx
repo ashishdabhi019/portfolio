@@ -56,13 +56,16 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
     camera.position.z = 2.8;
 
-    // Lights - Minimalist for self-luminous land
-    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-    const sun = new THREE.DirectionalLight(0xffffff, 1.5);
+    // Lights — even fill so the globe stays vibrant orange all around
+    scene.add(new THREE.AmbientLight(0xffffff, 0.9));        // strong ambient fill
+    const sun = new THREE.DirectionalLight(0xffffff, 1.2);
     sun.position.set(5, 3, 5);
     scene.add(sun);
-    const rim = new THREE.DirectionalLight(0x7C3AED, 0.4);
-    rim.position.set(-4, -2, -3);
+    const fill = new THREE.DirectionalLight(0xFF9A44, 0.8);  // warm orange fill from back
+    fill.position.set(-5, -2, -3);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xFB923C, 0.5);   // rim highlight
+    rim.position.set(0, 4, -5);
     scene.add(rim);
 
 
@@ -73,7 +76,7 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
       transparent: true,
       uniforms: {
         maskTex: { value: null as THREE.Texture | null },
-        landColor: { value: new THREE.Color(0xA855F7) }, // Bright Electric Violet
+        landColor: { value: new THREE.Color(0xFFA040) }, // Bright light orange
         waterColor: { value: new THREE.Color(0x0a0f17) } // Site background
       },
       vertexShader: `
@@ -94,21 +97,21 @@ const GlobeViewer = ({ selectedLocation, visible }: Props) => {
         void main() {
           float m = texture2D(maskTex, vUv).r;
           
-          // 3D Shading (Diffuse) for land
+          // Soft diffuse — very high ambient floor so dark side stays light orange
           vec3 lightDir = normalize(vec3(1.0, 0.8, 1.0));
-          float diff = max(dot(vNormal, lightDir), 0.3); // 0.3 ambient base
+          float diff = max(dot(vNormal, lightDir), 0.0);
+          // 82% flat + 18% shading — never goes darker than 82% of land colour
+          float shade = 0.82 + 0.18 * diff;
           
-          // Atmospheric Rim Glow
+          // Subtle atmospheric rim on the edge
           float rim = 1.0 - max(dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0);
-          rim = smoothstep(0.6, 1.0, rim);
-          vec3 rimColor = vec3(0.55, 0.23, 0.93) * rim * 0.5; // Violet rim glow
+          rim = smoothstep(0.55, 1.0, rim);
+          vec3 rimColor = vec3(1.0, 0.72, 0.25) * rim * 0.35; // warm golden rim
 
-          // Watermask is black (0) for land, white (1) for water
+          // Watermask: black (0) = land, white (1) = water
           if (m < 0.5) {
-            // Land
-            gl_FragColor = vec4(landColor * diff + rimColor, 1.0);
+            gl_FragColor = vec4(landColor * shade + rimColor, 1.0);
           } else {
-            // Water - fully transparent
             gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
           }
         }

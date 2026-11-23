@@ -3,7 +3,11 @@
 
 <head>
   <meta charset="UTF-8" />
-  <!-- <link rel="icon" type="image/svg+xml" href="/" /> -->
+  <link id="app-favicon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="alternate icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ashish Dabhi | AI/ML Engineer</title>
   <meta name="description" content="Portfolio of Ashish Dabhi, an AI/ML Engineer specializing in building intelligent systems and high-performance digital solutions." />
@@ -11,6 +15,53 @@
   <meta property="og:description" content="Explore the portfolio of Ashish Dabhi, showcasing expertise in AI, Machine Learning, and advanced software development." />
   <meta property="og:type" content="website" />
   <script type="text/javascript">
+    // Immediately apply saved theme before first paint to prevent dark mode flash on loading screen
+    (function () {
+      try {
+        var saved = localStorage.getItem("portfolio_theme");
+        var isLight = false;
+        if (saved === "Light") {
+          isLight = true;
+        } else if (saved === "Auto" || !saved) {
+          isLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        }
+        var theme = isLight ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+
+        // Initial accent color is always Orange (#F97316) by default
+        var accent = "#F97316";
+        try {
+          var sessionAccent = sessionStorage.getItem("portfolio_accent");
+          if (sessionAccent) {
+            accent = sessionAccent;
+          } else {
+            localStorage.removeItem("portfolio_accent");
+          }
+        } catch(e) {}
+        document.documentElement.style.setProperty("--accentColor", accent);
+        document.documentElement.style.setProperty("--accent", accent);
+        document.documentElement.style.setProperty("--accentColorLight", accent === "#F97316" ? "#FB923C" : accent);
+        document.documentElement.style.setProperty("--theme-accent", accent);
+        document.documentElement.style.setProperty("--cta-bg", accent);
+
+        // Pre-render matching custom vector cursor on initial load
+        try {
+          var c = accent.replace("#", "");
+          if (c.length === 3) c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+          var num = parseInt(c, 16);
+          var r = Math.min(255, (num >> 16) + Math.round((255 - (num >> 16)) * 0.22));
+          var g = Math.min(255, ((num >> 8) & 0xff) + Math.round((255 - ((num >> 8) & 0xff)) * 0.22));
+          var b = Math.min(255, (num & 0xff) + Math.round((255 - (num & 0xff)) * 0.22));
+          var light = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+          var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='32' viewBox='0 0 24 32' fill='none'><defs><clipPath id='c'><path d='M1 1L1 27L8.5 16.5L21 18Z'/></clipPath></defs><g clip-path='url(%23c)'><rect width='24' height='32' fill='" + encodeURIComponent(accent) + "'/><polygon points='-2,10.2 10.2,-2 12.6,-2 -2,12.6' fill='%23FFFFFF'/><polygon points='-2,12.6 12.6,-2 20.8,-2 -2,20.8' fill='" + encodeURIComponent(light) + "'/><polygon points='-2,20.8 20.8,-2 23.2,-2 -2,23.2' fill='%23FFFFFF'/></g><path d='M1 1L1 27L8.5 16.5L21 18Z' fill='none' stroke='%2318191C' stroke-width='1.25' stroke-linejoin='round' stroke-linecap='round'/></svg>";
+          var uri = 'url("data:image/svg+xml,' + svg + '")';
+          document.documentElement.style.setProperty("--custom-cursor", uri + " 1 1, auto");
+          document.documentElement.style.setProperty("--custom-cursor-pointer", uri + " 1 1, pointer");
+        } catch(e) {}
+      } catch (e) {}
+    })();
+
     // Decode the route encoded by 404.html and restore it so React Router works on refresh
     (function () {
       var p = new URLSearchParams(window.location.search).get('p');

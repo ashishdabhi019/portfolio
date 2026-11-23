@@ -1,435 +1,677 @@
-/* ── Work Section ── */
+/* ═══════════════════════════════════════════════════════════════════
+   WORK SECTION — HORIZONTAL SCROLL SHOWCASE
+   ═══════════════════════════════════════════════════════════════════ */
+
 .work-section {
   position: relative;
-  z-index: 1;
-  background-color: var(--backgroundColor);
-  padding: 50px 0;
-}
-
-.work-section h2 {
-  font-size: 70px;
-  font-weight: 400;
-  margin-top: 0;
-  margin-bottom: 50px;
-}
-
-.work-section h2,
-.work-section h2 div,
-.work-section h2 .char,
-.work-section h2 .word {
-  background: linear-gradient(0deg, #5b21b6, #ffffff) !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
-  opacity: 1 !important;
-  transform: none !important;
-  visibility: visible !important;
-}
-
-.work-container {
-  margin: auto;
-}
-
-/* ── Carousel ── */
-.carousel-wrapper {
-  position: relative;
+  z-index: 5;
   width: 100%;
+  background-color: #07080b;
+}
+
+/* Pinned Fullscreen Stage using native sticky */
+.work-pin-stage {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: #07080b;
+}
+
+
+
+/* ─── FULL HORIZONTAL TRACK ──────────────────────────────────── */
+/* [Intro Block] -> [Card 01] -> [Card 02] -> [Card 03] -> [Card 04] -> [Card 05] */
+.work-horizontal-track {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 2.2vw, 34px);
+  padding-left: var(--site-gutter, clamp(24px, 4vw, 64px));
+  padding-right: var(--site-gutter, clamp(24px, 4vw, 64px));
+  will-change: transform;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── ITEM 0: INTRO HEADER BLOCK (Glides left on scroll) ─────── */
+.work-intro-block {
+  width: clamp(380px, 32vw, 490px);
+  min-width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: clamp(12px, 1.5vw, 28px);
+  box-sizing: border-box;
+}
+
+/* 1. Tag: (03) —— SELECTED WORK */
+.work-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.work-tag-num {
+  font-family: "Geist", monospace, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accentColor, #F97316);
+  letter-spacing: 0.02em;
+}
+
+.work-tag-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.22);
+}
+
+.work-tag-label {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+}
+
+/* 2. Headline: Work that *moves* the needle. */
+.work-heading {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(48px, 4.8vw, 76px);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  margin: 0 0 24px 0;
+  text-transform: none;
+}
+
+.work-heading-desktop {
+  display: block;
+}
+
+.work-heading-mobile {
+  display: none;
+}
+
+/* Signature italic accent word */
+.work-heading-accent {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: 100%;
+  color: var(--accentColor, #F97316);
+  letter-spacing: -0.02em;
+  display: inline-block;
+  padding: 0 4px 0 2px;
+}
+
+/* 3. Subtitle description */
+.work-desc {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  max-width: 480px;
+  font-weight: 400;
+}
+
+.work-desc-brands {
+  display: block;
+  white-space: nowrap;
+}
+
+.work-desc-scroll {
+  display: block;
+  margin-top: 2px;
+}
+
+/* ─── ITEMS 1 TO 5: WIDE CINEMA CARDS ────────────────────────── */
+.work-card {
+  position: relative;
+  width: clamp(567px, calc(48vw + 7px), 787px);
+  height: clamp(500px, 72vh, 640px);
+  border-radius: 36px;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(34px, 3.8vw, 48px);
+  box-sizing: border-box;
+  text-decoration: none;
+  background-color: #101117;
+  border: none !important;
+  box-shadow: none !important;
+  /* Card does NOT rise or scale on hover — stays completely steady in place */
   user-select: none;
   -webkit-user-select: none;
 }
 
-.carousel-track-container {
+/* Card Background Image */
+.work-card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   overflow: hidden;
+}
+
+.work-card-img {
   width: 100%;
-  max-width: 100vw;
-  box-sizing: border-box;
-  border-top: 1px solid #363636;
-  border-bottom: 1px solid #363636;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: brightness(0.88) contrast(1.08);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.carousel-track {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  /* Firefox */
+/* ONLY ZOOM IMAGE ON HOVER (NO card rise, NO orange border) */
+.work-card:hover .work-card-img {
+  transform: scale(1.06);
 }
 
-.carousel-track::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari */
+/* Multi-stop atmospheric dark gradient overlay */
+.work-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 9, 13, 0.25) 0%,
+    rgba(8, 9, 13, 0.15) 30%,
+    rgba(8, 9, 13, 0.65) 60%,
+    rgba(8, 9, 13, 0.94) 88%,
+    rgba(8, 9, 13, 0.98) 100%
+  );
+  pointer-events: none;
 }
 
-.carousel-slide {
-  min-width: 100%;
-  width: 100%;
-  max-width: 100%;
-  flex-shrink: 0;
-  box-sizing: border-box;
-  padding: 50px 0;
-  scroll-snap-align: center;
-}
-
-.carousel-content {
-  display: flex;
-  align-items: center;
-  gap: 60px;
-  width: 100%;
-}
-
-.carousel-info {
-  flex: 1;
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-}
-
-.carousel-number h3 {
-  font-size: 60px;
+/* Card Number: Lower-right corner position in Archivo display */
+.work-card-number,
+.work-card-watermark {
+  position: absolute;
+  bottom: clamp(30px, 3.6vw, 44px);
+  right: clamp(34px, 3.8vw, 48px);
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(68px, 6.5vw, 96px);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
   line-height: 1;
-  margin: 0;
-  font-weight: 600;
-  opacity: 0.3;
+  letter-spacing: -0.035em;
+  color: rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
 }
 
-.carousel-details {
+/* Card Bottom Content — clean two-line layout */
+.work-card-bottom {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: calc(100% - 130px);
+}
+
+.work-card-meta {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.carousel-details h4 {
-  font-size: 28px;
-  font-weight: 500;
-  margin: 0;
-}
-
-.carousel-category {
-  font-weight: 200;
-  color: #adacac;
-  margin: 0;
-  font-size: 16px;
-}
-
-.carousel-tools {
-  margin-top: 16px;
-}
-
-.carousel-tools .tools-label {
-  font-size: 14px;
-  font-weight: 400;
-  opacity: 0.6;
+.work-card-meta-category {
+  font-family: "Geist Mono", monospace, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.65) !important;
   text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
-.carousel-tools p {
-  font-weight: 200;
-  color: #adacac;
-  margin: 6px 0 0;
-  font-size: 15px;
+/* Card Title: Archivo display font, 800 weight, 118% stretch, pure white in all themes */
+.work-card-title,
+[data-theme="light"] .work-card-title {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(34px, 3.8vw, 50px);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: #ffffff !important;
+  margin: 0;
+  word-break: break-word;
 }
 
-.carousel-image-wrapper {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Clean cinema card bottom: hide tagline and chips across desktop and mobile */
+.work-card-tagline {
+  display: none !important;
 }
 
-/* ── Apple Inspired Liquid Glass Controls ── */
-.apple-controls-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  margin-top: 35px;
+.work-card-tools {
+  display: none !important;
+}
+
+/* ─── ITEM 6: "VIEW ALL WORK" CARD ───────────────────────────── */
+.work-card--view-all {
   position: relative;
-  z-index: 20;
-}
-
-.glass-pill {
-  background: var(--glass-bg);
-  /* Same as navbar */
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--spring);
-  isolation: isolate;
-}
-
-.glass-pill::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.18) 0%, transparent 55%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.glass-pill:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: scale(1.05);
-}
-
-.apple-play-pill {
-  width: 44px;
-  height: 44px;
-  color: #fff;
-  font-size: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: none;
+  flex-shrink: 0 !important;
+  width: clamp(340px, 26vw, 420px) !important;
+  height: clamp(500px, 72vh, 640px);
+  border-radius: 36px;
+  background-color: #07080b !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 24px !important;
+  padding: clamp(34px, 3.8vw, 48px) !important;
+  box-sizing: border-box;
+  text-decoration: none;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.apple-play-pill:active {
-  transform: scale(0.92);
-  background: rgba(124, 58, 237, 0.18);
-}
-
-.apple-pagination-pill {
-  height: 44px;
-  padding: 0 16px;
-  gap: 8px;
-}
-
-.apple-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50px;
-  background: rgba(255, 255, 255, 0.35);
-  transition: width 0.4s var(--spring), background 0.4s ease;
-  position: relative;
-  overflow: hidden;
-  padding: 0;
-  border: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.apple-dot:hover {
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.apple-dot:active {
-  transform: scale(0.85);
-}
-
-.apple-dot-active {
-  width: 32px;
-  /* longer pill base */
-  background: rgba(255, 255, 255, 0.15);
-  /* dimmed track */
-  box-shadow: none;
-}
-
-.apple-dot-progress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: #fff;
-  border-radius: 50px;
-  animation-name: progressFill;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-
-@keyframes progressFill {
-  0% {
-    width: 0%;
-  }
-
-  100% {
-    width: 100%;
-  }
-}
-
-/* ── Work Image (reused) ── */
-.work-image {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-}
-
-.work-image-in {
-  position: relative;
-}
-
-.work-link {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: var(--backgroundColor);
-  width: 50px;
-  border-radius: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 25px;
-  box-shadow: 0px 0px 10px 0px rgba(255, 255, 255, 0.5),
-    inset 0px 0px 10px 0px #393939;
-  transition: 0.3s;
-  opacity: 0;
-}
-
-.work-image a:hover {
-  color: inherit;
-}
-
-.work-image a:hover .work-link {
-  opacity: 1;
-}
-
-.work-image video {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: #000;
-  object-fit: cover;
-}
-
-.work-image img {
-  max-width: 100%;
-  max-height: 360px;
-  border-radius: 8px;
-  pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
+  transition: background-color 0.3s ease;
 }
 
-/* ── Responsive ── */
-/* Responsive cleanup */
-@media only screen and (max-width: 1600px) {}
+/* NO hover effect on border of view all card in any size and theme color */
+.work-card--view-all:hover {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
 
-@media only screen and (max-width: 1400px) {
-  .work-section h2 {
-    font-size: 50px;
+.work-view-all-circle {
+  width: clamp(104px, 8.5vw, 118px);
+  height: clamp(104px, 8.5vw, 118px);
+  border-radius: 50%;
+  background-color: var(--accentColor, #F97316);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.work-view-all-arrow {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: clamp(34px, 2.8vw, 42px);
+  line-height: 1;
+  font-weight: 300;
+  color: #000000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  margin-top: -2px;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  user-select: none;
+}
+
+.work-card--view-all:hover .work-view-all-circle {
+  transform: scale(1.1);
+}
+
+.work-card--view-all:hover .work-view-all-arrow {
+  transform: rotate(-45deg);
+}
+
+.work-card--view-all:active .work-view-all-circle {
+  transform: scale(0.96);
+}
+
+.work-view-all-text {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(28px, 2.8vw, 40px);
+  font-weight: 800;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap !important;
+  transition: color 0.3s ease;
+}
+
+#techstack {
+  background-color: #07080b;
+  margin: 0;
+  padding: 0;
+}
+
+/* ════════════════════ LIGHT THEME OVERRIDES ═════════════════════ */
+[data-theme="light"] .work-section {
+  background-color: #F5F1EE;
+}
+
+[data-theme="light"] .work-pin-stage {
+  background-color: #F5F1EE;
+}
+
+[data-theme="light"] #techstack {
+  background-color: #F5F1EE;
+}
+
+[data-theme="light"] .work-tag-label {
+  color: rgba(10, 11, 16, 0.6);
+}
+
+[data-theme="light"] .work-tag-line {
+  background-color: rgba(10, 11, 16, 0.2);
+}
+
+[data-theme="light"] .work-heading {
+  color: #0a0b10;
+}
+
+[data-theme="light"] .work-desc {
+  color: rgba(10, 11, 16, 0.6);
+}
+
+[data-theme="light"] .work-card {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+[data-theme="light"] .work-card--view-all {
+  background-color: #F5F1EE !important;
+  border: 1px solid rgba(11, 12, 16, 0.12) !important;
+  box-shadow: none !important;
+}
+
+/* NO hover effect on border of view all card in any size and theme color */
+[data-theme="light"] .work-card--view-all:hover {
+  border-color: rgba(11, 12, 16, 0.12) !important;
+}
+
+[data-theme="light"] .work-card--view-all .work-view-all-text {
+  color: #0b0c10 !important;
+}
+
+[data-theme="light"] .work-card-title {
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .work-card-meta-category {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+[data-theme="light"] .work-card-number,
+[data-theme="light"] .work-card-watermark {
+  color: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* ════════════════════ RESPONSIVE ADAPTATIONS ═══════════════════ */
+
+/* Laptops & Medium Desktops (Horizontal pinned scroll) */
+@media (min-width: 1024px) and (max-width: 1300px) {
+  .work-intro-block {
+    width: clamp(320px, 28vw, 400px);
+    padding-right: 18px;
   }
-
-  .carousel-details h4 {
-    font-size: 22px;
+  .work-heading {
+    font-size: clamp(42px, 4.2vw, 58px);
   }
-
-  .carousel-number h3 {
-    font-size: 45px;
+  .work-card {
+    width: clamp(527px, calc(52vw + 7px), 687px);
+    height: clamp(460px, 68vh, 580px);
   }
-
-  .carousel-content {
-    gap: 40px;
+  .work-card--view-all {
+    width: clamp(340px, 30vw, 420px);
+    height: clamp(460px, 68vh, 580px);
   }
 }
 
-@media only screen and (max-width: 1025px) {
-  .carousel-content {
-    flex-direction: column;
-    gap: 30px;
-  }
-
-  .carousel-info {
-    width: 100%;
-  }
-
-  .carousel-image-wrapper {
-    width: 100%;
-  }
-}
-
-@media only screen and (max-width: 900px) {
+/* ═══════════════════════════════════════════════════════════════════
+   VERTICAL SCROLL SHOWCASE (Phones, iPad mini vertical, portrait tablets)
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 1023px), (orientation: portrait) and (max-width: 1050px) {
   .work-section {
-    padding: 50px 0;
+    position: relative !important;
+    height: auto !important;
+    padding: clamp(70px, 9vw, 110px) 0 clamp(80px, 10vw, 120px) !important;
+    overflow: visible !important;
   }
 
-  .work-section h2 {
-    font-size: 40px;
-    margin-bottom: 30px;
+  .work-pin-stage {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    padding: 0 !important;
   }
 
-  .carousel-number h3 {
-    font-size: 35px;
+  .work-horizontal-track {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 var(--site-padding-x) !important;
+    box-sizing: border-box !important;
+    gap: clamp(20px, 3.5vw, 28px) !important;
   }
 
-  .carousel-details h4 {
-    font-size: 20px;
+  .work-intro-block {
+    width: 100% !important;
+    max-width: 580px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 auto clamp(12px, 2.5vw, 24px) auto !important;
   }
 
-  .carousel-content {
-    gap: 20px;
+  .work-tag {
+    margin-bottom: 16px;
   }
 
-  .carousel-slide {
-    padding: 30px 0;
+  .work-heading-desktop {
+    display: none !important;
   }
 
-  .work-image img {
-    max-height: 250px;
+  .work-heading-mobile {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .work-heading-m-line1 {
+    display: block !important;
+    white-space: nowrap !important;
+  }
+
+  .work-heading-m-line2 {
+    display: block !important;
+    white-space: nowrap !important;
+  }
+
+  .work-heading {
+    font-size: clamp(38px, 6.8vw, 56px) !important;
+    line-height: 1.02 !important;
+    margin-bottom: 16px !important;
+  }
+
+  .work-desc {
+    font-size: clamp(13px, 3.2vw, 15px) !important;
+    line-height: 1.5 !important;
+    margin-bottom: 8px !important;
+    max-width: 100% !important;
+  }
+
+  .work-desc-brands {
+    white-space: normal !important;
+    display: inline !important;
+  }
+
+  .work-desc-scroll {
+    display: inline !important;
+    margin-left: 6px !important;
+  }
+
+  .work-card {
+    width: 100% !important;
+    max-width: 580px !important;
+    height: clamp(420px, 60vh, 520px) !important;
+    border-radius: clamp(24px, 4.5vw, 32px) !important;
+    padding: clamp(22px, 4vw, 32px) !important;
+    margin: 0 auto !important;
+  }
+
+  .work-card-bottom {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    position: relative !important;
+    z-index: 3 !important;
+  }
+
+  .work-card-meta {
+    max-width: calc(100% - 95px) !important;
+    gap: 6px !important;
+  }
+
+  .work-card-meta-category {
+    font-size: 11px !important;
+    letter-spacing: 0.18em !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    margin-bottom: 2px !important;
+  }
+
+  .work-card-title {
+    font-size: clamp(30px, 5.5vw, 40px) !important;
+    line-height: 1.02 !important;
+    letter-spacing: -0.035em !important;
+    font-weight: 800 !important;
+    font-stretch: 118% !important;
+    font-variation-settings: "wdth" 118, "wght" 800 !important;
+  }
+
+  /* Hide tagline and chips on small displays for clean cinema card bottom */
+  .work-card-tagline {
+    display: none !important;
+  }
+
+  .work-card-tools {
+    display: none !important;
+  }
+
+  .work-card-number,
+  .work-card-watermark {
+    font-size: clamp(46px, 11vw, 62px) !important;
+    bottom: clamp(20px, 4vw, 28px) !important;
+    right: clamp(22px, 4vw, 30px) !important;
+    color: rgba(255, 255, 255, 0.22) !important;
+    line-height: 1 !important;
+    z-index: 3 !important;
+  }
+
+  .work-card--view-all {
+    width: 100% !important;
+    max-width: 580px !important;
+    height: 270px !important;
+    min-height: 270px !important;
+    max-height: 270px !important;
+    border-radius: clamp(24px, 4.5vw, 32px) !important;
+    padding: 36px 28px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 18px !important;
+  }
+
+  .work-card--view-all .work-view-all-circle {
+    width: 96px !important;
+    height: 96px !important;
+  }
+
+  .work-card--view-all .work-view-all-arrow {
+    font-size: 32px !important;
+  }
+
+  .work-card--view-all .work-view-all-text {
+    font-size: clamp(24px, 5.2vw, 32px) !important;
+    white-space: nowrap !important;
   }
 }
 
-@media only screen and (max-width: 600px) {
-  .work-section h2 {
-    font-size: 36px;
-    padding: 0 15px;
+/* Mobile Phones (iPhone, Android) */
+@media (max-width: 600px) {
+  .work-section {
+    padding: 50px 0 70px !important;
   }
 
-  .carousel-slide {
-    padding: 20px 0;
+  .work-horizontal-track {
+    gap: 20px !important;
   }
 
-  .carousel-content {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
+  .work-heading {
+    font-size: clamp(34px, 8.8vw, 44px) !important;
+    line-height: 1.04 !important;
+    margin-bottom: 14px !important;
   }
 
-  .carousel-info {
-    flex-direction: column;
-    gap: 15px;
-    padding: 0 20px;
-    box-sizing: border-box;
-    max-width: 100%;
+  .work-card {
+    height: clamp(380px, 58vh, 460px) !important;
+    border-radius: 26px !important;
+    padding: 22px 24px !important;
   }
 
-  .carousel-number h3 {
-    font-size: 36px;
+  .work-card--view-all {
+    height: 250px !important;
+    min-height: 250px !important;
+    max-height: 250px !important;
+    border-radius: 26px !important;
+    padding: 30px 20px !important;
+    gap: 16px !important;
   }
 
-  .carousel-details h4 {
-    font-size: 20px;
+  .work-card--view-all .work-view-all-circle {
+    width: 86px !important;
+    height: 86px !important;
   }
 
-  .carousel-image-wrapper {
-    padding: 0 20px;
-    display: block;
-    box-sizing: border-box;
-    max-width: 100%;
+  .work-card--view-all .work-view-all-arrow {
+    font-size: 28px !important;
   }
 
-  .work-image img {
-    max-height: 200px;
+  .work-card--view-all .work-view-all-text {
+    font-size: clamp(22px, 5.8vw, 26px) !important;
+    white-space: nowrap !important;
   }
 
-  .apple-controls-bar {
-    margin-top: 45px;
-    padding-bottom: 5px;
+  .work-card-meta {
+    max-width: calc(100% - 80px) !important;
+  }
+
+  .work-card-title {
+    font-size: clamp(28px, 7.5vw, 34px) !important;
+    line-height: 1.02 !important;
+  }
+
+  .work-card-number,
+  .work-card-watermark {
+    font-size: clamp(48px, 12vw, 58px) !important;
+    bottom: 20px !important;
+    right: 22px !important;
+    color: rgba(255, 255, 255, 0.22) !important;
   }
 }

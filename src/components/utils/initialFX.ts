@@ -13,10 +13,7 @@ export function initialFX() {
 
   document.body.style.overflowY = "auto";
   document.getElementsByTagName("main")[0].classList.add("main-active");
-  gsap.to("body", {
-    backgroundColor: "#0a0a0f",
-    duration: 0,
-  });
+  document.body.style.removeProperty("background-color");
 
   var landingText = new SplitText(
     [".landing-info h3", ".landing-intro h2", ".landing-intro h1"],
@@ -68,7 +65,7 @@ export function initialFX() {
     }
   );
   gsap.fromTo(
-    [".header", ".icons-section", ".nav-fade"],
+    [".header", ".icons-section"],
     { opacity: 0 },
     {
       opacity: 1,

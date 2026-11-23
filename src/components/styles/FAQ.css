@@ -1,0 +1,378 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+
+/* ══════════════════════════════════════════════════════════
+   FAQ SECTION — "Questions, answered."
+   ══════════════════════════════════════════════════════════ */
+
+.faq-section {
+  position: relative;
+  width: 100%;
+  background: var(--backgroundColor, #07080b);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.faq-container {
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 64px);
+  box-sizing: border-box;
+}
+
+/* ── Full-width top border ── */
+.faq-top-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 2;
+}
+
+/* ── 2-Column Grid (Auto left column fits 70px title, 1fr accordion) ── */
+.faq-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(44px, 5vw, 96px);
+  align-items: flex-start;
+  padding: clamp(140px, 16vh, 210px) 0 clamp(140px, 16vh, 210px) 0;
+}
+
+/* ════════════════════ LEFT COLUMN ════════════════════════ */
+.faq-left {
+  position: sticky;
+  top: clamp(120px, 14vh, 160px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Eyebrow — (11) —— FAQ */
+.faq-eyebrow-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 4px;
+  margin-bottom: clamp(22px, 2.4vw, 28px) !important;
+}
+
+.faq-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.faq-eyebrow.title-reveal-line {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.faq-eyebrow-num {
+  font-family: "Geist Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accentColor, #F97316);
+  letter-spacing: 0.02em;
+}
+
+.faq-eyebrow-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.faq-eyebrow-label {
+  font-family: "Geist Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+}
+
+/* Heading — "Questions," then italic serif "answered." (70px on PC matching user spec) */
+.faq-heading {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-variation-settings: "wdth" 125, "wght" 800;
+  font-size: 70px;
+  color: #ffffff;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+/* Masked clip container for the reveal slide-up — one per line */
+.faq-reveal-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: 0.04em;
+}
+
+/* Each line slides up from yPercent: 115 → 0 on scroll-enter */
+.faq-reveal-mask .title-reveal-line {
+  display: block;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.faq-heading-serif {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.0em;
+  color: var(--accentColor, #F97316);
+  letter-spacing: -0.02em;
+}
+
+/* Signature period dot in headline Archivo font (matching Career & Selected Work) */
+.faq-heading-dot {
+  font-family: "Archivo", "Arial Black", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  font-stretch: 125% !important;
+  font-variation-settings: "wdth" 125, "wght" 800 !important;
+  color: #ffffff;
+  display: inline-block;
+  margin-left: 0.02em;
+  line-height: 0.94;
+  vertical-align: baseline;
+  transition: color 0.3s ease;
+}
+
+.faq-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ════════════════════ RIGHT COLUMN — ACCORDION ═══════════ */
+.faq-right {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+}
+
+/* Each FAQ item */
+.faq-item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Divider line under each item */
+.faq-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Question row (button) */
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: clamp(22px, 2.5vw, 32px) 0;
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.faq-question-text {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(18.5px, 1.8vw, 23px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  transition: color 0.25s ease;
+}
+
+.faq-item--open .faq-question-text {
+  color: #ffffff;
+}
+
+/* Hover turns question text orange */
+.faq-question:hover .faq-question-text,
+.faq-item--open .faq-question:hover .faq-question-text {
+  color: var(--accentColor, #F97316);
+}
+
+/* +/- toggle button */
+.faq-toggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-item--open .faq-toggle {
+  background: var(--accentColor, #F97316);
+  border-color: var(--accentColor, #F97316);
+  color: #000000;
+}
+
+.faq-question:hover .faq-toggle {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.faq-item--open .faq-question:hover .faq-toggle {
+  border-color: var(--accentColor, #F97316);
+  color: #000000;
+}
+
+/* ── Smooth accordion answer reveal ── */
+.faq-answer-wrap {
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: max-height;
+}
+
+.faq-answer {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(14.5px, 1.1vw, 16px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.72;
+  letter-spacing: -0.005em;
+  margin: 0 0 clamp(22px, 2vw, 32px) 0;
+  padding-right: clamp(16px, 3vw, 56px);
+}
+
+/* ════════════════════ LIGHT THEME OVERRIDES ═══════════════ */
+
+[data-theme="light"] .faq-section {
+  background: #F5F1EE;
+}
+
+[data-theme="light"] .faq-top-border {
+  background: rgba(11, 12, 16, 0.1);
+}
+
+[data-theme="light"] .faq-eyebrow-line {
+  background: rgba(11, 12, 16, 0.2);
+}
+
+[data-theme="light"] .faq-eyebrow-label {
+  color: rgba(11, 12, 16, 0.5);
+}
+
+[data-theme="light"] .faq-heading {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .faq-heading-dot {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .faq-divider {
+  background: rgba(11, 12, 16, 0.1);
+}
+
+[data-theme="light"] .faq-question-text {
+  color: rgba(11, 12, 16, 0.72);
+}
+
+[data-theme="light"] .faq-item--open .faq-question-text {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .faq-toggle {
+  border-color: rgba(11, 12, 16, 0.18);
+  color: rgba(11, 12, 16, 0.5);
+  background: transparent;
+}
+
+/* Remove hover effect on + button in light mode */
+[data-theme="light"] .faq-question:hover .faq-toggle {
+  border-color: rgba(11, 12, 16, 0.18);
+  color: rgba(11, 12, 16, 0.5);
+  background: transparent;
+}
+
+[data-theme="light"] .faq-item--open .faq-toggle,
+[data-theme="light"] .faq-item--open .faq-question:hover .faq-toggle {
+  background: var(--accentColor, #F97316);
+  border-color: var(--accentColor, #F97316);
+  color: #000000;
+}
+
+[data-theme="light"] .faq-answer {
+  color: rgba(11, 12, 16, 0.55);
+}
+
+/* ════════════════════ RESPONSIVE ═════════════════════════ */
+
+@media (max-width: 1100px) {
+  .faq-grid {
+    grid-template-columns: auto 1fr;
+    gap: clamp(36px, 4vw, 56px);
+  }
+
+  .faq-heading {
+    font-size: 70px;
+    font-stretch: 125%;
+    font-variation-settings: "wdth" 125, "wght" 800;
+  }
+
+  .faq-question-text {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 768px) {
+  .faq-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: clamp(100px, 12vw, 140px) 0;
+  }
+
+  .faq-left {
+    position: static;
+  }
+
+  .faq-heading {
+    font-size: clamp(38px, 10vw, 54px);
+  }
+
+  .faq-question-text {
+    font-size: clamp(15px, 4.2vw, 18px);
+  }
+}
+
+@media (max-width: 480px) {
+  .faq-heading {
+    font-size: clamp(32px, 9vw, 46px);
+  }
+
+  .faq-toggle {
+    width: 30px;
+    height: 30px;
+  }
+}

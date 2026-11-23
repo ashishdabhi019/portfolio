@@ -1,0 +1,520 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Instrument+Serif:ital@0;1&display=swap");
+
+/* ══════════════════════════════════════════════════════════
+   PROCESS SECTION — "HOW I WORK"
+   Features:
+   - Sticky Stacking Cards Scroll Animation
+   - Masked Line Scroll Reveal for Eyebrow & Headline
+   - Solo AI / ML Engineer tailored workflow
+   ══════════════════════════════════════════════════════════ */
+
+.process-section {
+  position: relative;
+  width: 100%;
+  background: var(--backgroundColor, #07080b);
+  box-sizing: border-box;
+  overflow: visible; /* Required for sticky children */
+}
+
+/* ── Full-width top border ── */
+.process-top-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 2;
+}
+
+.process-container {
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 64px);
+  box-sizing: border-box;
+}
+
+/* ════════════════════ HEADER ROW ══════════════════════════ */
+.process-header {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.35fr) minmax(280px, 1fr);
+  gap: clamp(32px, 5vw, 96px);
+  align-items: flex-end;
+  padding: clamp(130px, 15vh, 190px) 0 clamp(44px, 5vh, 64px) 0;
+  box-sizing: border-box;
+}
+
+.process-header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ── Eyebrow tag: (06) —— HOW I WORK ── */
+.process-tag-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 4px;
+  margin-bottom: clamp(22px, 2.4vw, 28px) !important;
+}
+
+.process-tag {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.process-tag.title-reveal-line {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.process-tag-num {
+  font-family: "Geist Mono", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accentColor, #F97316);
+  letter-spacing: 0.02em;
+}
+
+.process-tag-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.process-tag-label {
+  font-family: "Geist Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+}
+
+/* ── Heading: "A process built" / "for momentum." (Signature Archivo) ── */
+.process-heading {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  font-size: clamp(44px, 5.5vw, 86px);
+  color: #ffffff;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+/* Mask for masked line scroll reveal */
+.process-reveal-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.process-reveal-mask .title-reveal-line {
+  display: block;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.process-heading-serif {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.0em;
+  color: var(--accentColor, #F97316);
+  letter-spacing: -0.02em;
+}
+
+/* Signature period dot in headline Archivo font (matching Career & Selected Work) */
+.process-heading-dot {
+  font-family: "Archivo", "Arial Black", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  font-stretch: 118% !important;
+  font-variation-settings: "wdth" 118, "wght" 800 !important;
+  color: #ffffff;
+  display: inline-block;
+  margin-left: 0.02em;
+  line-height: 0.94;
+  vertical-align: baseline;
+  transition: color 0.3s ease;
+}
+
+.process-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Right side header subtext ── */
+.process-header-right {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 6px;
+}
+
+.process-subtitle {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(16px, 1.35vw, 20px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  margin: 0;
+  max-width: 480px;
+}
+
+/* ════════════════════ STACKING CARDS LIST ═════════════════ */
+.process-cards-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 24px;
+  padding-bottom: clamp(220px, 28vh, 320px);
+}
+
+/* Each sticky card:
+   Background: #0E0E13, Border: 1px solid rgba(255, 255, 255, 0.08),
+   Border-radius: 32px (rounded-[2rem]), Desktop Padding: 52px 56px,
+   Desktop Height: ~205px, Sticky: top: calc(clamp(110px, 12vh, 135px) + var(--card-index) * 18px)
+*/
+.process-card {
+  position: sticky;
+  top: calc(clamp(110px, 12vh, 135px) + var(--card-index, 0) * 18px);
+  z-index: calc(var(--card-index, 0) + 1);
+  width: 100%;
+  min-height: clamp(195px, 21vh, 230px);
+  background: #0E0E13;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  box-shadow:
+    0 24px 50px -12px rgba(0, 0, 0, 0.85),
+    0 10px 24px -6px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  padding: 52px 56px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  transition: background 0.25s ease;
+  will-change: transform;
+}
+
+/* 2-card stack at end: Card 05 stops right below Card 04 so both 04 & 05
+   remain fully visible as a 2-card stack and scroll together into FAQ without overlapping */
+.process-card:last-child {
+  top: calc(clamp(110px, 12vh, 135px) + 3 * 18px + 205px + 24px);
+}
+
+/* Clean card hover state */
+.process-card:hover {
+  background: #0E0E13;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 24px 50px -12px rgba(0, 0, 0, 0.85),
+    0 10px 24px -6px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* Inner card grid */
+.process-card-inner {
+  display: grid;
+  grid-template-columns: minmax(400px, 1.35fr) 1.15fr;
+  align-items: center;
+  gap: 36px;
+  width: 100%;
+}
+
+/* Left side of card: Number + Single-Word Title in Archivo */
+.process-card-left {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(24px, 2.5vw, 36px);
+  flex-shrink: 0;
+}
+
+/* Number: Archivo display font, 800 weight, 118% stretch */
+.process-card-num {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(68px, 7vw, 92px);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  color: var(--accentColor, #F97316);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Title: Archivo display font, 800 weight, 115% stretch */
+.process-card-title {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(54px, 5.8vw, 80px);
+  font-weight: 800;
+  font-stretch: 115%;
+  font-variation-settings: "wdth" 115, "wght" 800;
+  color: #ffffff;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin: 0;
+}
+
+.process-card:hover .process-card-title {
+  color: #ffffff;
+}
+
+/* Right side of card: Description */
+.process-card-right {
+  display: flex;
+  align-items: center;
+}
+
+.process-card-desc {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(16px, 1.35vw, 19px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  margin: 0;
+  max-width: 520px;
+}
+
+/* ════════════════════ LIGHT THEME OVERRIDES ═══════════════ */
+
+[data-theme="light"] .process-section {
+  background: #F5F1EE;
+}
+
+[data-theme="light"] .process-top-border {
+  background: rgba(11, 12, 16, 0.1);
+}
+
+[data-theme="light"] .process-tag-line {
+  background: rgba(11, 12, 16, 0.2);
+}
+
+[data-theme="light"] .process-tag-label {
+  color: rgba(11, 12, 16, 0.55);
+}
+
+[data-theme="light"] .process-heading {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .process-heading-dot {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .process-subtitle {
+  color: rgba(11, 12, 16, 0.62);
+}
+
+[data-theme="light"] .process-card {
+  background: #ffffff;
+  border: 1px solid rgba(11, 12, 16, 0.08);
+  box-shadow:
+    0 20px 40px -15px rgba(0, 0, 0, 0.12),
+    0 8px 16px -6px rgba(0, 0, 0, 0.08),
+    0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .process-card:hover {
+  background: #ffffff;
+  border-color: rgba(11, 12, 16, 0.08);
+  box-shadow:
+    0 20px 40px -15px rgba(0, 0, 0, 0.12),
+    0 8px 16px -6px rgba(0, 0, 0, 0.08),
+    0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .process-card-title,
+[data-theme="light"] .process-card:hover .process-card-title {
+  color: #0b0c10;
+}
+
+[data-theme="light"] .process-card-desc,
+[data-theme="light"] .process-card:hover .process-card-desc {
+  color: rgba(11, 12, 16, 0.65);
+}
+
+[data-theme="light"] .process-card-num,
+[data-theme="light"] .process-card:hover .process-card-num {
+  color: var(--accentColor, #F97316);
+}
+
+/* ════════════════════ RESPONSIVE ═════════════════════════ */
+
+@media (max-width: 1024px) {
+  .process-header {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: clamp(110px, 13vh, 150px) 0 40px 0;
+  }
+
+  .process-cards-container {
+    gap: 24px;
+    padding-bottom: clamp(180px, 22vh, 250px);
+  }
+
+  .process-card {
+    top: calc(clamp(100px, 11vh, 125px) + var(--card-index, 0) * 16px);
+    height: auto;
+    min-height: 190px;
+    padding: 44px 44px;
+    border-radius: 32px;
+  }
+
+  .process-card:last-child {
+    top: calc(clamp(100px, 11vh, 125px) + 3 * 16px + 190px + 20px);
+  }
+
+  .process-card-inner {
+    grid-template-columns: minmax(280px, 1.2fr) 1.2fr;
+    gap: 28px;
+  }
+
+  .process-card-num {
+    font-size: clamp(56px, 6vw, 76px);
+  }
+
+  .process-card-title {
+    font-size: clamp(46px, 5.2vw, 64px);
+  }
+
+  .process-card-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .process-container {
+    padding: 0 16px;
+  }
+
+  .process-header {
+    padding: clamp(100px, 12vh, 140px) 0 32px 0;
+  }
+
+  .process-cards-container {
+    gap: 20px;
+    padding-bottom: clamp(160px, 20vh, 220px);
+  }
+
+  .process-card {
+    top: calc(clamp(90px, 11vh, 110px) + var(--card-index, 0) * 14px);
+    height: auto;
+    min-height: 310px;
+    padding: 36px 28px;
+    border-radius: 28px;
+    align-items: flex-start;
+  }
+
+  .process-card:last-child {
+    top: calc(clamp(90px, 11vh, 110px) + 3 * 14px + 310px + 20px);
+  }
+
+  .process-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    width: 100%;
+  }
+
+  .process-card-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .process-card-num {
+    font-size: 52px;
+    line-height: 1;
+  }
+
+  .process-card-title {
+    font-size: 40px;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  .process-card-right {
+    width: 100%;
+  }
+
+  .process-card-desc {
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.68);
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .process-container {
+    padding: 0 14px;
+  }
+
+  .process-cards-container {
+    gap: 18px;
+    padding-bottom: clamp(140px, 18vh, 190px);
+  }
+
+  .process-card {
+    top: calc(clamp(85px, 10vh, 100px) + var(--card-index, 0) * 12px);
+    min-height: 290px;
+    padding: 32px 22px;
+    border-radius: 24px;
+  }
+
+  .process-card:last-child {
+    top: calc(clamp(85px, 10vh, 100px) + 3 * 12px + 290px + 16px);
+  }
+
+  .process-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .process-card-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .process-card-num {
+    font-size: 48px;
+  }
+
+  .process-card-title {
+    font-size: 36px;
+  }
+
+  .process-card-desc {
+    font-size: 15.5px;
+    line-height: 1.62;
+  }
+}

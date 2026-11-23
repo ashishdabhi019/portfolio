@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Geist+Mono:wght@400..700&family=Geist:wght@100..900&family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@1,400..700&display=swap");
+@import "./components/styles/Cursor.css";
 
 :root {
   font-family: "Geist", sans-serif;
@@ -18,18 +19,70 @@
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
-  --accentColor: #7C3AED;
-  --accentColorLight: #A78BFA;
+  --accentColor: #F97316;
+  --accentColorLight: #FB923C;
   --backgroundColor: #0a0a0f;
+  --textColor: #eae5ec;
   --vh: 100vh;
   --vh: 100svh;
+
+  /* ── Unified Site-Wide Grid & Gutter Tokens ─────────────────── */
+  --site-max-width: 1680px;
+  --site-padding-x: clamp(24px, 4vw, 64px);
+  --site-gutter: max(var(--site-padding-x), calc((100vw - var(--site-max-width)) / 2 + var(--site-padding-x)));
+  --cWidth: min(calc(100% - (var(--site-padding-x) * 2)), var(--site-max-width));
+  --cMaxWidth: var(--site-max-width);
+}
+
+/* ─── Global Smooth Theme Transitions ───────────────────────── */
+html,
+body,
+.container-main,
+.nf-nav,
+.nf-nav__inner,
+.nf-card,
+.nf-links-wrapper {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
+}
+
+/* ─── Light Mode Theme Tokens ───────────────────────────────── */
+[data-theme="light"],
+[data-theme="light"] body {
+  --backgroundColor: #FEFEFE;
+  --textColor: #0b0c10;
+  background-color: #FEFEFE !important;
+  color: #0b0c10;
+  color-scheme: light;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6,
+[data-theme="light"] p {
+  color: #0b0c10;
+}
+
+/* ─── Dark Mode Theme Tokens ────────────────────────────────── */
+[data-theme="dark"],
+[data-theme="dark"] body {
+  --backgroundColor: #07080b;
+  --textColor: #eae5ec;
+  background-color: #07080b !important;
+  color: #eae5ec;
+  color-scheme: dark;
 }
 
 html {
   scroll-padding-top: 100px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 834px) {
   html {
     scroll-padding-top: 140px; /* Accounts for floating mobile navigation pill */
   }
@@ -76,17 +129,17 @@ main {
 body {
   margin: 0;
   height: auto;
-  background-color: #0a0a0f;
+  background-color: var(--backgroundColor);
   flex-grow: 1;
-  --cWidth: calc(100% - 30px);
-  --cMaxWidth: 1920px;
+  --cWidth: min(calc(100% - (var(--site-padding-x) * 2)), var(--site-max-width));
+  --cMaxWidth: var(--site-max-width);
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .main-body {
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .container-main {
@@ -118,21 +171,72 @@ body {
   position: relative;
   overflow: hidden;
   height: var(--vh);
-  margin: auto;
-  margin-top: 50px;
+  margin: 0;
+  margin-top: 0;
   margin-bottom: 0;
+  padding: 0;
   clip-path: inset(0 0 0 0);
+  background-color: #07080b;
 }
 
-.techstack h2 {
+[data-theme="light"] .techstack {
+  background-color: #F5F1EE;
+}
+
+.techstack h2,
+.techstack-title {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  letter-spacing: -0.035em;
   font-size: 80px;
   text-align: center;
   position: absolute;
   width: 100%;
   top: 110px;
   left: 0;
-  font-weight: 400;
+  color: #ffffff;
   text-transform: none;
+  z-index: 2;
+  margin: 0;
+  transition: color 0.35s ease;
+}
+
+[data-theme="light"] .techstack h2,
+[data-theme="light"] .techstack-title {
+  color: #0b0c10;
+}
+
+.techstack-title-serif {
+  font-family: "Instrument Serif", Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  font-stretch: 100% !important;
+  color: var(--accentColor, #F97316) !important;
+  letter-spacing: -0.015em !important;
+  display: inline-block;
+  font-size: 1.05em;
+  line-height: 0.95;
+  padding-left: 0.08em;
+  transition: color 0.35s ease;
+}
+
+.techstack-title-dot {
+  font-family: "Archivo", "Arial Black", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  font-stretch: 118% !important;
+  color: #ffffff;
+  display: inline-block;
+  margin-left: 0.02em;
+  line-height: 0.94;
+  vertical-align: baseline;
+  transition: color 0.35s ease;
+}
+
+[data-theme="light"] .techstack-title-dot {
+  color: #0b0c10;
 }
 
 @media screen and (min-width: 768px) {
@@ -158,29 +262,33 @@ body {
 }
 
 .mobile-techstack-title {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  letter-spacing: -0.035em;
   font-size: 36px;
-  font-weight: 400;
   text-align: center;
   text-transform: none;
   margin: 0 0 16px;
-  background: linear-gradient(0deg, #5b21b6, #ffffff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  letter-spacing: 0.06em;
+  color: #ffffff;
+  transition: color 0.35s ease;
 }
 
-/* Fix GSAP SplitText: gradient must apply to inner char/line divs too */
+[data-theme="light"] .mobile-techstack-title {
+  color: #0b0c10;
+}
+
+/* Fix GSAP SplitText: plain solid color */
 .techstack h2.title div,
 .techstack h2.title .split-line,
 .mobile-techstack-title.title div,
 .mobile-techstack-title.title .split-line {
-  background: linear-gradient(0deg, #5b21b6, #ffffff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: inherit;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: inherit;
 }
 
 /* ── Fan stage — fixed height, cards positioned relative to center ── */
@@ -257,10 +365,10 @@ body {
 .fan-item:hover .fan-card {
   transform: translateY(-8px) scale(1.06);
   background: rgba(255, 255, 255, 0.12);
-  border-color: var(--fan-color, rgba(124, 58, 237, 0.8));
+  border-color: var(--fan-color, rgba(249, 115, 22, 0.8));
   box-shadow:
-    0 0 24px var(--fan-color, rgba(124, 58, 237, 0.4)),
-    0 0 16px var(--fan-color, rgba(124, 58, 237, 0.3)),
+    0 0 24px var(--fan-color, rgba(249, 115, 22, 0.4)),
+    0 0 16px var(--fan-color, rgba(249, 115, 22, 0.3)),
     0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
@@ -342,7 +450,7 @@ body {
 /* Drag hint */
 .ring-hint {
   font-size: 11px;
-  color: rgba(124, 58, 237, 0.4);
+  color: rgba(249, 115, 22, 0.4);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin: 10px 0 0;
@@ -411,14 +519,45 @@ body {
   position: fixed;
   right: 32px;
   bottom: 90px;
-  display: flex;
-  flex-direction: row-reverse;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
-  gap: 18px;
   z-index: 99998;
   cursor: pointer;
-  transition: all 0.3s ease;
   text-decoration: none;
+  border-radius: 100px;
+  padding: 5px;
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  transition: 
+    background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#greo-trigger-wrapper:hover {
+  padding: 5px 24px 5px 5px;
+  background: rgba(20, 21, 26, 0.78);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.55), 
+    0 4px 16px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] #greo-trigger-wrapper:hover {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 16px 36px rgba(0, 0, 0, 0.08), 
+    0 4px 12px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 #greo-ring-btn {
@@ -426,21 +565,21 @@ body {
   height: 65px;
   border-radius: 50%;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: none;
   outline: none;
-  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 100%);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.4), 
-    0 0 24px rgba(124, 58, 237, 0.2), 
-    inset 0 2px 6px rgba(255, 255, 255, 0.4), 
-    inset 0 -4px 12px rgba(124, 58, 237, 0.3);
+    0 12px 32px rgba(0, 0, 0, 0.35), 
+    inset 0 2px 5px rgba(255, 255, 255, 0.35), 
+    inset 0 -3px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   overflow: hidden;
+  flex-shrink: 0;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -483,71 +622,132 @@ body {
   margin: 0;
 }
 
+/* Greo button theme-specific logo toggle */
+.greo-logo--light {
+  display: none !important;
+}
+
+.greo-logo--dark {
+  display: block !important;
+}
+
+[data-theme="light"] .greo-logo--dark {
+  display: none !important;
+}
+
+[data-theme="light"] .greo-logo--light {
+  display: block !important;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15)) !important;
+}
+
 #greo-trigger-label {
-  font-family: "Geist", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  color: rgba(255, 255, 255, 0.9);
-  text-transform: none;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 100px;
-  padding: 8px 16px;
-  margin: 0;
-  white-space: nowrap;
   display: flex;
-  align-items: center;
-  line-height: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2px;
+  max-width: 0;
   opacity: 0;
-  visibility: hidden;
-  transform: translateX(12px);
-  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  overflow: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(10px);
+  margin-left: 0;
+  transition: 
+    max-width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-left 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #greo-trigger-wrapper:hover #greo-ring-btn {
-  scale: 1.08;
-  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(124, 58, 237, 0.15) 100%);
+  scale: 1.02;
+  background: radial-gradient(120% 120% at 30% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 100%);
   box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.6), 
-    0 0 32px rgba(124, 58, 237, 0.4), 
-    inset 0 3px 8px rgba(255, 255, 255, 0.6), 
-    inset 0 -6px 16px rgba(124, 58, 237, 0.5);
-  border-color: rgba(255, 255, 255, 0.3);
+    0 16px 48px rgba(0, 0, 0, 0.45), 
+    0 0 24px rgba(255, 255, 255, 0.15), 
+    inset 0 3px 8px rgba(255, 255, 255, 0.5), 
+    inset 0 -5px 14px rgba(0, 0, 0, 0.35);
 }
 
 #greo-trigger-wrapper:hover #greo-trigger-label {
+  max-width: 140px;
   opacity: 1;
-  visibility: visible;
   transform: translateX(0);
-  color: rgba(255,255,255,0.85);
+  margin-left: 14px;
+}
+
+.greo-label-title {
+  font-family: "Geist", -apple-system, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+[data-theme="light"] .greo-label-title {
+  color: #0b0c10;
+}
+
+.greo-label-status {
+  font-family: "Geist Mono", monospace, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+[data-theme="light"] .greo-label-status {
+  color: #64748b;
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
   #greo-trigger-wrapper {
     right: 24px;
     bottom: 100px;
-    gap: 12px;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  #greo-trigger-wrapper:hover {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   #greo-ring-btn {
     width: 48px;
     height: 48px;
   }
   #greo-trigger-label {
-    display: none;
+    display: none !important;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 834px) {
   #greo-trigger-wrapper {
     right: auto;
     left: 24px;
     bottom: 37px;
-    gap: 12px;
+    gap: 0;
     flex-direction: row;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  #greo-trigger-wrapper:hover {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   #greo-ring-btn {
     width: 62px;
@@ -555,7 +755,7 @@ body {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
     animation: none;
     display: flex;
     align-items: center;
@@ -581,6 +781,6 @@ body {
     margin: 0;
   }
   #greo-trigger-label {
-    display: none;
+    display: none !important;
   }
 }

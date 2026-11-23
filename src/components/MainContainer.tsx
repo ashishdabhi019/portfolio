@@ -1,9 +1,10 @@
 import { lazy, PropsWithChildren, Suspense, useEffect, useState } from "react";
 import About from "./About";
 import Career from "./Career";
-import Contact from "./Contact";
+import Footer from "./Footer";
 import ContactForm from "./ContactForm";
-import Cursor from "./Cursor";
+import FAQ from "./FAQ";
+import Process from "./Process";
 import { GreoButton } from "./GreoPage";
 import Landing from "./Landing";
 import Navbar from "./Navbar";
@@ -44,6 +45,9 @@ const MainContainer = ({ children }: PropsWithChildren) => {
       touchMultiplier: 2,
     });
 
+    (window as any).__lenisInstance = lenis;
+    (window as any).lenis = lenis;
+
     lenis.on('scroll', ScrollTrigger.update);
 
     gsap.ticker.add((time) => {
@@ -54,6 +58,8 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     return () => {
       window.removeEventListener("resize", resizeHandler);
       clearTimeout(timeoutId);
+      (window as any).__lenisInstance = null;
+      (window as any).lenis = null;
       lenis.destroy();
       gsap.ticker.remove(lenis.raf);
     };
@@ -61,7 +67,6 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
   return (
     <div className="container-main">
-      <Cursor />
       <Navbar />
       <GreoButton />
       <SocialIcons />
@@ -72,13 +77,15 @@ const MainContainer = ({ children }: PropsWithChildren) => {
         <WhatIDo />
         <Career />
         <Work />
-        <div id="techstack" style={{ minHeight: isDesktopView ? "100vh" : "360px", position: "relative" }}>
+        <div id="techstack" style={{ minHeight: isDesktopView ? "100vh" : "360px", position: "relative", margin: 0, padding: 0 }}>
           <Suspense fallback={<div style={{ height: isDesktopView ? "100vh" : "360px" }}>Loading...</div>}>
             <TechStack />
           </Suspense>
         </div>
+        <Process />
+        <FAQ />
         <ContactForm />
-        <Contact />
+        <Footer />
       </div>
     </div>
   );

@@ -32,6 +32,19 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   useEffect(() => {
+    // Ensure document theme is synchronized on loader mount
+    try {
+      const saved = localStorage.getItem("portfolio_theme");
+      const isLight =
+        saved === "Light" ||
+        ((saved === "Auto" || !saved) &&
+          window.matchMedia?.("(prefers-color-scheme: light)").matches);
+      if (isLight) {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.documentElement.style.colorScheme = "light";
+      }
+    } catch {}
+
     let fallbackInterval: ReturnType<typeof setInterval> | null = null;
     let pct = 0;
 

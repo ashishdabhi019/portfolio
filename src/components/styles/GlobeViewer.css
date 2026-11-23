@@ -47,13 +47,13 @@
   background: rgba(255, 255, 255, 0.07);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(124, 58, 237, 0.35); /* Violet border */
+  border: 1px solid rgba(249, 115, 22, 0.35); /* Violet border */
   border-radius: 100px;
   padding: 8px 22px;
   white-space: nowrap;
   box-shadow: 
     0 8px 24px rgba(0, 0, 0, 0.5), 
-    0 0 12px rgba(124, 58, 237, 0.1),
+    0 0 12px rgba(249, 115, 22, 0.1),
     inset 0 1px 1px rgba(255, 255, 255, 0.1);
   animation: badge-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }

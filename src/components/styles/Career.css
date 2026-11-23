@@ -1,244 +1,812 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CAREER & EXPERIENCE — ARCHITECTURAL TIMELINE
+   ═══════════════════════════════════════════════════════════════════ */
+
 .career-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  place-items: center;
   justify-content: center;
   position: relative;
-  opacity: 1;
-  height: auto;
-  margin: auto;
-  margin-bottom: 250px;
-  padding: 120px 0px;
+  z-index: 2;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 !important;
+  padding: clamp(140px, 16vh, 200px) 0 clamp(160px, 20vh, 260px) 0;
+  scroll-margin-top: 100px;
+  background-color: var(--backgroundColor, #07080b);
+  box-sizing: border-box;
+  transition: background-color 0.35s ease;
 }
 
+[data-theme="light"] .career-section {
+  background-color: var(--backgroundColor, #f7f7fa);
+}
+
+.career-container {
+  width: 100%;
+  max-width: var(--site-max-width, 1680px);
+  margin: 0 auto;
+  padding-left: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  padding-right: var(--site-padding-x, clamp(24px, 4vw, 64px));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Aligned to left matching other sections */
+}
+
+/* ── Header Block Aligned Left With Generous Space Below ────────── */
+.career-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: clamp(95px, 13vh, 150px); /* Generous bottom space below title */
+}
+
+/* ── Eyebrow tag mask for scroll reveal ── */
+.career-tag-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 4px;
+  margin-bottom: 24px;
+}
+
+/* ── 1. Signature Tag: (03) —— CAREER & EXPERIENCE ───────────────── */
+.career-tag {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 0;
+  will-change: transform, opacity;
+}
+
+.career-tag.title-reveal-line {
+  display: inline-flex;
+}
+
+.career-tag-num {
+  font-family: "Geist Mono", monospace, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accentColor, #F97316);
+  letter-spacing: 0.02em;
+  transition: color 0.3s ease;
+}
+
+.career-tag-line {
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.22);
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="light"] .career-tag-line {
+  background-color: rgba(0, 0, 0, 0.16);
+}
+
+.career-tag-label {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+[data-theme="light"] .career-tag-label {
+  color: rgba(11, 12, 16, 0.6);
+}
+
+/* ── 2. Headline: Career & Experience (matching website typography) ─ */
+.career-title,
 .career-section h2 {
-  font-size: 70px;
-  line-height: 70px;
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(48px, 5.5vw, 84px);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  text-align: left;
+  color: #ffffff;
+  margin: 0;
+  text-transform: none;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  -webkit-text-fill-color: initial !important;
+  transition: color 0.3s ease;
+}
+
+/* Reveal mask for large headline */
+.career-reveal-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.career-reveal-mask .title-reveal-line {
+  display: block;
+  will-change: transform, opacity;
+}
+
+[data-theme="light"] .career-title,
+[data-theme="light"] .career-section h2 {
+  color: #0b0c10;
+}
+
+/* Ampersand in line 1 */
+.career-title-amp {
+  font-family: "Instrument Serif", Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  color: var(--accentColor, #F97316) !important;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+/* Cool 2nd large title: signature italic serif accent (Image 1 & Image 2) */
+.career-title-accent {
+  font-family: "Instrument Serif", Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  font-stretch: 100% !important;
+  color: var(--accentColor, #F97316) !important;
+  letter-spacing: -0.015em !important;
+  display: inline-block;
+  padding-right: 0;
+  font-size: 1.05em;
+  line-height: 0.95;
+  transition: color 0.3s ease;
+}
+
+/* Signature period dot in headline Archivo font (matching Image 2) */
+.career-title-dot {
+  font-family: "Archivo", "Arial Black", sans-serif !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  font-stretch: 118% !important;
+  font-variation-settings: "wdth" 118, "wght" 800 !important;
+  color: #ffffff;
+  display: inline-block;
+  margin-left: 0.02em;
+  line-height: 0.94;
+  vertical-align: baseline;
+  transition: color 0.3s ease;
+}
+
+[data-theme="light"] .career-title-dot {
+  color: #0b0c10;
+}
+
+.career-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Subtitle description matching Selected Work (Image 2) ────────── */
+.career-desc-mask {
+  display: block;
+  margin-top: clamp(20px, 2.2vw, 26px);
+}
+
+.career-intro-desc {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.58);
+  margin: 0;
+  max-width: 580px;
   font-weight: 400;
-  text-align: center;
-  background: linear-gradient(0deg, #5b21b6, #ffffff);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  margin-top: 50px;
-  margin-bottom: 90px;
+  white-space: normal !important;
+  transition: color 0.3s ease;
 }
 
-.career-section h2>span {
-  font-family: "Geist", sans-serif;
-  font-weight: 300;
+[data-theme="light"] .career-intro-desc {
+  color: rgba(11, 12, 16, 0.68);
 }
 
+.career-desc-journey {
+  display: block;
+}
+
+.career-desc-scroll {
+  display: block;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+[data-theme="light"] .career-desc-scroll {
+  color: rgba(11, 12, 16, 0.45);
+}
+
+/* ── 3. Central Timeline Beam & Glitch Dot ───────────────────────── */
 .career-info {
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: 0px auto;
-}
-
-.career-info-box {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 50px;
-}
-
-.career-info-box p {
-  width: 40%;
-  font-size: 18px;
-  font-weight: 300;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
-}
-
-.career-info-in {
-  display: flex;
-  width: 40%;
-  justify-content: space-between;
-  gap: 50px;
-}
-
-.career-info h3 {
-  font-size: 48px;
-  margin: 0;
-  font-weight: 500;
-  line-height: 45px;
-}
-
-.career-info h4 {
-  font-size: 33px;
-  line-height: 30px;
-  letter-spacing: 0.8px;
-  font-weight: 500;
-  margin: 0;
-}
-
-.career-info h5 {
-  font-weight: 400;
-  letter-spacing: 0.7px;
-  font-size: 20px;
-  text-transform: capitalize;
-  margin: 10px 0px;
-  color: var(--accentColor);
+  gap: clamp(56px, 8vh, 88px);
 }
 
 .career-timeline {
   position: absolute;
-  top: -50px;
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 3px;
+  width: 2.5px;
   height: 100%;
-  background-image: linear-gradient(to top,
-      #6d28d9 20%,
-      var(--accentColor) 50%,
-      transparent 95%);
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--accentColor, #F97316) 40%, transparent) 15%,
+    var(--accentColor, #F97316) 75%,
+    var(--accentColor, #F97316) 100%
+  );
   max-height: 0%;
+  border-radius: 9999px;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accentColor, #F97316) 45%, transparent);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
 }
 
+[data-theme="light"] .career-timeline {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--accentColor, #F97316) 45%, transparent) 15%,
+    var(--accentColor, #F97316) 75%,
+    var(--accentColor, #F97316) 100%
+  );
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+}
+
+/* Dynamic Glitch / Cyber Pulse Dot */
 .career-dot {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translate(-50%, 50%);
-  background-color: #7C3AED;
-  width: 10px;
-  height: 10px;
-  border-radius: 50px;
-  box-shadow: 0px 0px 5px 2px #a78bfa, 0px 0px 15px 8px #7C3AED,
-    0px 0px 110px 20px #5b21b6;
-  animation: timeline 0.8s linear infinite forwards;
+  background-color: var(--accentColor, #F97316);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  box-shadow:
+    0 0 14px 4px var(--accentColor, #F97316),
+    0 0 30px 8px color-mix(in srgb, var(--accentColor, #F97316) 85%, transparent),
+    0 0 65px 20px color-mix(in srgb, var(--accentColor, #F97316) 45%, transparent),
+    0 0 90px 30px color-mix(in srgb, var(--accentColor, #F97316) 25%, transparent);
+  animation: timelineGlitch 1.4s ease-in-out infinite alternate;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-@keyframes timeline {
+[data-theme="light"] .career-dot {
+  background-color: var(--accentColor, #F97316);
+  box-shadow:
+    0 0 16px 5px var(--accentColor, #F97316),
+    0 0 34px 10px color-mix(in srgb, var(--accentColor, #F97316) 85%, transparent),
+    0 0 70px 22px color-mix(in srgb, var(--accentColor, #F97316) 45%, transparent),
+    0 0 100px 32px color-mix(in srgb, var(--accentColor, #F97316) 25%, transparent);
+  animation: timelineGlitchLight 1.4s ease-in-out infinite alternate;
+}
 
-  10%,
-  20%,
-  50%,
-  70%,
-  90% {
-    box-shadow: 0px 0px 5px 2px #a78bfa;
+@keyframes timelineGlitch {
+  0%, 100% {
+    transform: translate(-50%, 50%) scale(1);
+    box-shadow:
+      0 0 12px 3px var(--accentColor, #F97316),
+      0 0 26px 6px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+      0 0 55px 15px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
   }
-
-  10%,
-  30%,
-  0%,
-  100%,
-  64%,
-  80% {
-    box-shadow: 0px 0px 5px 2px #a78bfa, 0px 0px 15px 5px #7C3AED,
-      0px 0px 110px 20px #5b21b6;
+  22% {
+    transform: translate(-50%, 50%) scale(1.15);
+    box-shadow:
+      0 0 18px 5px var(--accentColor, #F97316),
+      0 0 38px 10px color-mix(in srgb, var(--accentColor, #F97316) 90%, transparent),
+      0 0 85px 24px color-mix(in srgb, var(--accentColor, #F97316) 50%, transparent);
+  }
+  26% {
+    transform: translate(-50%, 50%) scale(0.92);
+    box-shadow:
+      0 0 8px 2px var(--accentColor, #F97316),
+      0 0 16px 4px color-mix(in srgb, var(--accentColor, #F97316) 60%, transparent);
+  }
+  30% {
+    transform: translate(-50%, 50%) scale(1.2);
+    box-shadow:
+      0 0 20px 6px var(--accentColor, #F97316),
+      0 0 42px 12px color-mix(in srgb, var(--accentColor, #F97316) 95%, transparent),
+      0 0 95px 28px color-mix(in srgb, var(--accentColor, #F97316) 55%, transparent);
+  }
+  65% {
+    transform: translate(-50%, 50%) scale(1);
+    box-shadow:
+      0 0 12px 3px var(--accentColor, #F97316),
+      0 0 26px 6px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+      0 0 55px 15px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+  }
+  70% {
+    transform: translate(-50%, 50%) scale(1.08);
+    box-shadow:
+      0 0 16px 4px var(--accentColor, #F97316),
+      0 0 32px 8px color-mix(in srgb, var(--accentColor, #F97316) 80%, transparent),
+      0 0 70px 20px color-mix(in srgb, var(--accentColor, #F97316) 40%, transparent);
   }
 }
 
-@keyframes timeline2 {
+@keyframes timelineGlitchLight {
+  0%, 100% {
+    transform: translate(-50%, 50%) scale(1);
+    box-shadow:
+      0 0 14px 4px var(--accentColor, #F97316),
+      0 0 28px 8px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+      0 0 55px 16px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+  }
+  22% {
+    transform: translate(-50%, 50%) scale(1.15);
+    box-shadow:
+      0 0 20px 6px var(--accentColor, #F97316),
+      0 0 40px 12px color-mix(in srgb, var(--accentColor, #F97316) 90%, transparent),
+      0 0 85px 24px color-mix(in srgb, var(--accentColor, #F97316) 45%, transparent);
+  }
+  26% {
+    transform: translate(-50%, 50%) scale(0.92);
+    box-shadow:
+      0 0 8px 2px var(--accentColor, #F97316),
+      0 0 16px 4px color-mix(in srgb, var(--accentColor, #F97316) 60%, transparent);
+  }
+  30% {
+    transform: translate(-50%, 50%) scale(1.2);
+    box-shadow:
+      0 0 22px 7px var(--accentColor, #F97316),
+      0 0 44px 14px color-mix(in srgb, var(--accentColor, #F97316) 95%, transparent),
+      0 0 95px 28px color-mix(in srgb, var(--accentColor, #F97316) 50%, transparent);
+  }
+  65% {
+    transform: translate(-50%, 50%) scale(1);
+    box-shadow:
+      0 0 14px 4px var(--accentColor, #F97316),
+      0 0 28px 8px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+      0 0 55px 16px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+  }
+  70% {
+    transform: translate(-50%, 50%) scale(1.08);
+    box-shadow:
+      0 0 18px 5px var(--accentColor, #F97316),
+      0 0 34px 10px color-mix(in srgb, var(--accentColor, #F97316) 80%, transparent),
+      0 0 70px 20px color-mix(in srgb, var(--accentColor, #F97316) 40%, transparent);
+  }
+}
+
+/* ── 4. Career Info Boxes & Items ───────────────────────────────── */
+.career-info-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+}
+
+.career-info-in {
+  display: flex;
+  width: 44%;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.career-role {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.career-info h4,
+.career-role-title {
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(24px, 2.2vw, 32px);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+[data-theme="light"] .career-info h4,
+[data-theme="light"] .career-role-title {
+  color: #0b0c10;
+}
+
+/* Company & Location Badges */
+.career-company-badge,
+.career-info h5 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  font-family: "Geist Mono", monospace, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accentColor, #F97316);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.career-company {
+  font-weight: 500;
+  color: var(--accentColor, #F97316);
+  line-height: 1.3;
+}
+
+.career-location {
+  font-weight: 500; /* Same bold weight as company */
+  color: var(--accentColor, #F97316);
+  opacity: 0.95;
+  letter-spacing: 0.12em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1;
+  white-space: nowrap; /* Strictly keeps icon & text on the exact same line */
+  cursor: default;
+}
+
+.career-location-text {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* Lordicon Location Pin (wired-outline-18-location-pin in-jump-dynamic) */
+.career-lordicon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 21px;
+  flex-shrink: 0;
+  line-height: 1;
+  overflow: visible;
+  margin-top: -1px; /* Optical baseline centering with uppercase text */
+}
+
+.career-lordicon-svg {
+  width: 18px;
+  height: 21px;
+  display: block;
+  overflow: visible;
+}
+
+.career-lordicon-body,
+.career-lordicon-core {
+  stroke: var(--accentColor, #F97316);
+  fill: none;
+  transition: stroke 0.3s ease;
+}
+
+.career-lordicon-ground {
+  opacity: 0;
+  transform-box: view-box;
+  transform-origin: 0px 50.2px;
+  stroke: var(--accentColor, #F97316);
+  will-change: transform, opacity;
+}
+
+.career-lordicon-pin {
+  transform-box: view-box;
+  transform-origin: 0px 50.2px;
+  will-change: transform;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+/* User's Exact Lordicon In-Jump-Dynamic Animation on Hover */
+.career-role:hover .career-lordicon-pin,
+.career-location:hover .career-lordicon-pin {
+  animation: lordiconJumpDynamic 1.4s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+.career-role:hover .career-lordicon-ground,
+.career-location:hover .career-lordicon-ground {
+  animation: lordiconGroundImpact 1.4s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+@keyframes lordiconJumpDynamic {
   0% {
-    box-shadow: 0px 0px 5px 2px #a78bfa;
+    transform: translate(0, 0) rotate(0deg);
   }
-
+  13.5% {
+    transform: translate(1px, -8px) rotate(-4.36deg);
+  }
+  27% {
+    transform: translate(2.5px, -18px) rotate(14deg);
+  }
+  33.4% {
+    transform: translate(1.5px, -9px) rotate(26deg);
+  }
+  38.4% {
+    transform: translate(0, 0) rotate(22deg);
+  }
+  52% {
+    transform: translate(0, 0) rotate(-18deg);
+  }
+  67.7% {
+    transform: translate(0, 0) rotate(11deg);
+  }
+  84.5% {
+    transform: translate(0, 0) rotate(-4deg);
+  }
   100% {
-    box-shadow: 0px 0px 5px 2px #a78bfa, 0px 0px 15px 5px #7C3AED,
-      0px 0px 110px 20px #5b21b6;
+    transform: translate(0, 0) rotate(0deg);
   }
 }
 
+@keyframes lordiconGroundImpact {
+  0%, 37.9% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  38.4% {
+    opacity: 1;
+    transform: scaleX(0.2);
+  }
+  48% {
+    opacity: 1;
+    transform: scaleX(0.75);
+  }
+  62% {
+    opacity: 0.6;
+    transform: scaleX(1.1);
+  }
+  74%, 100% {
+    opacity: 0;
+    transform: scaleX(1.3);
+  }
+}
+
+/* Year in bold modern Archivo */
+.career-year,
+.career-info h3 {
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-size: clamp(40px, 3.8vw, 56px);
+  font-weight: 800;
+  font-stretch: 118%;
+  font-variation-settings: "wdth" 118, "wght" 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--accentColor, #F97316);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+[data-theme="light"] .career-year,
+[data-theme="light"] .career-info h3 {
+  color: var(--accentColor, #F97316);
+}
+
+/* Paragraph Description */
+.career-desc,
+.career-info-box p {
+  width: 44%;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(15px, 1.1vw, 17px);
+  line-height: 1.68;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+[data-theme="light"] .career-desc,
+[data-theme="light"] .career-info-box p {
+  color: rgba(11, 12, 16, 0.76);
+}
+
+/* ── 5. Responsive Breakpoints ──────────────────────────────────── */
 @media only screen and (max-width: 1400px) {
-  .career-section h2 {
-    font-size: 50px;
-    line-height: 50px;
-  }
-
-  .career-info h4 {
-    font-size: 22px;
-    line-height: 24px;
-    width: 180px;
-  }
-
-  .career-info h5 {
-    font-size: 17px;
-  }
-
-  .career-info h3 {
-    font-size: 40px;
-  }
-
-  .career-info-box p {
-    font-size: 14px;
-  }
-
   .career-info-in {
-    width: 45%;
+    width: 46%;
     gap: 20px;
   }
 
+  .career-desc,
   .career-info-box p {
-    width: 45%;
+    width: 46%;
   }
 }
 
 @media only screen and (max-width: 1025px) {
   .career-section {
-    padding: 70px 0px;
-    padding-top: 220px;
-    margin-top: -200px;
-    margin-bottom: 0;
+    padding-top: 100px;
+    padding-bottom: clamp(120px, 16vh, 200px);
   }
 }
 
 @media only screen and (max-width: 900px) {
-  .career-info-box {
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 70px;
+  .career-header {
+    margin-bottom: clamp(65px, 9vh, 90px);
   }
 
-  .career-info-in,
+  .career-info-box {
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 50px;
+  }
+
+  .career-info-in {
+    width: 100%;
+    padding-left: 28px;
+    box-sizing: border-box;
+  }
+
+  .career-desc,
   .career-info-box p {
     width: 100%;
-    padding-left: 10%;
+    padding-left: 28px;
     box-sizing: border-box;
   }
 
   .career-timeline {
-    left: 0%;
+    left: 0;
+    transform: none;
   }
 
-  .career-container {
-    width: calc(100% - 25px);
+  .career-dot {
+    left: 0;
+    transform: translate(-5px, 50%);
+  }
+
+  @keyframes timelineGlitch {
+    0%, 100% {
+      transform: translate(-5px, 50%) scale(1);
+      box-shadow:
+        0 0 12px 3px var(--accentColor, #F97316),
+        0 0 26px 6px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+        0 0 55px 15px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+    }
+    22% {
+      transform: translate(-5px, 50%) scale(1.15);
+      box-shadow:
+        0 0 18px 5px var(--accentColor, #F97316),
+        0 0 38px 10px color-mix(in srgb, var(--accentColor, #F97316) 90%, transparent),
+        0 0 85px 24px color-mix(in srgb, var(--accentColor, #F97316) 50%, transparent);
+    }
+    26% {
+      transform: translate(-5px, 50%) scale(0.92);
+      box-shadow:
+        0 0 8px 2px var(--accentColor, #F97316),
+        0 0 16px 4px color-mix(in srgb, var(--accentColor, #F97316) 60%, transparent);
+    }
+    30% {
+      transform: translate(-5px, 50%) scale(1.2);
+      box-shadow:
+        0 0 20px 6px var(--accentColor, #F97316),
+        0 0 42px 12px color-mix(in srgb, var(--accentColor, #F97316) 95%, transparent),
+        0 0 95px 28px color-mix(in srgb, var(--accentColor, #F97316) 55%, transparent);
+    }
+    65% {
+      transform: translate(-5px, 50%) scale(1);
+      box-shadow:
+        0 0 12px 3px var(--accentColor, #F97316),
+        0 0 26px 6px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+        0 0 55px 15px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+    }
+    70% {
+      transform: translate(-5px, 50%) scale(1.08);
+      box-shadow:
+        0 0 16px 4px var(--accentColor, #F97316),
+        0 0 32px 8px color-mix(in srgb, var(--accentColor, #F97316) 80%, transparent),
+        0 0 70px 20px color-mix(in srgb, var(--accentColor, #F97316) 40%, transparent);
+    }
+  }
+
+  @keyframes timelineGlitchLight {
+    0%, 100% {
+      transform: translate(-5px, 50%) scale(1);
+      box-shadow:
+        0 0 14px 4px var(--accentColor, #F97316),
+        0 0 28px 8px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+        0 0 55px 16px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+    }
+    22% {
+      transform: translate(-5px, 50%) scale(1.15);
+      box-shadow:
+        0 0 20px 6px var(--accentColor, #F97316),
+        0 0 40px 12px color-mix(in srgb, var(--accentColor, #F97316) 90%, transparent),
+        0 0 85px 24px color-mix(in srgb, var(--accentColor, #F97316) 45%, transparent);
+    }
+    26% {
+      transform: translate(-5px, 50%) scale(0.92);
+      box-shadow:
+        0 0 8px 2px var(--accentColor, #F97316),
+        0 0 16px 4px color-mix(in srgb, var(--accentColor, #F97316) 60%, transparent);
+    }
+    30% {
+      transform: translate(-5px, 50%) scale(1.2);
+      box-shadow:
+        0 0 22px 7px var(--accentColor, #F97316),
+        0 0 44px 14px color-mix(in srgb, var(--accentColor, #F97316) 95%, transparent),
+        0 0 95px 28px color-mix(in srgb, var(--accentColor, #F97316) 50%, transparent);
+    }
+    65% {
+      transform: translate(-5px, 50%) scale(1);
+      box-shadow:
+        0 0 14px 4px var(--accentColor, #F97316),
+        0 0 28px 8px color-mix(in srgb, var(--accentColor, #F97316) 75%, transparent),
+        0 0 55px 16px color-mix(in srgb, var(--accentColor, #F97316) 35%, transparent);
+    }
+    70% {
+      transform: translate(-5px, 50%) scale(1.08);
+      box-shadow:
+        0 0 18px 5px var(--accentColor, #F97316),
+        0 0 34px 10px color-mix(in srgb, var(--accentColor, #F97316) 80%, transparent),
+        0 0 70px 20px color-mix(in srgb, var(--accentColor, #F97316) 40%, transparent);
+    }
   }
 }
 
 @media only screen and (max-width: 600px) {
-  .career-info {
-    margin: 0;
+  .career-section {
+    padding-top: 80px;
+    padding-bottom: clamp(100px, 14vh, 160px);
   }
 
+  .career-header {
+    margin-bottom: clamp(52px, 7vh, 68px);
+  }
+
+  .career-title,
   .career-section h2 {
-    width: 100%;
-    font-size: 36px;
-    line-height: 36px;
-    margin-top: 0px;
+    font-size: clamp(38px, 10vw, 50px);
+    line-height: 0.98;
+  }
+
+  .career-intro-desc {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .career-info {
+    gap: 40px;
   }
 
   .career-info-in {
-    gap: 0px;
+    padding-left: 24px;
+    gap: 16px;
   }
 
-  .career-info h3 {
-    font-size: 33px;
-  }
-
-  .career-info-in,
+  .career-desc,
   .career-info-box p {
-    padding-left: 5%;
+    padding-left: 24px;
+    font-size: 14.5px;
+    line-height: 1.6;
   }
 
-  .career-section {
-    padding-top: 90px;
-    margin-top: -70px;
+  .career-info h3,
+  .career-year {
+    font-size: 34px;
+  }
 
-    align-items: start;
-    place-items: inherit;
-    justify-content: left;
+  .career-info h4,
+  .career-role-title {
+    font-size: 22px;
   }
 }

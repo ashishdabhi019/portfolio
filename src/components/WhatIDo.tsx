@@ -37,11 +37,10 @@ const WhatIDo = () => {
   return (
     <div id="whatido" className="whatIDO">
       <div className="what-box">
-        <h2 className="title">
-          W<span className="hat-h2">hat</span>
-          <div>
-            I<span className="do-h2"> Do</span>
-          </div>
+        <h2 className="title what-title">
+          What <br />
+          I <em className="what-title-serif">do</em>
+          <span className="what-title-dot">.</span>
         </h2>
       </div>
       <div className="what-box">
@@ -53,7 +52,6 @@ const WhatIDo = () => {
                 y1="0"
                 x2="0"
                 y2="100%"
-                stroke="white"
                 strokeWidth="2"
                 strokeDasharray="7,7"
               />
@@ -62,7 +60,6 @@ const WhatIDo = () => {
                 y1="0"
                 x2="100%"
                 y2="100%"
-                stroke="white"
                 strokeWidth="2"
                 strokeDasharray="7,7"
               />
@@ -79,7 +76,6 @@ const WhatIDo = () => {
                   y1="0"
                   x2="100%"
                   y2="0"
-                  stroke="white"
                   strokeWidth="2"
                   strokeDasharray="6,6"
                 />
@@ -88,7 +84,6 @@ const WhatIDo = () => {
                   y1="100%"
                   x2="100%"
                   y2="100%"
-                  stroke="white"
                   strokeWidth="2"
                   strokeDasharray="6,6"
                 />
@@ -129,7 +124,6 @@ const WhatIDo = () => {
                   y1="100%"
                   x2="100%"
                   y2="100%"
-                  stroke="white"
                   strokeWidth="2"
                   strokeDasharray="6,6"
                 />

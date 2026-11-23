@@ -177,7 +177,7 @@ export function setAllTimeline() {
     careerTimeline.fromTo(
       ".career-section",
       { y: 0 },
-      { y: "20%", duration: 0.5, delay: 0.2 },
+      { y: 0, duration: 0.5, delay: 0.2 },
       0
     );
   } else {

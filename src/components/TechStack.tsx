@@ -396,7 +396,10 @@ function MobileTechStack() {
 
   return (
     <div className="mobile-techstack">
-      <h2 className="mobile-techstack-title">Tech Stack</h2>
+      <h2 className="mobile-techstack-title">
+        Tech <em className="techstack-title-serif">stack</em>
+        <span className="techstack-title-dot">.</span>
+      </h2>
       <div
         ref={stageRef}
         className="fan-stage"
@@ -408,8 +411,8 @@ function MobileTechStack() {
           const zIndex = Math.round(10 - Math.abs(rel) * 2);
           
           const isMulti = color === "multicolor";
-          // We use #9b72cb (purple) as fallback --fan-color for borders/shadows if multicolor
-          const fanColor = isMulti ? "#9b72cb" : color;
+          // We use #F97316 (orange) as fallback --fan-color for borders/shadows if multicolor
+          const fanColor = isMulti ? "#F97316" : color;
           
           return (
             <div key={i} className="fan-item"
@@ -489,20 +492,9 @@ const TechStack = () => {
 
   return (
     <div className="techstack">
-      <h2 className="title" style={{
-        fontSize: "70px",
-        fontWeight: 400,
-        position: "relative",
-        zIndex: 2,
-        marginBottom: 0,
-        marginTop: 0,
-        background: "linear-gradient(0deg, #5b21b6, #ffffff)",
-        backgroundClip: "text",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        color: "transparent",
-      }}>
-        Tech Stack
+      <h2 className="title techstack-title">
+        Tech <em className="techstack-title-serif">stack</em>
+        <span className="techstack-title-dot">.</span>
       </h2>
 
       <Canvas

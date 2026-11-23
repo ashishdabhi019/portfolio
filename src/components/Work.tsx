@@ -1,228 +1,274 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import "./styles/Work.css";
-import WorkImage from "./WorkImage";
-import { FaPlay, FaPause, FaRotateRight } from "react-icons/fa6";
 
-const projects = [
+interface Project {
+  num: string;
+  title: string;
+  category: string;
+  tagline: string;
+  tools: string[];
+  image: string;
+  link: string;
+}
+
+const projects: Project[] = [
   {
+    num: "01",
     title: "Bottle Detection",
-    category: "AI · Computer Vision · Object Detection",
-    tools: "Python, OpenCV, YOLOv8, Computer Vision, Real-time Inference",
+    category: "APP DEVELOPMENT",
+    tagline:
+      "Real-time industrial conveyor object detection & automated sorting pipeline with 98.4% precision.",
+    tools: ["Python", "OpenCV", "YOLOv8", "Inference"],
     image: "/images/bottle_detection.png",
+    link: "https://github.com/ashishdabhi",
   },
   {
+    num: "02",
     title: "Fire & Smoke Detection",
-    category: "AI · Computer Vision · Safety System",
-    tools: "Python, YOLOv8, OpenCV, Deep Learning, Alert System",
+    category: "AI SAFETY SYSTEM",
+    tagline:
+      "Autonomous surveillance hazard identification & alerting deep vision models.",
+    tools: ["Python", "YOLOv8", "OpenCV", "Deep Learning"],
     image: "/images/smoke_detection.png",
+    link: "https://github.com/ashishdabhi",
   },
   {
+    num: "03",
     title: "AI Chatbot",
-    category: "AI · Conversational Assistant · Full Stack",
-    tools: "React, Python, Flask, Ollama, LLM, REST API",
+    category: "CONVERSATIONAL AI",
+    tagline:
+      "Full-stack conversational agent powered by local Ollama LLMs with retrieval memory.",
+    tools: ["React", "Python", "Flask", "Ollama", "REST API"],
     image: "/images/chatbot.png",
+    link: "https://github.com/ashishdabhi",
   },
   {
-    title: "TrendRadar AI Automation",
-    category: "AI · Automation · Social Intelligence",
-    tools: "n8n, X API, YouTube API, Reddit API, OpenAI, Google Sheets API",
+    num: "04",
+    title: "TrendRadar AI",
+    category: "AUTOMATION & SCRAPING",
+    tagline:
+      "Autonomous multi-platform trend intelligence system synthesizing viral social data.",
+    tools: ["n8n", "OpenAI", "X API", "YouTube API"],
     image: "/images/trendradar.png",
+    link: "https://github.com/ashishdabhi",
   },
   {
+    num: "05",
     title: "IntelliDoc Engine",
-    category: "AI · Document Intelligence · Backend Pipeline",
-    tools: "FastAPI, Claude API, Python, LLM, Pydantic, REST API",
+    category: "DOCUMENT INTELLIGENCE",
+    tagline:
+      "Enterprise multimodal document parsing pipeline with Claude API & strict schema extraction.",
+    tools: ["FastAPI", "Claude API", "Python", "Pydantic"],
     image: "/images/intellidoc.png",
+    link: "https://github.com/ashishdabhi",
   },
 ];
 
 const Work = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
-  const [hasCompleted, setHasCompleted] = useState(false);
-
-  const trackRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [scrollDistance, setScrollDistance] = useState(0);
 
-  const AUTOPLAY_INTERVAL = 6000; // 6s — professional readable pacing
-
-  const goToSlide = useCallback((index: number) => {
-    setCurrentIndex(index);
-    if (trackRef.current) {
-      const slideWidth = trackRef.current.clientWidth;
-      trackRef.current.scrollTo({
-        left: index * slideWidth,
-        behavior: "smooth",
-      });
-    }
+  // Detect whether to use horizontal desktop scroll or vertical mobile/tablet scroll
+  const checkIsDesktop = useCallback(() => {
+    if (typeof window === "undefined") return true;
+    const isPortrait = window.innerHeight > window.innerWidth;
+    // On phones and iPad vertical (portrait <= 1050px), use vertical stacked scroll
+    if (window.innerWidth < 1024) return false;
+    if (isPortrait && window.innerWidth <= 1050) return false;
+    return true;
   }, []);
 
-  const goToNext = useCallback(() => {
-    // If we're on the last slide, stop and switch to replay mode
-    if (currentIndex === projects.length - 1) {
-      setIsPlaying(false);
-      setHasCompleted(true);
+  const [isDesktop, setIsDesktop] = useState(checkIsDesktop);
+
+  // Measure dynamic horizontal scroll distance (active only on desktop)
+  const updateDistance = useCallback(() => {
+    if (!checkIsDesktop()) {
+      setScrollDistance(0);
       return;
     }
-    const newIndex = currentIndex + 1;
-    goToSlide(newIndex);
-  }, [currentIndex, goToSlide]);
+    if (trackRef.current) {
+      const dist = Math.max(
+        0,
+        trackRef.current.scrollWidth - window.innerWidth,
+      );
+      setScrollDistance(dist);
+    }
+  }, [checkIsDesktop]);
 
-  // Replay: smoothly go back to first slide and resume
-  const handleReplay = useCallback(() => {
-    setHasCompleted(false);
-    setIsPlaying(true);
-    goToSlide(0);
-  }, [goToSlide]);
-
-  // Section Visibility Observer (Pauses timer when scrolled away)
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 } // Starts when any 10% is visible
-    );
-
-    observer.observe(section);
-
-    return () => {
-      observer.unobserve(section);
+    const handleResize = () => {
+      setIsDesktop(checkIsDesktop());
+      updateDistance();
     };
-  }, []);
 
-  // Auto-Play Effect
-  useEffect(() => {
-    let intervalId: ReturnType<typeof setInterval>;
+    updateDistance();
+    window.addEventListener("resize", handleResize);
 
-    // Only run the timer if the section is visible and actively playing
-    if (isPlaying && isVisible) {
-      intervalId = setInterval(() => {
-        goToNext();
-      }, AUTOPLAY_INTERVAL);
+    if (document.fonts) {
+      document.fonts.ready.then(updateDistance);
     }
 
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [isPlaying, isVisible, goToNext]);
-
-  // Intersection Observer for updating active dot on native user scroll
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = Number(entry.target.getAttribute("data-index"));
-            setCurrentIndex(index);
-          }
-        });
-      },
-      {
-        root: track,
-        threshold: 0.6, // Fire when 60% of the slide enters the view
-      }
-    );
-
-    const slides = Array.from(track.children);
-    slides.forEach((slide) => observer.observe(slide));
+    const t1 = setTimeout(updateDistance, 150);
+    const t2 = setTimeout(updateDistance, 500);
 
     return () => {
-      slides.forEach((slide) => observer.unobserve(slide));
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(t1);
+      clearTimeout(t2);
     };
-  }, []);
+  }, [checkIsDesktop, updateDistance]);
+
+  // Framer Motion scroll tracking
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Custom spring physics matching website's Framer Motion settings
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 25,
+    mass: 0.15,
+    restDelta: 0.0001,
+  });
+
+  // Transform spring progress into horizontal translation (desktop only)
+  const x = useTransform(smoothProgress, [0, 1], [0, -scrollDistance]);
 
   return (
-    <div className="work-section" id="work" ref={sectionRef}>
-      <div className="work-container section-container">
-        <h2 className="title">
-          Selected Works
-        </h2>
-
-        <div className="carousel-wrapper">
-          {/* Slides */}
-          <div className="carousel-track-container" style={{ touchAction: 'pan-y' }}>
-            <div
-              className="carousel-track native-scroll-track"
-              ref={trackRef}
-            >
-              {projects.map((project, index) => (
-                <div className="carousel-slide" key={index} data-index={index}>
-                  <div className="carousel-content">
-                    <div className="carousel-info">
-                      <div className="carousel-number">
-                        <h3>0{index + 1}</h3>
-                      </div>
-                      <div className="carousel-details">
-                        <h4>{project.title}</h4>
-                        <p className="carousel-category">
-                          {project.category}
-                        </p>
-                        <div className="carousel-tools">
-                          <span className="tools-label">Tools & Features</span>
-                          <p>{project.tools}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="carousel-image-wrapper">
-                      <WorkImage image={project.image} alt={project.title} />
-                    </div>
-                  </div>
-                </div>
-              ))}
+    <section
+      className="work-section"
+      id="work"
+      ref={sectionRef}
+      style={{
+        height:
+          isDesktop && scrollDistance > 0
+            ? `${scrollDistance + window.innerHeight}px`
+            : undefined,
+      }}
+    >
+      <div className="work-pin-stage">
+        {/* Track: animated horizontally on desktop, natural vertical stack on phone & iPad vertical */}
+        <motion.div
+          className="work-horizontal-track"
+          ref={trackRef}
+          style={isDesktop ? { x } : undefined}
+        >
+          {/* ITEM 0: Intro Header Block (glides left as you scroll) */}
+          <div className="work-intro-block">
+            {/* Tag: (03) —— SELECTED WORK */}
+            <div className="work-tag">
+              <span className="work-tag-num">(03)</span>
+              <span className="work-tag-line" aria-hidden="true" />
+              <span className="work-tag-label">SELECTED WORK</span>
             </div>
+
+            {/* Headline: Work that *moves* the needle. (Desktop: 3 lines, Mobile & iPad mini: strictly 2 lines) */}
+            <h2 className="work-heading">
+              <span className="work-heading-desktop">
+                Work that
+                <br />
+                <span className="work-heading-accent">moves</span> the
+                <br />
+                needle.
+              </span>
+              <span className="work-heading-mobile">
+                <span className="work-heading-m-line1">
+                  Work that <span className="work-heading-accent">moves</span>
+                </span>
+                <span className="work-heading-m-line2">the needle.</span>
+              </span>
+            </h2>
+
+            {/* Subtitle */}
+            <p className="work-desc">
+              <span className="work-desc-brands">
+                A few of the brands I've designed, built and grown with.
+              </span>
+              <span className="work-desc-scroll">Scroll to explore.</span>
+            </p>
           </div>
 
-          {/* Liquid Glass Apple Controls */}
-          <div className="apple-controls-bar">
-            {/* Pagination Indicators Pill */}
-            <div className="apple-pagination-pill glass-pill" data-cursor="disable">
-              {projects.map((_, index) => (
-                <button
-                  key={index}
-                  className={`apple-dot ${index === currentIndex ? "apple-dot-active" : ""}`}
-                  onClick={() => goToSlide(index)}
-                  aria-label={`Go to project ${index + 1}`}
-                >
-                  {index === currentIndex && (
-                    <span
-                      key={`progress-${index}-${currentIndex}`}
-                      className="apple-dot-progress"
-                      style={{
-                        animationDuration: `${AUTOPLAY_INTERVAL}ms`,
-                        animationPlayState: (isPlaying && !hasCompleted) ? 'running' : 'paused',
-                        width: hasCompleted ? "100%" : undefined,
-                        animationName: hasCompleted ? "none" : "progressFill"
-                      }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Play/Pause/Replay Pill */}
-            <button
-              className={`apple-play-pill glass-pill${hasCompleted ? " replay-mode" : ""}`}
-              onClick={hasCompleted ? handleReplay : () => setIsPlaying(!isPlaying)}
-              aria-label={hasCompleted ? "Replay" : isPlaying ? "Pause autoplay" : "Start autoplay"}
-              data-cursor="disable"
-            >
-              {hasCompleted
-                ? <FaRotateRight style={{ transform: "rotate(-50deg)", fontSize: "20px", strokeWidth: "15px", stroke: "currentColor" }} />
-                : isPlaying ? <FaPause /> : <FaPlay />
+          {/* ITEMS 1 TO 5: Wide Cinema Cards with Project & Tech Details */}
+          {projects.map((project) => (
+            <motion.div
+              key={project.title}
+              className="work-card"
+              initial={!isDesktop ? { opacity: 0, y: 30 } : undefined}
+              whileInView={!isDesktop ? { opacity: 1, y: 0 } : undefined}
+              viewport={
+                !isDesktop ? { once: true, margin: "-40px" } : undefined
               }
-            </button>
-          </div>
-        </div>
+              transition={
+                !isDesktop
+                  ? { duration: 0.55, ease: [0.16, 1, 0.3, 1] }
+                  : undefined
+              }
+            >
+              {/* Card Background Image */}
+              <div className="work-card-bg">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="work-card-img"
+                  loading="lazy"
+                  draggable={false}
+                  onLoad={updateDistance}
+                />
+                <div className="work-card-overlay" aria-hidden="true" />
+              </div>
+
+              {/* Card Number in lower right corner (restored to old place) */}
+              <span className="work-card-number" aria-hidden="true">
+                {project.num}
+              </span>
+
+              {/* Card Bottom: Metadata, Title, Description Tagline & Tech Chips */}
+              <div className="work-card-bottom">
+                <div className="work-card-meta">
+                  <span className="work-card-meta-category">
+                    {project.category}
+                  </span>
+                  <h3 className="work-card-title">{project.title}</h3>
+                </div>
+
+                <p className="work-card-tagline">{project.tagline}</p>
+
+                <div className="work-card-tools">
+                  {project.tools.map((tool) => (
+                    <span key={tool} className="work-card-tool-tag">
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* ITEM 6: "View all work" Card */}
+          <motion.div
+            className="work-card work-card--view-all"
+            data-cursor="pointer"
+            aria-label="View all work"
+            initial={!isDesktop ? { opacity: 0, y: 30 } : undefined}
+            whileInView={!isDesktop ? { opacity: 1, y: 0 } : undefined}
+            viewport={!isDesktop ? { once: true, margin: "-40px" } : undefined}
+            transition={
+              !isDesktop
+                ? { duration: 0.55, ease: [0.16, 1, 0.3, 1] }
+                : undefined
+            }
+          >
+            <div className="work-view-all-circle" aria-hidden="true">
+              <span className="work-view-all-arrow">→</span>
+            </div>
+            <span className="work-view-all-text">View all work</span>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 

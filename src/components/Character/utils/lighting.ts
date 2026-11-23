@@ -2,8 +2,23 @@ import * as THREE from "three";
 import { RGBELoader } from "three-stdlib";
 import { gsap } from "gsap";
 
+const getAccentHex = () => {
+  if (typeof window !== "undefined") {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue("--accentColor").trim();
+    if (raw) return raw;
+    try {
+      const stored = sessionStorage.getItem("portfolio_accent");
+      if (stored) return stored;
+    } catch {
+      // ignore
+    }
+  }
+  return "#F97316";
+};
+
 const setLighting = (scene: THREE.Scene) => {
-  const directionalLight = new THREE.DirectionalLight(0x7C3AED, 0);
+  const initialAccent = getAccentHex();
+  const directionalLight = new THREE.DirectionalLight(initialAccent, 0);
   directionalLight.intensity = 0;
   directionalLight.position.set(-0.47, -0.32, -1);
   directionalLight.castShadow = true;
@@ -12,6 +27,28 @@ const setLighting = (scene: THREE.Scene) => {
   directionalLight.shadow.camera.near = 0.5;
   directionalLight.shadow.camera.far = 50;
   scene.add(directionalLight);
+
+  const updateDirectionalLightColor = (colorHex?: string) => {
+    const hex = colorHex || getAccentHex();
+    if (hex) {
+      try {
+        directionalLight.color.set(hex);
+      } catch (e) {
+        // ignore
+      }
+    }
+  };
+
+  if (typeof window !== "undefined") {
+    const observer = new MutationObserver(() => updateDirectionalLightColor());
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+    window.addEventListener("accentColorChange", ((e: CustomEvent) => {
+      updateDirectionalLightColor(e.detail);
+    }) as EventListener);
+  }
 
   const pointLight = new THREE.PointLight(0x9D4EDD, 0, 100, 3);
   pointLight.position.set(3, 12, 4);

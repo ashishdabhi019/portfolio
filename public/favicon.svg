@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-26.5 -84.5 320 320" width="100%" height="100%">
+  <!-- Smooth rounded squircle badge in black -->
+  <rect x="-26.5" y="-84.5" width="320" height="320" rx="68" ry="68" fill="#000000"/>
+  <!-- Pure white AD lettermark and matching white triangle dot -->
+  <path d="M 26 90 L 52 151 H 0 Z" fill="#FFFFFF"/>
+  <path d="M 63 0 H 98 L 151 122 H 189 C 214 122 234 101 234 75 C 234 49 212 28 184 28 H 150 L 137 0 H 191 C 233 0 267 34 267 75.5 C 267 117 233 151 191 151 H 128 Z" fill="#FFFFFF"/>
+</svg>
