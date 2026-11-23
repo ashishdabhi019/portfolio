@@ -16,7 +16,7 @@ export function initialFX() {
   document.body.style.removeProperty("background-color");
 
   var landingText = new SplitText(
-    [".landing-info h3", ".landing-intro h2", ".landing-intro h1"],
+    [".landing-info h3", ".landing-intro h2"],
     {
       type: "chars,lines",
       linesClass: "split-line",
@@ -53,6 +53,21 @@ export function initialFX() {
     }
   );
 
+  var landingLeftText2 = new SplitText(".landing-h1-info", TextProps);
+  gsap.fromTo(
+    landingLeftText2.chars,
+    { opacity: 0, y: 80, filter: "blur(5px)" },
+    {
+      opacity: 1,
+      duration: 1.2,
+      filter: "blur(0px)",
+      ease: "power3.inOut",
+      y: 0,
+      stagger: 0.025,
+      delay: 0.3,
+    }
+  );
+
   gsap.fromTo(
     ".landing-info-h2",
     { opacity: 0, y: 30 },
@@ -64,6 +79,19 @@ export function initialFX() {
       delay: 0.8,
     }
   );
+
+  gsap.fromTo(
+    ".landing-intro-h1",
+    { opacity: 0, y: 30 },
+    {
+      opacity: 1,
+      duration: 1.2,
+      ease: "power1.inOut",
+      y: 0,
+      delay: 0.8,
+    }
+  );
+
   gsap.fromTo(
     [".header", ".icons-section"],
     { opacity: 0 },
@@ -79,10 +107,27 @@ export function initialFX() {
   var landingText4 = new SplitText(".landing-h2-1", TextProps);
   var landingText5 = new SplitText(".landing-h2-2", TextProps);
 
-  splitInstances.push(landingText, landingText2, landingText3, landingText4, landingText5);
+  var landingLeftText3 = new SplitText(".landing-h1-info-1", TextProps);
+  var landingLeftText4 = new SplitText(".landing-h1-1", TextProps);
+  var landingLeftText5 = new SplitText(".landing-h1-2", TextProps);
+
+  splitInstances.push(
+    landingText,
+    landingText2,
+    landingText3,
+    landingText4,
+    landingText5,
+    landingLeftText2,
+    landingLeftText3,
+    landingLeftText4,
+    landingLeftText5
+  );
 
   LoopText(landingText2, landingText3);
   LoopText(landingText4, landingText5);
+
+  LoopText(landingLeftText2, landingLeftText3);
+  LoopText(landingLeftText4, landingLeftText5);
 }
 
 function LoopText(Text1: SplitText, Text2: SplitText) {

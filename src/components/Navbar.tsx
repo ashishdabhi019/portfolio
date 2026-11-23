@@ -439,6 +439,7 @@ const Navbar = () => {
                   />
                   <path d="M12 2a10 10 0 0 0 0 20V2Z" fill="currentColor" />
                 </svg>
+                <span className="nf-theme-btn-dot" aria-hidden="true" />
               </button>
 
               {/* Floating Theme Popover Card on Big Screen */}

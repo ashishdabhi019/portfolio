@@ -381,6 +381,19 @@
   transform: scale(1.05);
 }
 
+.nf-theme-btn-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accentColor, #F97316);
+  pointer-events: none;
+  z-index: 2;
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* ── Desktop Theme Popover Card ──────────────────────────────── */
 .nf-theme-dropdown {
   position: absolute;

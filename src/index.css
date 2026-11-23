@@ -255,6 +255,14 @@ body {
   }
 }
 
+@media screen and (max-width: 600px) {
+  .techstack h2,
+  .techstack-title {
+    font-size: 34px;
+    top: 125px;
+  }
+}
+
 /* ─── Mobile Tech Stack ─────────────────────────────────────────────────────── */
 .mobile-techstack {
   display: flex;

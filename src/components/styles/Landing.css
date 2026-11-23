@@ -178,12 +178,56 @@
 
 .landing-intro h1 {
   margin: 0;
-  letter-spacing: 2px;
-  font-size: 28px;
-  line-height: 40px;
-  font-weight: 800;
+  margin-top: -20px;
+  margin-left: 20px;
   font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
   font-stretch: 118%;
+  font-size: 32px;
+  line-height: 40px;
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.landing-h1-info-1 {
+  position: absolute;
+  top: 0;
+}
+
+h1.landing-intro-h1 {
+  color: var(--accentColor, #F97316);
+  font-size: 42px;
+  width: 120%;
+  margin: 0;
+  font-family: "Archivo", "Arial Black", sans-serif;
+  font-weight: 800;
+  font-stretch: 118%;
+  position: relative;
+  margin-left: -5px;
+  transition: color 0.35s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.landing-h1-2 {
+  position: absolute;
+  top: 0;
+}
+
+.landing-intro-h1::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 120%;
+  z-index: 3;
+  background-image: linear-gradient(0deg,
+      var(--backgroundColor) 40%,
+      rgba(0, 0, 0, 0) 110%);
+  top: 0;
+  left: 0;
 }
 
 
@@ -263,7 +307,11 @@ h2.landing-info-h2 {
 
   .landing-intro h1 {
     font-size: 24px;
-    line-height: 28px;
+    line-height: 32px;
+  }
+
+  h1.landing-intro-h1 {
+    font-size: 28px;
   }
 
   .landing-info h3 {
@@ -302,8 +350,12 @@ h2.landing-info-h2 {
   }
 
   .landing-intro h1 {
-    font-size: 30px;
-    line-height: 30px;
+    font-size: 35px;
+    line-height: 40px;
+  }
+
+  h1.landing-intro-h1 {
+    font-size: 38px;
   }
 
   .landing-info h2 {
@@ -326,9 +378,13 @@ h2.landing-info-h2 {
   }
 
   .landing-intro h1 {
-    font-size: 40px;
-    line-height: 40px;
+    font-size: 45px;
+    line-height: 42px;
     font-weight: 800;
+  }
+
+  h1.landing-intro-h1 {
+    font-size: 55px;
   }
 
   .landing-info h3 {
@@ -401,8 +457,12 @@ h2.landing-info-h2 {
   }
 
   .landing-intro h1 {
-    font-size: 60px;
-    line-height: 55px;
+    font-size: 65px;
+    line-height: 62px;
+  }
+
+  h1.landing-intro-h1 {
+    font-size: 75px;
   }
 
   .landing-info h3 {
