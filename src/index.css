@@ -816,3 +816,12 @@ body {
     display: none !important;
   }
 }
+
+/* ─── Prevent iOS Safari Viewport Auto-Zoom on Input Focus ──────────────────── */
+@media screen and (max-width: 834px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="hidden"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
