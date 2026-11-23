@@ -11,7 +11,9 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
   <link rel="shortcut icon" href="./favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#fefefe" media="(prefers-color-scheme: light)" id="theme-color-light" />
+  <meta name="theme-color" content="#07080b" media="(prefers-color-scheme: dark)" id="theme-color-dark" />
   <meta name="theme-color" content="#07080b" id="theme-color-meta" />
   <title>Ashish Dabhi | AI/ML Engineer</title>
   <meta name="description" content="Portfolio of Ashish Dabhi, an AI/ML Engineer specializing in building intelligent systems and high-performance digital solutions." />
@@ -35,6 +37,10 @@
         var themeColor = isLight ? "#fefefe" : "#07080b";
         var metaTheme = document.getElementById("theme-color-meta");
         if (metaTheme) metaTheme.setAttribute("content", themeColor);
+        var metaLight = document.getElementById("theme-color-light");
+        if (metaLight) metaLight.setAttribute("content", themeColor);
+        var metaDark = document.getElementById("theme-color-dark");
+        if (metaDark) metaDark.setAttribute("content", themeColor);
 
         // Initial accent color is always Orange (#F97316) by default
         var accent = "#F97316";
@@ -80,8 +86,8 @@
       }
     })();
   </script>
-  <script type="module" crossorigin src="./assets/index-se4GAyUM.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BxvD0Axk.css">
+  <script type="module" crossorigin src="./assets/index-DnpIOzqf.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DmR8MA-y.css">
 </head>
 
 <body>
