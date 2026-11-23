@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { IoClose } from "react-icons/io5";
 import logoWhite from "../assets/logo_white.png";
@@ -18,28 +18,55 @@ export function GreoModal({
 }) {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
-  const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
+  const [origin, setOrigin] = useState<{
+    x: number;
+    y: number;
+    cardX: number;
+    cardY: number;
+  } | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
-    let rAF1: number;
-    let rAF2: number;
+    let rAF: number;
     if (isOpen) {
       const btn =
         document.getElementById("greo-ring-btn") ||
         document.getElementById("greo-trigger-wrapper");
       if (btn) {
         const rect = btn.getBoundingClientRect();
+        const bx = Math.round(rect.left + rect.width / 2);
+        const by = Math.round(rect.top + rect.height / 2);
+
+        // Pre-calculate card origin for desktop layout
+        const cardW = Math.min(420, window.innerWidth - 48);
+        const cardH = Math.min(640, window.innerHeight - 48);
+        const cardLeft = window.innerWidth - 30 - cardW;
+        const cardTop = window.innerHeight - 24 - cardH;
+
         setOrigin({
-          x: Math.round(rect.left + rect.width / 2),
-          y: Math.round(rect.top + rect.height / 2),
+          x: bx,
+          y: by,
+          cardX: Math.round(bx - cardLeft),
+          cardY: Math.round(by - cardTop),
         });
       }
       setShouldRender(true);
-      rAF1 = requestAnimationFrame(() => {
-        rAF2 = requestAnimationFrame(() => {
-          setIsAnimatingOpen(true);
-        });
+      rAF = requestAnimationFrame(() => {
+        // Measure real card element once mounted for exact pixel accuracy
+        if (btn && cardRef.current) {
+          const btnRect = btn.getBoundingClientRect();
+          const cardRect = cardRef.current.getBoundingClientRect();
+          const bx = Math.round(btnRect.left + btnRect.width / 2);
+          const by = Math.round(btnRect.top + btnRect.height / 2);
+          setOrigin({
+            x: bx,
+            y: by,
+            cardX: Math.round(bx - cardRect.left),
+            cardY: Math.round(by - cardRect.top),
+          });
+        }
+        setIsAnimatingOpen(true);
       });
       document.body.style.overflow = "hidden";
       const lenis = (window as any).__lenisInstance || (window as any).lenis;
@@ -47,19 +74,19 @@ export function GreoModal({
         lenis.stop();
       }
       return () => {
-        cancelAnimationFrame(rAF1);
-        cancelAnimationFrame(rAF2);
+        cancelAnimationFrame(rAF);
       };
     } else {
       setIsAnimatingOpen(false);
       document.body.style.overflow = "";
+      document.body.style.overflowY = "auto";
       const lenis = (window as any).__lenisInstance || (window as any).lenis;
       if (lenis && typeof lenis.start === "function") {
         lenis.start();
       }
       timer = setTimeout(() => {
         setShouldRender(false);
-      }, 660);
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -86,12 +113,15 @@ export function GreoModal({
       data-lenis-prevent="true"
     >
       <div
+        ref={cardRef}
         className="gm-card"
         style={
           origin
             ? ({
                 "--greo-origin-x": `${origin.x}px`,
                 "--greo-origin-y": `${origin.y}px`,
+                "--greo-card-x": `${origin.cardX}px`,
+                "--greo-card-y": `${origin.cardY}px`,
               } as React.CSSProperties)
             : undefined
         }
@@ -123,6 +153,7 @@ export function GreoModal({
             </div>
           </div>
           <button
+            type="button"
             className="gm-close-btn"
             onClick={onClose}
             aria-label="Close Greo window"

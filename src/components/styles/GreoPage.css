@@ -125,24 +125,27 @@
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
-  padding: 32px;
+  padding: 24px 30px;
   pointer-events: none;
   opacity: 0;
-  /* Exit transition: exact same duration and cubic-bezier as mobile */
-  transition: opacity 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-              background-color 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 0.48s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .gm-overlay.gm-overlay--open {
   pointer-events: auto;
   opacity: 1;
-  /* Enter transition: responsive */
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+              background-color 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              backdrop-filter 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              -webkit-backdrop-filter 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-theme="light"] .gm-overlay {
-  background: transparent;
+[data-theme="light"] .gm-overlay.gm-overlay--open {
+  background: rgba(0, 0, 0, 0.22);
 }
 
 /* Floating Card for Desktop / PC */
@@ -151,7 +154,7 @@
   width: 420px;
   max-width: calc(100vw - 48px);
   height: 640px;
-  max-height: calc(100vh - 64px);
+  max-height: calc(100vh - 48px);
   border-radius: 28px;
   overflow: hidden;
   display: flex;
@@ -163,26 +166,30 @@
     0 8px 24px rgba(0, 0, 0, 0.5), 
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  transform-origin: calc(100% - 24px) calc(100% - 24px);
+  transform-origin: var(--greo-card-x, calc(100% - 35px)) var(--greo-card-y, calc(100% - 88px));
   
-  /* Closed / Exit State: exactly matching mobile scale (0.78) and glide into the button */
+  /* Closed / Exit State: scales directly into the round Greo button center and disappears */
   opacity: 0;
-  transform: scale(0.78) translate3d(20px, 40px, 0);
-  will-change: transform, opacity;
+  transform: scale(0.1);
+  border-radius: 65px;
+  will-change: transform, opacity, border-radius;
   
-  /* Exit transition: exact same 0.62s speed & curve as mobile */
+  /* Exit transition: smooth, graceful contraction right into the button */
   transition: 
-    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.58s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.48s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .gm-overlay--open .gm-card {
   opacity: 1;
-  transform: scale(1) translate3d(0, 0, 0);
-  /* Enter transition */
+  transform: scale(1);
+  border-radius: 28px;
+  /* Enter transition: responsive bloom outward from the button */
   transition: 
-    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    transform 0.44s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.44s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme="light"] .gm-card {
@@ -359,7 +366,23 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gm-close-btn * {
+  pointer-events: none;
+}
+
+.gm-close-btn::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
 }
 
 .gm-close-btn:hover {
@@ -469,10 +492,10 @@
 .gm-overlay:not(.gm-overlay--open) .gm-header,
 .gm-overlay:not(.gm-overlay--open) .gm-body {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(8px);
   transition: 
-    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.22s ease,
+    transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Enter state for content */
@@ -481,8 +504,8 @@
   opacity: 1;
   transform: translateY(0);
   transition: 
-    opacity 0.38s ease 0.08s,
-    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+    opacity 0.34s ease 0.08s,
+    transform 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
 }
 
 /* ── Mobile Sidebar / Drawer View (max-width: 834px) ──────────────────────── */
@@ -498,10 +521,10 @@
     pointer-events: none;
     /* Exit transition: smooth deceleration */
     transition: 
-      background-color 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      backdrop-filter 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      -webkit-backdrop-filter 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+      background-color 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+      backdrop-filter 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+      -webkit-backdrop-filter 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .gm-overlay.gm-overlay--open {
@@ -541,12 +564,12 @@
     opacity: 0;
     transform: scale(0.78);
     will-change: clip-path, -webkit-clip-path, transform, opacity;
-    /* Exit transition: smooth, slightly slower, beautiful visual contraction into button */
+    /* Exit transition: smooth, beautiful visual contraction into button */
     transition: 
-      clip-path 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      -webkit-clip-path 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.58s cubic-bezier(0.22, 1, 0.36, 1);
+      clip-path 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+      -webkit-clip-path 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1);
     background: #000000;
   }
 
@@ -558,9 +581,9 @@
     -webkit-clip-path: circle(160vmax at var(--greo-origin-x, 55px) var(--greo-origin-y, calc(100% - 68px)));
     /* Enter transition */
     transition: 
-      clip-path 0.48s cubic-bezier(0.16, 1, 0.3, 1),
-      -webkit-clip-path 0.48s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.48s cubic-bezier(0.16, 1, 0.3, 1),
+      clip-path 0.46s cubic-bezier(0.16, 1, 0.3, 1),
+      -webkit-clip-path 0.46s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.46s cubic-bezier(0.16, 1, 0.3, 1),
       opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
