@@ -208,25 +208,54 @@ const Navbar = () => {
   /* ── lock body scroll smoothly without layout shifts on close ── */
   useEffect(() => {
     let timer: number | undefined;
+    const lenis = (window as any).__lenisInstance || (window as any).lenis;
     if (menuOpen) {
       document.body.style.overflow = "hidden";
+      if (lenis && typeof lenis.stop === "function") {
+        lenis.stop();
+      }
     } else {
       // Delay clearing overflow until close animation completes to prevent layout jump
       timer = window.setTimeout(() => {
         document.body.style.overflow = "";
+        document.body.style.overflowY = "auto";
+        const currentLenis = (window as any).__lenisInstance || (window as any).lenis;
+        if (currentLenis && typeof currentLenis.start === "function") {
+          currentLenis.start();
+        }
       }, 350);
     }
     return () => {
       if (timer) clearTimeout(timer);
       document.body.style.overflow = "";
+      document.body.style.overflowY = "auto";
+      const currentLenis = (window as any).__lenisInstance || (window as any).lenis;
+      if (currentLenis && typeof currentLenis.start === "function") {
+        currentLenis.start();
+      }
     };
+  }, [menuOpen]);
+
+  /* ── auto-close mobile menu if resized to desktop ───────────── */
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 834 && menuOpen) {
+        setMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [menuOpen]);
 
   /* ── smooth scroll helper ────────────────────────────────────── */
   const scrollTo = (href: string) => {
     setMenuOpen(false);
     document.body.style.overflow = "";
-    const lenis = (window as any).lenis;
+    document.body.style.overflowY = "auto";
+    const lenis = (window as any).__lenisInstance || (window as any).lenis;
+    if (lenis && typeof lenis.start === "function") {
+      lenis.start();
+    }
     if (href === "#") {
       if (lenis) {
         lenis.scrollTo(0, { duration: 1.2 });
@@ -501,6 +530,7 @@ const Navbar = () => {
       <div
         className={`nf-overlay${menuOpen ? " nf-overlay--open" : ""}`}
         data-cursor="disable"
+        data-lenis-prevent="true"
         aria-hidden={!menuOpen}
       >
         {/* backdrop tap-to-close */}
