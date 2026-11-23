@@ -67,18 +67,17 @@ function SphereGeo({
 }: SphereProps) {
   const api = useRef<RapierRigidBody | null>(null);
 
-  // Scaled down slightly on mobile so all 27 balls fit comfortably within the narrow screen
-  const effectiveScale = isMobile ? scale * 0.86 : scale;
+  // Beautiful, prominent cloud scale on mobile that fills the viewport with comfortable margins
+  const effectiveScale = isMobile ? scale * 0.98 : scale;
 
   useFrame((_state, delta) => {
     if (!isActive) return;
     delta = Math.min(0.1, delta);
 
-    // On mobile: strong horizontal inward pull (-140) and moderate vertical pull (-65)
-    // shapes the balls into a tall, cohesive, well-aligned cluster fitting portrait screens.
-    // On desktop: retains the classic landscape elliptical spread (-50 X, -150 Y).
-    const forceX = isMobile ? -145 : -50;
-    const forceY = isMobile ? -65 : -150;
+    // On mobile: balanced inward pull creates a lush, cohesive, full cloud formation
+    // On desktop: retains the classic landscape elliptical spread (-50 X, -150 Y)
+    const forceX = isMobile ? -130 : -50;
+    const forceY = isMobile ? -75 : -150;
     const forceZ = isMobile ? -75 : -50;
 
     const impulse = vec
@@ -208,7 +207,7 @@ const TechStack = () => {
       <Canvas
         shadows
         gl={{ alpha: true, stencil: false, depth: false, antialias: false }}
-        camera={{ position: [0, isMobile ? -0.8 : 0, isMobile ? 30 : 20], fov: 32.5, near: 1, far: 100 }}
+        camera={{ position: [0, isMobile ? -0.5 : 0, isMobile ? 24 : 20], fov: 32.5, near: 1, far: 100 }}
         onCreated={(state) => (state.gl.toneMappingExposure = 1.5)}
         className="tech-canvas"
         style={{
