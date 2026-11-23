@@ -16,39 +16,85 @@ export function GreoModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
+  const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    let rAF1: number;
+    let rAF2: number;
+    if (isOpen) {
+      const btn =
+        document.getElementById("greo-ring-btn") ||
+        document.getElementById("greo-trigger-wrapper");
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        setOrigin({
+          x: Math.round(rect.left + rect.width / 2),
+          y: Math.round(rect.top + rect.height / 2),
+        });
+      }
+      setShouldRender(true);
+      rAF1 = requestAnimationFrame(() => {
+        rAF2 = requestAnimationFrame(() => {
+          setIsAnimatingOpen(true);
+        });
+      });
+      document.body.style.overflow = "hidden";
+      const lenis = (window as any).__lenisInstance || (window as any).lenis;
+      if (lenis && typeof lenis.stop === "function") {
+        lenis.stop();
+      }
+      return () => {
+        cancelAnimationFrame(rAF1);
+        cancelAnimationFrame(rAF2);
+      };
+    } else {
+      setIsAnimatingOpen(false);
+      document.body.style.overflow = "";
+      const lenis = (window as any).__lenisInstance || (window as any).lenis;
+      if (lenis && typeof lenis.start === "function") {
+        lenis.start();
+      }
+      timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 660);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-      const lenis = (window as any).__lenisInstance || (window as any).lenis;
-      if (lenis && typeof lenis.stop === "function") {
-        lenis.stop();
-      }
     }
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-      const lenis = (window as any).__lenisInstance || (window as any).lenis;
-      if (lenis && typeof lenis.start === "function") {
-        lenis.start();
-      }
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   return createPortal(
     <div
-      className="gm-overlay"
+      className={`gm-overlay ${isAnimatingOpen ? "gm-overlay--open" : ""}`}
       onClick={onClose}
       data-cursor="disable"
       data-lenis-prevent="true"
     >
       <div
         className="gm-card"
+        style={
+          origin
+            ? ({
+                "--greo-origin-x": `${origin.x}px`,
+                "--greo-origin-y": `${origin.y}px`,
+              } as React.CSSProperties)
+            : undefined
+        }
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -169,7 +215,10 @@ export function GreoButton() {
         </button>
         <div id="greo-trigger-label">
           <span className="greo-label-title">Ask Greo</span>
-          <span className="greo-label-status">ONLINE NOW</span>
+          <span className="greo-label-status">
+            <span className="greo-status-dot" aria-hidden="true" />
+            ONLINE NOW
+          </span>
         </div>
       </div>
 

@@ -119,8 +119,9 @@
 .nf-logo__badge-svg {
   height: 24px;
   width: auto;
-  aspect-ratio: 267 / 151;
+  aspect-ratio: 272 / 151;
   display: block;
+  overflow: visible;
   transition: filter 0.25s ease;
 }
 
@@ -1318,8 +1319,9 @@
   .nf-logo__mobile .nf-logo__badge-svg {
     height: 24px;
     width: auto;
-    aspect-ratio: 267 / 151;
+    aspect-ratio: 272 / 151;
     display: block;
+    overflow: visible;
   }
   .nf-logo:hover .nf-logo__mobile {
     transform: scale(1.06);

@@ -279,7 +279,7 @@ const Navbar = () => {
               <div className="nf-logo__badge" aria-hidden="true">
                 <svg
                   className="nf-logo__badge-svg"
-                  viewBox="0 0 267 151"
+                  viewBox="0 0 272 151"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                   aria-hidden="true"
@@ -320,7 +320,7 @@ const Navbar = () => {
             <div className="nf-logo__mobile" aria-hidden="true">
               <svg
                 className="nf-logo__badge-svg"
-                viewBox="0 0 267 151"
+                viewBox="0 0 272 151"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
