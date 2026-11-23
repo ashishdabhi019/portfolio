@@ -519,8 +519,8 @@ body {
 /* ─── Greo Floating Button (redirects to greo.in) ──────────────────────────── */
 #greo-trigger-wrapper {
   position: fixed;
-  right: 32px;
-  bottom: 90px;
+  right: 30px;
+  bottom: 70px;
   display: inline-flex;
   flex-direction: row;
   align-items: center;

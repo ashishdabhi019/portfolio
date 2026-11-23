@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  bottom: 40px;
+  bottom: 25px;
   right: 0;
   width: auto;
   text-wrap: nowrap;
@@ -108,7 +108,7 @@
     transform: none;
     font-size: 20px;
     line-height: 20px;
-    gap: 8px;
+    gap: 6px;
   }
 
   .resume-button span {
