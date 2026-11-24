@@ -1,5 +1,10 @@
-import { motion, useInView, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLoading } from "../context/LoadingProvider";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface FramerTextProps {
   text: string;
@@ -17,50 +22,104 @@ export const FramerText = ({
   yOffset = 30,
 }: FramerTextProps) => {
   const ref = useRef<HTMLParagraphElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.05, margin: "0px 0px 100px 0px" });
   const [hasAppeared, setHasAppeared] = useState(false);
 
+  let isLoading = false;
+  try {
+    const loadingContext = useLoading();
+    isLoading = loadingContext.isLoading;
+  } catch {
+    isLoading = false;
+  }
+
   useEffect(() => {
-    if (isInView) {
+    // Never trigger while the full-screen loader is still active
+    if (isLoading || hasAppeared) return;
+
+    const el = ref.current;
+    if (!el) return;
+
+    let triggerInstance: ScrollTrigger | null = null;
+    let observer: IntersectionObserver | null = null;
+
+    const reveal = () => {
       setHasAppeared(true);
+      if (triggerInstance) triggerInstance.kill();
+      if (observer) observer.disconnect();
+    };
+
+    // If already in viewport on mount (e.g. reload or anchor jump), reveal immediately
+    const rect = el.getBoundingClientRect();
+    const windowHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+    if (rect.top <= windowHeight * 0.9 && rect.bottom >= 0) {
+      reveal();
+      return;
     }
-  }, [isInView]);
 
-  // Robust visibility check for Lenis smooth scroll and instant trigger on mount
-  useEffect(() => {
-    if (hasAppeared) return;
+    // 1. Primary: GSAP ScrollTrigger (seamlessly synchronized with Lenis and GSAP timeline)
+    triggerInstance = ScrollTrigger.create({
+      trigger: el,
+      start: "top 90%",
+      once: true,
+      onEnter: reveal,
+    });
 
-    const checkVisibility = () => {
+    // 2. Secondary: IntersectionObserver with zero negative margin
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries.some(
+            (entry) => entry.isIntersecting || entry.intersectionRatio > 0
+          )
+        ) {
+          reveal();
+        }
+      },
+      {
+        threshold: 0.05,
+      }
+    );
+    observer.observe(el);
+
+    // 3. Fallback: Lenis and native scroll check
+    const checkScroll = () => {
       if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 80 && rect.bottom > 0) {
-        setHasAppeared(true);
+      const r = ref.current.getBoundingClientRect();
+      const h = window.innerHeight || document.documentElement.clientHeight;
+      if (r.top <= h * 0.9 && r.bottom >= 0) {
+        reveal();
       }
     };
 
-    checkVisibility();
-    window.addEventListener("scroll", checkVisibility, { passive: true });
-    window.addEventListener("resize", checkVisibility, { passive: true });
+    window.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll, { passive: true });
 
     const lenis = (window as any).__lenisInstance || (window as any).lenis;
     if (lenis && typeof lenis.on === "function") {
-      lenis.on("scroll", checkVisibility);
+      lenis.on("scroll", checkScroll);
     }
 
-    // Safety timeout: guaranteed reveal so text is never blank
-    const timer = setTimeout(() => {
-      setHasAppeared(true);
-    }, 1500);
+    // 4. Safety failsafe: ensure text is NEVER permanently hidden if user is near it
+    const failsafeTimer = setTimeout(() => {
+      const r = el.getBoundingClientRect();
+      const h = window.innerHeight || document.documentElement.clientHeight;
+      if (r.top <= h * 1.1) {
+        reveal();
+      }
+    }, 4000);
 
     return () => {
-      window.removeEventListener("scroll", checkVisibility);
-      window.removeEventListener("resize", checkVisibility);
+      if (triggerInstance) triggerInstance.kill();
+      if (observer) observer.disconnect();
+      window.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
       if (lenis && typeof lenis.off === "function") {
-        lenis.off("scroll", checkVisibility);
+        lenis.off("scroll", checkScroll);
       }
-      clearTimeout(timer);
+      clearTimeout(failsafeTimer);
     };
-  }, [hasAppeared]);
+  }, [isLoading, hasAppeared]);
 
   // Split text into words for paragraph animation
   const words = text.split(" ");
@@ -71,6 +130,7 @@ export const FramerText = ({
       opacity: 1,
       transition: {
         staggerChildren: staggerDelay,
+        delayChildren: 0.05,
       },
     },
   };
@@ -88,7 +148,12 @@ export const FramerText = ({
     },
   };
 
-  const MotionComponent = motion(Component as any);
+  const MotionComponent =
+    Component === "span"
+      ? motion.span
+      : Component === "div"
+      ? motion.div
+      : motion.p;
 
   return (
     <MotionComponent
@@ -97,11 +162,17 @@ export const FramerText = ({
       variants={containerVariants}
       initial="hidden"
       animate={hasAppeared ? "visible" : "hidden"}
-      style={{ display: "block", willChange: "transform, opacity" }}
+      style={{ display: "inline-block", willChange: "transform, opacity" }}
     >
       {words.map((word, index) => (
-        <span key={index} style={{ display: "inline-block", marginRight: "0.25em" }}>
-          <motion.span variants={childVariants} style={{ display: "inline-block" }}>
+        <span
+          key={index}
+          style={{ display: "inline-block", marginRight: "0.25em" }}
+        >
+          <motion.span
+            variants={childVariants}
+            style={{ display: "inline-block" }}
+          >
             {word}
           </motion.span>
         </span>
