@@ -3,9 +3,14 @@ import { SplitText } from "gsap/SplitText";
 import gsap from "gsap";
 
 let splitInstances: any[] = [];
+let loopTimelines: gsap.core.Timeline[] = [];
 
 export function initialFX() {
-  // If HMR triggers a re-run, revert previous text splits to prevent overlapping glitches
+  // Kill any running loop timelines and revert previous splits on HMR or re-run
+  if (loopTimelines.length > 0) {
+    loopTimelines.forEach((tl) => tl.kill());
+    loopTimelines = [];
+  }
   if (splitInstances.length > 0) {
     splitInstances.forEach(instance => instance.revert());
     splitInstances = [];
@@ -18,6 +23,8 @@ export function initialFX() {
   document.body.style.touchAction = "";
   document.getElementsByTagName("main")[0]?.classList.add("main-active");
   document.body.style.removeProperty("background-color");
+  gsap.set(".landing-container", { opacity: 1, y: 0, clearProps: "opacity,transform" });
+  gsap.set([".landing-intro", ".landing-info"], { opacity: 1, clearProps: "opacity" });
 
   const lenis = (window as any).__lenisInstance || (window as any).lenis;
   if (lenis && typeof lenis.start === "function") {
@@ -142,6 +149,7 @@ export function initialFX() {
 
 function LoopText(Text1: SplitText, Text2: SplitText) {
   var tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+  loopTimelines.push(tl);
   const delay = 4;
   const delay2 = delay * 2 + 1;
 
@@ -167,6 +175,7 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
         y: 0,
         stagger: 0.1,
         delay: delay2,
+        immediateRender: false,
       },
       1
     )
@@ -179,6 +188,7 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
         ease: "power3.inOut",
         stagger: 0.1,
         delay: delay,
+        immediateRender: false,
       },
       0
     )

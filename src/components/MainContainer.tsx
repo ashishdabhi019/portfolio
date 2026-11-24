@@ -78,6 +78,13 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
+  // Ensure landing text container stays visible if switching into portrait view after scroll
+  useEffect(() => {
+    if (!isDesktopView) {
+      gsap.set(".landing-container", { opacity: 1, y: 0, clearProps: "opacity,transform" });
+    }
+  }, [isDesktopView]);
+
   // Synchronize Lenis start/stop with loading state
   useEffect(() => {
     const lenis = (window as any).__lenisInstance || (window as any).lenis;

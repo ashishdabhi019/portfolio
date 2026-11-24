@@ -122,6 +122,7 @@ export function setCharTimeline(
         .to(character.rotation, { x: -0.04, duration: 2, delay: 1 }, 0);
     }
   } else {
+    gsap.set(".landing-container", { opacity: 1, y: 0, clearProps: "opacity,transform" });
     if (character) {
       const tM2 = gsap.timeline({
         scrollTrigger: {

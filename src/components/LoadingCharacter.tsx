@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLoading } from "../context/LoadingProvider";
 import { motion } from "framer-motion";
 import "./styles/MinimalLoader.css";
@@ -19,6 +19,16 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
   const [displayNum, setDisplayNum] = useState(0);
   const [showTitle, setShowTitle] = useState(false);
   const [exiting, setExiting] = useState(false);
+  const hasFinishedRef = useRef(false);
+
+  const finishLoading = useCallback(() => {
+    if (hasFinishedRef.current) return;
+    hasFinishedRef.current = true;
+    import("./utils/initialFX").then((mod) => {
+      mod.initialFX?.();
+      setIsLoading(false);
+    });
+  }, [setIsLoading]);
 
   /* ── Smooth animated 000 -> 100 counter ── */
   useEffect(() => {
@@ -52,6 +62,13 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
     }
   }, [displayNum]);
 
+  /* ── Guarantee initialFX runs even if Framer onAnimationComplete is interrupted by resize ── */
+  useEffect(() => {
+    if (!exiting) return;
+    const fallback = setTimeout(finishLoading, 1250);
+    return () => clearTimeout(fallback);
+  }, [exiting, finishLoading]);
+
   const WORDS = ["PORTFOLIO"];
   let charCounter = 0;
 
@@ -64,10 +81,7 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
       transition={{ duration: 1.1, ease: [0.77, 0, 0.175, 1] }}
       onAnimationComplete={() => {
         if (exiting) {
-          import("./utils/initialFX").then((mod) => {
-            mod.initialFX?.();
-            setIsLoading(false);
-          });
+          finishLoading();
         }
       }}
     >
