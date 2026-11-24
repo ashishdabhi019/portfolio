@@ -179,10 +179,8 @@
 
 /* ════════════════════ STACKING CARDS LIST ═════════════════ */
 .process-cards-container {
-  display: flex;
-  flex-direction: column;
+  display: block;
   position: relative;
-  gap: 24px;
   --stack-base-top: clamp(100px, 11vh, 120px);
   --stack-step: clamp(16px, 1.4vw, 22.4px);
   padding-bottom: clamp(180px, 24vh, 280px);
@@ -212,6 +210,10 @@
   align-items: center;
   transition: background 0.25s ease;
   will-change: transform;
+}
+
+.process-card:not(:last-child) {
+  margin-bottom: 14px;
 }
 
 /* Clean card hover state */
