@@ -74,7 +74,9 @@ export const handleHeadRotation = (
       );
     }
   } else {
-    if (window.innerWidth > 1024) {
+    const isPortraitTablet =
+      window.innerHeight > window.innerWidth && window.innerWidth <= 1050;
+    if (window.innerWidth > 1024 && !isPortraitTablet) {
       headBone.rotation.x = lerp(headBone.rotation.x, -0.4, 0.03);
       headBone.rotation.y = lerp(headBone.rotation.y, -0.3, 0.03);
     }

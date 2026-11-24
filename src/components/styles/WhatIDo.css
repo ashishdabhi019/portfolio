@@ -389,7 +389,38 @@
   }
 }
 
-@media only screen and (max-width: 1024px) {
+/* iPad Pro 13" horizontal (1376x1032) — give character clean center stage without overlapping text/cards */
+@media only screen and (min-width: 1051px) and (max-width: 1420px) and (min-height: 900px) {
+  .whatIDO {
+    justify-content: space-between;
+  }
+
+  .what-box {
+    width: auto;
+    z-index: 12;
+  }
+
+  .what-box:first-child {
+    justify-content: flex-start;
+    padding-left: 140px;
+  }
+
+  .what-box h2,
+  .what-title {
+    margin-right: 0;
+    font-size: 64px;
+  }
+
+  .what-box:last-child {
+    justify-content: flex-end;
+  }
+
+  .what-box-in {
+    margin-left: 0;
+  }
+}
+
+@media only screen and (max-width: 1024px), only screen and (max-width: 1050px) and (orientation: portrait) {
   .whatIDO {
     height: auto;
     padding: 50px 0px;
@@ -428,7 +459,7 @@
   }
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 900px), only screen and (max-width: 1050px) and (orientation: portrait) {
   .whatIDO {
     flex-direction: column;
   }
@@ -500,6 +531,82 @@
 
   .what-content h3 {
     font-size: 25px;
+  }
+}
+
+/* iPad Pro 13" & large tablet vertical (portrait 835px–1050px) */
+@media only screen and (min-width: 835px) and (max-width: 1050px) and (orientation: portrait) {
+  .whatIDO {
+    height: auto;
+    flex-direction: column;
+    padding: clamp(50px, 6vh, 80px) 0 clamp(80px, 9vh, 110px) 0;
+  }
+
+  .what-box {
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .what-box:first-child {
+    justify-content: flex-start;
+  }
+
+  .what-box h2,
+  .what-title {
+    font-size: clamp(56px, 6.2vw, 70px);
+    line-height: 0.98;
+    margin: 0 0 36px 0;
+  }
+
+  .what-box:last-child {
+    height: auto;
+  }
+
+  .what-box-in {
+    width: 100%;
+    height: 520px;
+    margin-left: 0;
+  }
+
+  .what-border1 svg {
+    width: 100%;
+  }
+
+  .what-content {
+    width: 100%;
+    padding: 34px 40px;
+  }
+
+  .what-noTouch:hover,
+  .what-content-active {
+    padding: 26px 40px 22px 40px;
+  }
+
+  .what-noTouch:hover~.what-content,
+  .what-box-in:hover .what-noTouch:not(:hover),
+  .what-content.what-sibling {
+    padding: 14px 40px;
+  }
+
+  .what-content h3 {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .what-content h4 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .what-content p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .what-tags {
+    font-size: 13px;
+    padding: 4px 11px;
   }
 }
 

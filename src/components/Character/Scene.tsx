@@ -40,7 +40,8 @@ const Scene = () => {
       const camera = new THREE.PerspectiveCamera(14.5, aspect, 0.1, 1000);
       camera.position.z = 10;
       camera.position.set(0, 13.1, 24.7);
-      camera.zoom = 1.1;
+      // Slightly zoom out on tall 4:3 desktop screens (e.g. iPad Pro 13" landscape 1376x1032)
+      camera.zoom = container.width > 1050 && aspect > 1 && aspect < 1.48 ? 0.82 : 1.1;
       camera.updateProjectionMatrix();
 
       let headBone: THREE.Object3D | null = null;

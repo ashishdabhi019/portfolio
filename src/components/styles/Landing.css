@@ -401,7 +401,7 @@ h2.landing-info-h2 {
   }
 }
 
-@media screen and (min-width: 1025px) {
+@media screen and (min-width: 1025px) and (orientation: landscape), screen and (min-width: 1051px) {
   .character-model {
     height: 100vh;
     bottom: 0;

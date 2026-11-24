@@ -19,18 +19,23 @@ import { useLoading } from "../context/LoadingProvider";
 gsap.registerPlugin(ScrollTrigger);
 const TechStack = lazy(() => import("./TechStack"));
 
+const checkIsDesktopView = () => {
+  if (typeof window === "undefined") return true;
+  const isPortrait = window.innerHeight > window.innerWidth;
+  if (isPortrait && window.innerWidth <= 1050) return false;
+  return window.innerWidth > 1024;
+};
+
 const MainContainer = ({ children }: PropsWithChildren) => {
   const { isLoading } = useLoading();
-  const [isDesktopView, setIsDesktopView] = useState<boolean>(
-    window.innerWidth > 1024
-  );
+  const [isDesktopView, setIsDesktopView] = useState<boolean>(checkIsDesktopView);
 
   useEffect(() => {
     let timeoutId: number;
     const resizeHandler = () => {
       clearTimeout(timeoutId);
       timeoutId = window.setTimeout(() => {
-        setIsDesktopView(window.innerWidth > 1024);
+        setIsDesktopView(checkIsDesktopView());
       }, 150);
     };
     

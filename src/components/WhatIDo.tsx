@@ -10,8 +10,10 @@ const WhatIDo = () => {
   useEffect(() => {
     const clickHandlers = new Map<HTMLDivElement, () => void>();
 
-    // Use window.innerWidth as a fallback for ScrollTrigger.isTouch on responsive views
-    if (ScrollTrigger.isTouch || window.innerWidth <= 1024) {
+    // Use window.innerWidth as a fallback for ScrollTrigger.isTouch on responsive views (including iPad Pro portrait)
+    const isPortraitTablet =
+      window.innerHeight > window.innerWidth && window.innerWidth <= 1050;
+    if (ScrollTrigger.isTouch || window.innerWidth <= 1024 || isPortraitTablet) {
       containerRef.current.forEach((container) => {
         if (container) {
           container.classList.remove("what-noTouch");

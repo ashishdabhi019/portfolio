@@ -61,7 +61,10 @@ export function setCharTimeline(
     }
   });
   let neckBone = character?.getObjectByName("spine005");
-  if (window.innerWidth > 1024) {
+  const isDesktopLayout =
+    window.innerWidth > 1024 &&
+    !(window.innerHeight > window.innerWidth && window.innerWidth <= 1050);
+  if (isDesktopLayout) {
     if (character) {
       tl1
         .fromTo(character.rotation, { y: 0 }, { y: 0.7, duration: 1 }, 0)
@@ -173,7 +176,10 @@ export function setAllTimeline() {
       0
     );
 
-  if (window.innerWidth > 1024) {
+  const isDesktopLayout =
+    window.innerWidth > 1024 &&
+    !(window.innerHeight > window.innerWidth && window.innerWidth <= 1050);
+  if (isDesktopLayout) {
     careerTimeline.fromTo(
       ".career-section",
       { y: 0 },
