@@ -674,7 +674,7 @@
 /* ── Bottom bar ── */
 .footer-bottom {
   width: 100%;
-  padding: 22px 0 28px 0;
+  padding: 22px 0 max(28px, calc(env(safe-area-inset-bottom) + 20px)) 0;
   box-sizing: border-box;
 }
 

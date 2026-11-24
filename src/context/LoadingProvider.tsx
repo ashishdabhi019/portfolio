@@ -34,14 +34,20 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     // Ensure document theme is synchronized on loader mount
     try {
-      const saved = localStorage.getItem("portfolio_theme");
+      const raw = localStorage.getItem("portfolio_theme") || "auto";
+      const saved = raw.toLowerCase();
       const isLight =
-        saved === "Light" ||
-        ((saved === "Auto" || !saved) &&
-          window.matchMedia?.("(prefers-color-scheme: light)").matches);
-      if (isLight) {
-        document.documentElement.setAttribute("data-theme", "light");
-        document.documentElement.style.colorScheme = "light";
+        saved === "light" ||
+        (saved === "auto" &&
+          !!window.matchMedia?.("(prefers-color-scheme: light)").matches);
+      const theme = isLight ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.setAttribute("data-theme-setting", saved);
+      document.documentElement.style.colorScheme = theme;
+
+      const themeColorMeta = document.getElementById("theme-color-meta");
+      if (themeColorMeta) {
+        themeColorMeta.setAttribute("content", theme === "light" ? "#FEFEFE" : "#07080b");
       }
     } catch {}
 

@@ -46,12 +46,17 @@ const Navbar = () => {
     document.documentElement.setAttribute("data-theme", resolved);
     document.documentElement.style.colorScheme = resolved;
     document.body.style.removeProperty("background-color");
+    const themeColorMeta = document.getElementById("theme-color-meta");
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute("content", resolved === "light" ? "#FEFEFE" : "#07080b");
+    }
   };
 
   const handleThemeChange = (theme: "Dark" | "Light" | "Auto") => {
     setActiveTheme(theme);
+    const themeKey = theme.toLowerCase();
     try {
-      localStorage.setItem("portfolio_theme", theme);
+      localStorage.setItem("portfolio_theme", themeKey);
     } catch {
       // ignore local storage restrictions
     }
@@ -65,7 +70,7 @@ const Navbar = () => {
     } else {
       document.documentElement.setAttribute(
         "data-theme-setting",
-        theme.toLowerCase(),
+        themeKey,
       );
       applyResolvedTheme(theme === "Light" ? "light" : "dark");
     }
@@ -73,17 +78,19 @@ const Navbar = () => {
 
   /* ── initialize theme from localStorage or system on mount ───── */
   useEffect(() => {
-    let saved: "Dark" | "Light" | "Auto" | null = null;
+    let savedRaw: string | null = null;
     try {
-      saved = localStorage.getItem("portfolio_theme") as
-        | "Dark"
-        | "Light"
-        | "Auto"
-        | null;
+      savedRaw = localStorage.getItem("portfolio_theme");
     } catch {
-      saved = null;
+      savedRaw = null;
     }
-    const initial = saved || "Dark";
+    const normalized = (savedRaw || "auto").toLowerCase();
+    const initial: "Dark" | "Light" | "Auto" =
+      normalized === "light"
+        ? "Light"
+        : normalized === "auto"
+          ? "Auto"
+          : "Dark";
     setActiveTheme(initial);
 
     let savedAccent = "#F97316";
@@ -120,20 +127,20 @@ const Navbar = () => {
     } else {
       document.documentElement.setAttribute(
         "data-theme-setting",
-        initial.toLowerCase(),
+        normalized,
       );
       applyResolvedTheme(initial === "Light" ? "light" : "dark");
     }
 
     const mql = window.matchMedia("(prefers-color-scheme: light)");
     const onSystemChange = (e: MediaQueryListEvent) => {
-      let cur = "Dark";
+      let cur = "dark";
       try {
-        cur = localStorage.getItem("portfolio_theme") || "Dark";
+        cur = (localStorage.getItem("portfolio_theme") || "auto").toLowerCase();
       } catch {
-        cur = "Dark";
+        cur = "dark";
       }
-      if (cur === "Auto") {
+      if (cur === "auto") {
         applyResolvedTheme(e.matches ? "light" : "dark");
       }
     };
