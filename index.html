@@ -13,6 +13,7 @@
   <link rel="shortcut icon" href="./favicon.ico" />
   <link rel="manifest" href="./site.webmanifest" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta id="theme-color-meta" name="theme-color" content="#07080b" />
   <title>Ashish Dabhi | AI/ML Engineer</title>
   <meta name="description" content="Portfolio of Ashish Dabhi, an AI/ML Engineer specializing in building intelligent systems and high-performance digital solutions." />
   <meta property="og:title" content="Ashish Dabhi | AI/ML Engineer" />
@@ -22,16 +23,25 @@
     // Immediately apply saved theme before first paint to prevent dark mode flash on loading screen
     (function () {
       try {
-        var saved = localStorage.getItem("portfolio_theme");
+        var raw = localStorage.getItem("portfolio_theme") || "auto";
+        var saved = raw.toLowerCase();
         var isLight = false;
-        if (saved === "Light") {
+        if (saved === "light") {
           isLight = true;
-        } else if (saved === "Auto" || !saved) {
-          isLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        } else if (saved === "dark") {
+          isLight = false;
+        } else {
+          isLight = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches);
         }
         var theme = isLight ? "light" : "dark";
         document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.setAttribute("data-theme-setting", saved);
         document.documentElement.style.colorScheme = theme;
+
+        var themeColorMeta = document.getElementById("theme-color-meta");
+        if (themeColorMeta) {
+          themeColorMeta.setAttribute("content", theme === "light" ? "#FEFEFE" : "#07080b");
+        }
 
         // Initial accent color is always Orange (#F97316) by default
         var accent = "#F97316";
@@ -77,8 +87,8 @@
       }
     })();
   </script>
-  <script type="module" crossorigin src="./assets/index-dWG1ar_I.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DwEu0eXo.css">
+  <script type="module" crossorigin src="./assets/index-BWQ-6pmz.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-ZQTPhBZg.css">
 </head>
 
 <body>
