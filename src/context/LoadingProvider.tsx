@@ -81,6 +81,60 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
     };
   }, []);
 
+  /* ── Strict Scroll Lock while loader is active ── */
+  useEffect(() => {
+    if (isLoading) {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+
+      const preventTouch = (e: TouchEvent) => {
+        if (e.cancelable) e.preventDefault();
+      };
+      const preventWheel = (e: WheelEvent) => {
+        if (e.cancelable) e.preventDefault();
+      };
+      const preventKeys = (e: KeyboardEvent) => {
+        if (
+          [
+            "Space",
+            "ArrowUp",
+            "ArrowDown",
+            "PageUp",
+            "PageDown",
+            "Home",
+            "End",
+          ].includes(e.code)
+        ) {
+          e.preventDefault();
+        }
+      };
+
+      window.addEventListener("touchmove", preventTouch, { passive: false });
+      window.addEventListener("wheel", preventWheel, { passive: false });
+      window.addEventListener("keydown", preventKeys, { passive: false });
+
+      return () => {
+        document.documentElement.style.overflow = "";
+        document.body.style.overflow = "";
+        document.body.style.overflowY = "auto";
+        document.body.style.touchAction = "";
+        window.removeEventListener("touchmove", preventTouch);
+        window.removeEventListener("wheel", preventWheel);
+        window.removeEventListener("keydown", preventKeys);
+      };
+    } else {
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      document.body.style.overflowY = "auto";
+      document.body.style.touchAction = "";
+    }
+  }, [isLoading]);
+
   const value = {
     isLoading,
     setIsLoading,

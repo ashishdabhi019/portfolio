@@ -14,11 +14,13 @@ import Work from "./Work";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLoading } from "../context/LoadingProvider";
 
 gsap.registerPlugin(ScrollTrigger);
 const TechStack = lazy(() => import("./TechStack"));
 
 const MainContainer = ({ children }: PropsWithChildren) => {
+  const { isLoading } = useLoading();
   const [isDesktopView, setIsDesktopView] = useState<boolean>(
     window.innerWidth > 1024
   );
@@ -48,6 +50,12 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     (window as any).__lenisInstance = lenis;
     (window as any).lenis = lenis;
 
+    // Immediately stop Lenis if loader is still active
+    if (isLoading) {
+      lenis.stop();
+      lenis.scrollTo(0, { immediate: true });
+    }
+
     lenis.on('scroll', ScrollTrigger.update);
 
     gsap.ticker.add((time) => {
@@ -64,6 +72,19 @@ const MainContainer = ({ children }: PropsWithChildren) => {
       gsap.ticker.remove(lenis.raf);
     };
   }, []);
+
+  // Synchronize Lenis start/stop with loading state
+  useEffect(() => {
+    const lenis = (window as any).__lenisInstance || (window as any).lenis;
+    if (!lenis) return;
+    if (isLoading) {
+      lenis.stop();
+      lenis.scrollTo(0, { immediate: true });
+    } else {
+      lenis.scrollTo(0, { immediate: true });
+      lenis.start();
+    }
+  }, [isLoading]);
 
   return (
     <div className="container-main">

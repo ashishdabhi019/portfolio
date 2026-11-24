@@ -11,9 +11,19 @@ export function initialFX() {
     splitInstances = [];
   }
 
+  window.scrollTo(0, 0);
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
   document.body.style.overflowY = "auto";
-  document.getElementsByTagName("main")[0].classList.add("main-active");
+  document.body.style.touchAction = "";
+  document.getElementsByTagName("main")[0]?.classList.add("main-active");
   document.body.style.removeProperty("background-color");
+
+  const lenis = (window as any).__lenisInstance || (window as any).lenis;
+  if (lenis && typeof lenis.start === "function") {
+    lenis.scrollTo(0, { immediate: true });
+    lenis.start();
+  }
 
   var landingText = new SplitText(
     [".landing-info h3", ".landing-intro h2"],

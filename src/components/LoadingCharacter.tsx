@@ -58,6 +58,7 @@ const LoadingCharacter = ({ percent }: { percent: number }) => {
   return (
     <motion.div
       className="f-loader"
+      data-lenis-prevent="true"
       initial={{ y: 0 }}
       animate={{ y: exiting ? "-100%" : 0 }}
       transition={{ duration: 1.1, ease: [0.77, 0, 0.175, 1] }}
