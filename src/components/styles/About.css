@@ -68,11 +68,24 @@
   color: #0b0c10;
 }
 
-.about-me p {
+.about-me p,
+.about-me .para {
   font-size: 33px;
   font-weight: 600;
   line-height: 36px;
   letter-spacing: 1px;
+  color: var(--textColor, #eae5ec);
+  transition: color 0.35s ease;
+}
+
+[data-theme="light"] .about-me p,
+[data-theme="light"] .about-me .para {
+  color: #0b0c10;
+}
+
+[data-theme="dark"] .about-me p,
+[data-theme="dark"] .about-me .para {
+  color: #eae5ec;
 }
 
 @media only screen and (max-width: 600px) {
@@ -84,7 +97,8 @@
     font-size: 36px;
   }
 
-  .about-me p {
+  .about-me p,
+  .about-me .para {
     font-size: 22px;
     line-height: 28px;
   }
@@ -123,14 +137,16 @@
     width: 50%;
   }
 
-  .about-me p {
+  .about-me p,
+  .about-me .para {
     font-size: 1.9vw;
     line-height: 2.3vw;
   }
 }
 
 @media only screen and (min-width: 1950px) {
-  .about-me p {
+  .about-me p,
+  .about-me .para {
     font-size: 2.5rem;
     line-height: 2.7rem;
   }
