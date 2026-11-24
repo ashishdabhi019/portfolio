@@ -87,8 +87,8 @@ function SphereGeo({
         new THREE.Vector3(
           forceX * delta * effectiveScale,
           forceY * delta * effectiveScale,
-          forceZ * delta * effectiveScale
-        )
+          forceZ * delta * effectiveScale,
+        ),
       );
 
     api.current?.applyImpulse(impulse, true);
@@ -127,7 +127,11 @@ type PointerProps = {
   isMobile?: boolean;
 };
 
-function Pointer({ vec = new THREE.Vector3(), isActive, isMobile = false }: PointerProps) {
+function Pointer({
+  vec = new THREE.Vector3(),
+  isActive,
+  isMobile = false,
+}: PointerProps) {
   const ref = useRef<RapierRigidBody>(null);
 
   useFrame(({ pointer, viewport }) => {
