@@ -563,7 +563,7 @@ main {
   text-decoration: none;
   border-radius: 100px;
   padding: 5px;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.001);
   border: none;
   box-shadow: none;
   transition: 
@@ -579,7 +579,8 @@ main {
   transform: translateY(12px) scale(0.9) !important;
 }
 
-#greo-trigger-wrapper:hover {
+#greo-trigger-wrapper:hover,
+#greo-trigger-wrapper.is-hovered {
   padding: 5px 24px 5px 5px;
 }
 
@@ -617,7 +618,8 @@ main {
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-#greo-trigger-wrapper:hover .greo-border-shine {
+#greo-trigger-wrapper:hover .greo-border-shine,
+#greo-trigger-wrapper.is-hovered .greo-border-shine {
   opacity: 1;
 }
 
@@ -657,7 +659,8 @@ main {
   transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-#greo-trigger-wrapper:hover .greo-border-glow {
+#greo-trigger-wrapper:hover .greo-border-glow,
+#greo-trigger-wrapper.is-hovered .greo-border-glow {
   opacity: 0.95;
 }
 
@@ -729,6 +732,7 @@ main {
   filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
   flex-shrink: 0;
   margin: 0;
+  pointer-events: none !important;
 }
 
 /* Greo button theme-specific logo toggle */
@@ -762,7 +766,7 @@ main {
   opacity: 0;
   overflow: hidden;
   white-space: nowrap;
-  pointer-events: none;
+  pointer-events: auto;
   transform: translateX(12px);
   margin-left: 0;
   transition: 
@@ -772,14 +776,16 @@ main {
     margin-left 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-#greo-trigger-wrapper:hover #greo-ring-btn {
-  scale: 1.02;
+#greo-trigger-wrapper:hover #greo-ring-btn,
+#greo-trigger-wrapper.is-hovered #greo-ring-btn {
+  transform: scale(1.02);
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
 }
 
-#greo-trigger-wrapper:hover #greo-trigger-label {
+#greo-trigger-wrapper:hover #greo-trigger-label,
+#greo-trigger-wrapper.is-hovered #greo-trigger-label {
   max-width: 180px;
   opacity: 1;
   transform: translateX(0);
@@ -858,7 +864,8 @@ main {
       opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  #greo-trigger-wrapper:hover {
+  #greo-trigger-wrapper:hover,
+  #greo-trigger-wrapper.is-hovered {
     padding: 0 !important;
     background: transparent !important;
     border: none !important;
@@ -894,7 +901,8 @@ main {
       opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  #greo-trigger-wrapper:hover {
+  #greo-trigger-wrapper:hover,
+  #greo-trigger-wrapper.is-hovered {
     padding: 0 !important;
     background: transparent !important;
     border: none !important;

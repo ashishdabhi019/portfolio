@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { IoClose } from "react-icons/io5";
 import logoWhite from "../assets/logo_white.png";
@@ -166,6 +166,34 @@ export function GreoModal({
    ───────────────────────────────────────────────────────── */
 export function GreoButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    // Hysteresis buffer prevents rapid jitter/flicker when cursor grazes the perimeter
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 180);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -175,8 +203,10 @@ export function GreoButton() {
         aria-label={isOpen ? "Close Greo window" : "Open Greo status"}
         data-cursor="disable"
         onClick={() => setIsOpen((prev) => !prev)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         style={{ cursor: "pointer" }}
-        className={isOpen ? "is-open is-active" : ""}
+        className={`${isOpen ? "is-open is-active" : ""} ${isHovered ? "is-hovered" : ""}`}
       >
         {/* Soft accent glow halo radiating outward */}
         <div className="greo-border-glow" aria-hidden="true">
