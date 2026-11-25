@@ -704,6 +704,15 @@
   }
 }
 
+/* Horizontal Foldables (e.g., Galaxy Z Fold 6 860x744, iPhone Duo 890x626) — minor wide stretch */
+@media (min-width: 601px) and (max-width: 1023px) and (orientation: landscape) {
+  .work-intro-block,
+  .work-card,
+  .work-card--view-all {
+    max-width: 660px !important;
+  }
+}
+
 /* Mobile Phones (iPhone, Android) */
 @media (max-width: 600px) {
   .work-section {

@@ -243,10 +243,10 @@ const Navbar = () => {
     };
   }, [menuOpen]);
 
-  /* ── auto-close mobile menu if resized to desktop ───────────── */
+  /* ── auto-close mobile menu if resized to desktop/tablet ────── */
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 834 && menuOpen) {
+      if (window.innerWidth > 1000 && menuOpen) {
         setMenuOpen(false);
       }
     };

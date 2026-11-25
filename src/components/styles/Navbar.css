@@ -1289,15 +1289,15 @@
 
 /* ════════════════════ RESPONSIVE ═══════════════════════════════ */
 
-/* ≥ 835 px — desktop navbar & tablet in landscape */
-@media (min-width: 835px) {
+/* ≥ 1001 px — desktop navbar & iPads (iPad Mini landscape 1024px, iPad Pro 13 vertical 1032px) */
+@media (min-width: 1001px) {
   .nf-links-wrapper { display: flex; }
   .nf-links         { display: flex; }
   .nf-hamburger     { display: none; }
 }
 
-/* 835–1080 px — compact desktop / landscape tablet */
-@media (min-width: 835px) and (max-width: 1080px) {
+/* 1001–1080 px — compact desktop / landscape tablet */
+@media (min-width: 1001px) and (max-width: 1080px) {
   .nf-nav__inner { padding: 0 24px; }
   .nf-nav--scrolled .nf-nav__inner { width: calc(100% - 32px); padding: 0 8px 0 20px; }
   .nf-logo__name { font-size: 19px; }
@@ -1308,8 +1308,8 @@
   .nf-cta .nf-cta__text { font-size: 12.5px; }
 }
 
-/* iPad Pro 13" vertical & iPad Mini horizontal (835px–1050px) — sleek smaller pill navbar */
-@media (min-width: 835px) and (max-width: 1050px) {
+/* iPad Pro 13" vertical & iPad Mini horizontal (1001px–1050px) — sleek smaller pill navbar */
+@media (min-width: 1001px) and (max-width: 1050px) {
   .nf-nav--scrolled { padding-top: 12px; }
   .nf-nav__inner { height: 64px; padding: 0 28px; }
   .nf-nav--scrolled .nf-nav__inner {
@@ -1331,8 +1331,8 @@
   .nf-cta:not(.nf-cta--large) .nf-cta__text { font-size: 12px; }
 }
 
-/* ≤ 834 px — Mobile & iPad Mini in vertical/portrait mode */
-@media (max-width: 834px) {
+/* ≤ 1000 px — Mobile, iPad Mini vertical, & Foldables (vertical & horizontal) */
+@media (max-width: 1000px) {
   .nf-links-wrapper { display: none; }
   .nf-links         { display: none; }
   .nf-theme-btn,
@@ -1472,8 +1472,8 @@
   .landing-circle2  { display: none !important; }
 }
 
-/* iPad Mini vertical / portrait (601px–834px) — aligned width & sleek height */
-@media (min-width: 601px) and (max-width: 834px) {
+/* iPad Mini vertical & Unfolded Foldables (601px–1000px) — mobile navbar look, aligned width & sleek height */
+@media (min-width: 601px) and (max-width: 1000px) {
   .nf-nav--scrolled {
     padding-top: 12px;
   }
