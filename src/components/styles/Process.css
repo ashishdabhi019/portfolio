@@ -201,7 +201,6 @@
   box-shadow: none;
   padding: 0;
   box-sizing: border-box;
-  will-change: transform;
 }
 
 .process-card:not(:last-child) {

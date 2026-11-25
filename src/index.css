@@ -13,7 +13,6 @@ html {
 body {
   min-height: 100vh;
   min-height: 100svh;
-  min-height: 100dvh;
   margin: 0;
   background-color: var(--backgroundColor);
   color: var(--textColor);
@@ -33,16 +32,10 @@ body {
   overscroll-behavior-x: none;
 }
 
-/* Dynamic viewport support */
+/* Stable small viewport height so iOS Safari toolbar transitions don't shift sections */
 :root {
   --vh: 100vh;
   --vh: 100svh;
-}
-
-@supports (height: 100dvh) {
-  :root {
-    --vh: 100dvh;
-  }
 }
 
 :root {
@@ -95,9 +88,9 @@ body,
 [data-theme="light"],
 [data-theme="light"] body,
 [data-theme="light"] #root {
-  --backgroundColor: #FEFEFE;
+  --backgroundColor: #F5F1EE;
   --textColor: #0b0c10;
-  background-color: #FEFEFE !important;
+  background-color: #F5F1EE !important;
   color: #0b0c10;
   color-scheme: light;
 }
