@@ -1,8 +1,5 @@
 .icons-section {
-  position: fixed;
-  inset: 0;
-  z-index: 10001;
-  pointer-events: none;
+  display: contents;
 }
 
 .resume-button {

@@ -17,6 +17,27 @@ export function GreoModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const [isRendered, setIsRendered] = useState(isOpen);
+  const [isVisible, setIsVisible] = useState(isOpen);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsRendered(true);
+      let raf2 = 0;
+      const raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setIsVisible(true));
+      });
+      return () => {
+        cancelAnimationFrame(raf1);
+        cancelAnimationFrame(raf2);
+      };
+    } else {
+      setIsVisible(false);
+      const t = window.setTimeout(() => setIsRendered(false), 820);
+      return () => clearTimeout(t);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     let timer: number | undefined;
     const lenis = (window as any).__lenisInstance || (window as any).lenis;
@@ -60,7 +81,7 @@ export function GreoModal({
 
   return createPortal(
     <div
-      className={`gm-overlay ${isOpen ? "gm-overlay--open" : ""}`}
+      className={`gm-overlay${isVisible ? " gm-overlay--open" : ""}${!isRendered ? " gm-overlay--hidden" : ""}`}
       onClick={onClose}
       data-cursor="disable"
       aria-hidden={!isOpen}

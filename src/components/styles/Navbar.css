@@ -712,6 +712,10 @@
 }
 
 /* ════════════════════ FULL-SCREEN OVERLAY (Mobile Menu) ════════════ */
+.nf-overlay--hidden {
+  display: none !important;
+}
+
 .nf-overlay {
   position: fixed;
   inset: 0;

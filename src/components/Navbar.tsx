@@ -31,6 +31,8 @@ const ACCENT_COLORS = [
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [overlayRendered, setOverlayRendered] = useState(false);
+  const [overlayVisible, setOverlayVisible] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const [activeTheme, setActiveTheme] = useState<"Dark" | "Light" | "Auto">(
     "Dark",
@@ -46,10 +48,6 @@ const Navbar = () => {
     document.documentElement.setAttribute("data-theme", resolved);
     document.documentElement.style.colorScheme = resolved;
     document.body.style.removeProperty("background-color");
-    const themeColorMeta = document.getElementById("theme-color-meta");
-    if (themeColorMeta) {
-      themeColorMeta.setAttribute("content", resolved === "light" ? "#FEFEFE" : "#07080b");
-    }
   };
 
   const handleThemeChange = (theme: "Dark" | "Light" | "Auto") => {
@@ -241,6 +239,25 @@ const Navbar = () => {
         currentLenis.start();
       }
     };
+  }, [menuOpen]);
+
+  /* ── keep closed mobile overlay unrendered (display: none) for Safari edge transparency ── */
+  useEffect(() => {
+    if (menuOpen) {
+      setOverlayRendered(true);
+      let raf2 = 0;
+      const raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => setOverlayVisible(true));
+      });
+      return () => {
+        cancelAnimationFrame(raf1);
+        cancelAnimationFrame(raf2);
+      };
+    } else {
+      setOverlayVisible(false);
+      const t = window.setTimeout(() => setOverlayRendered(false), 370);
+      return () => clearTimeout(t);
+    }
   }, [menuOpen]);
 
   /* ── auto-close mobile menu if resized to desktop/tablet ────── */
@@ -536,7 +553,7 @@ const Navbar = () => {
 
       {/* ══════════ MOBILE FULL-SCREEN OVERLAY ══════════ */}
       <div
-        className={`nf-overlay${menuOpen ? " nf-overlay--open" : ""}`}
+        className={`nf-overlay${overlayVisible ? " nf-overlay--open" : ""}${!overlayRendered ? " nf-overlay--hidden" : ""}`}
         data-cursor="disable"
         data-lenis-prevent="true"
         aria-hidden={!menuOpen}

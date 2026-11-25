@@ -44,11 +44,6 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
       document.documentElement.setAttribute("data-theme", theme);
       document.documentElement.setAttribute("data-theme-setting", saved);
       document.documentElement.style.colorScheme = theme;
-
-      const themeColorMeta = document.getElementById("theme-color-meta");
-      if (themeColorMeta) {
-        themeColorMeta.setAttribute("content", theme === "light" ? "#FEFEFE" : "#07080b");
-      }
     } catch {}
 
     let fallbackInterval: ReturnType<typeof setInterval> | null = null;
