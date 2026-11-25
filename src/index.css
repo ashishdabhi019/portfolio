@@ -561,7 +561,7 @@ main {
   text-decoration: none;
   border-radius: 100px;
   padding: 5px;
-  background: rgba(0, 0, 0, 0.001);
+  background: transparent;
   border: none;
   box-shadow: none;
   transition: 
