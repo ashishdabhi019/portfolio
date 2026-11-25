@@ -121,7 +121,7 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
       return () => {
         document.documentElement.style.overflow = "";
         document.body.style.overflow = "";
-        document.body.style.overflowY = "auto";
+        document.body.style.overflowY = "";
         document.body.style.touchAction = "";
         window.removeEventListener("touchmove", preventTouch);
         window.removeEventListener("wheel", preventWheel);
@@ -130,7 +130,7 @@ export const LoadingProvider = ({ children }: PropsWithChildren) => {
     } else {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
-      document.body.style.overflowY = "auto";
+      document.body.style.overflowY = "";
       document.body.style.touchAction = "";
     }
   }, [isLoading]);

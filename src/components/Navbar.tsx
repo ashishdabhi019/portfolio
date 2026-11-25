@@ -225,7 +225,7 @@ const Navbar = () => {
       // Delay clearing overflow until close animation completes to prevent layout jump
       timer = window.setTimeout(() => {
         document.body.style.overflow = "";
-        document.body.style.overflowY = "auto";
+        document.body.style.overflowY = "";
         const currentLenis = (window as any).__lenisInstance || (window as any).lenis;
         if (currentLenis && typeof currentLenis.start === "function") {
           currentLenis.start();
@@ -235,7 +235,7 @@ const Navbar = () => {
     return () => {
       if (timer) clearTimeout(timer);
       document.body.style.overflow = "";
-      document.body.style.overflowY = "auto";
+      document.body.style.overflowY = "";
       const currentLenis = (window as any).__lenisInstance || (window as any).lenis;
       if (currentLenis && typeof currentLenis.start === "function") {
         currentLenis.start();
@@ -258,7 +258,7 @@ const Navbar = () => {
   const scrollTo = (href: string) => {
     setMenuOpen(false);
     document.body.style.overflow = "";
-    document.body.style.overflowY = "auto";
+    document.body.style.overflowY = "";
     const lenis = (window as any).__lenisInstance || (window as any).lenis;
     if (lenis && typeof lenis.start === "function") {
       lenis.start();

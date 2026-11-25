@@ -28,7 +28,7 @@ export function GreoModal({
     } else {
       timer = window.setTimeout(() => {
         document.body.style.overflow = "";
-        document.body.style.overflowY = "auto";
+        document.body.style.overflowY = "";
         const currentLenis = (window as any).__lenisInstance || (window as any).lenis;
         if (currentLenis && typeof currentLenis.start === "function") {
           currentLenis.start();
@@ -38,7 +38,7 @@ export function GreoModal({
     return () => {
       if (timer) clearTimeout(timer);
       document.body.style.overflow = "";
-      document.body.style.overflowY = "auto";
+      document.body.style.overflowY = "";
       const currentLenis = (window as any).__lenisInstance || (window as any).lenis;
       if (currentLenis && typeof currentLenis.start === "function") {
         currentLenis.start();

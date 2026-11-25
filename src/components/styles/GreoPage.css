@@ -514,6 +514,7 @@
     
     /* Closed State on Mobile: pointer-events-none opacity-0 translate-y-4 [clip-path:inset(85%_0_0_70%)] */
     pointer-events: none;
+    visibility: hidden;
     opacity: 0;
     transform: translateY(16px);
     clip-path: inset(85% 0 0 70%);
@@ -524,17 +525,25 @@
       opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 800ms cubic-bezier(0.16, 1, 0.3, 1),
       clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1),
-      -webkit-clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1);
+      -webkit-clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s 800ms;
   }
 
   /* Expands to cover the entire display */
   .gm-overlay--open .gm-card {
     pointer-events: auto;
+    visibility: visible;
     opacity: 1;
     transform: translateY(0);
     clip-path: inset(0 0 0 0);
     -webkit-clip-path: inset(0 0 0 0);
     border-radius: 0 !important;
+    transition: 
+      opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      -webkit-clip-path 800ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s 0s;
   }
 
   [data-theme="light"] .gm-card {

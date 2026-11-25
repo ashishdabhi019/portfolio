@@ -19,7 +19,7 @@ export function initialFX() {
   window.scrollTo(0, 0);
   document.documentElement.style.overflow = "";
   document.body.style.overflow = "";
-  document.body.style.overflowY = "auto";
+  document.body.style.overflowY = "";
   document.body.style.touchAction = "";
   document.getElementsByTagName("main")[0]?.classList.add("main-active");
   document.body.style.removeProperty("background-color");
