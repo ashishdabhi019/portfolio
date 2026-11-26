@@ -195,7 +195,11 @@
   position: sticky;
   top: calc(var(--stack-base-top) + var(--card-index, 0) * var(--stack-step));
   z-index: calc(var(--card-index, 0) + 1);
-  width: 100%;
+  /* Keep sticky element border box < 90% viewport width so WebKit's
+     fixedContainerEdges() skips it and doesn't latch white onto Safari's bottom bar */
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -207,13 +211,14 @@
   margin-bottom: 14px;
 }
 
-/* Inner card surface & grid (keeps sticky shell transparent so Safari doesn't sample it at viewport edges) */
+/* Inner card surface & grid spanning full container width inside the 50% sticky shell */
 .process-card-inner {
   display: grid;
   grid-template-columns: minmax(320px, 1.3fr) 1.2fr;
   align-items: center;
   gap: clamp(24px, 3vw, 40px);
-  width: 100%;
+  width: 200%;
+  margin-left: -50%;
   min-height: auto;
   background: #0E0E13;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -421,7 +426,7 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 20px;
-    width: 100%;
+    width: 200%;
   }
 
   .process-card-left {
@@ -492,5 +497,12 @@
   .process-card-desc {
     font-size: 15px;
     line-height: 1.6;
+  }
+}
+
+@media (max-height: 500px) {
+  .process-card {
+    position: relative;
+    top: auto;
   }
 }
