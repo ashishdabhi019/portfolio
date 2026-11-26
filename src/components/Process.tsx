@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import "./styles/Process.css";
 import { useScrollLineReveal } from "./utils/useScrollReveal";
+import { EDITORIAL_EASE, VIEWPORT_REVEAL } from "./utils/motionPresets";
 
 interface ProcessStep {
   number: string;
@@ -187,11 +189,17 @@ const Process = () => {
           </div>
 
           <div className="process-header-right">
-            <p className="process-subtitle">
+            <motion.p
+              className="process-subtitle"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.65, delay: 0.14, ease: EDITORIAL_EASE }}
+            >
               Clear milestones, honest estimates, and production-ready code
               shipped in short sprints — you always know exactly where your
               build stands.
-            </p>
+            </motion.p>
           </div>
         </div>
 
@@ -213,13 +221,33 @@ const Process = () => {
               }
             >
               <div className="process-card-inner">
-                <div className="process-card-left">
+                <motion.div
+                  className="process-card-left"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={VIEWPORT_REVEAL}
+                  transition={{
+                    duration: 0.55,
+                    delay: 0.04,
+                    ease: EDITORIAL_EASE,
+                  }}
+                >
                   <span className="process-card-num">{step.number}</span>
                   <h3 className="process-card-title">{step.title}</h3>
-                </div>
-                <div className="process-card-right">
+                </motion.div>
+                <motion.div
+                  className="process-card-right"
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={VIEWPORT_REVEAL}
+                  transition={{
+                    duration: 0.55,
+                    delay: 0.12,
+                    ease: EDITORIAL_EASE,
+                  }}
+                >
                   <p className="process-card-desc">{step.description}</p>
-                </div>
+                </motion.div>
               </div>
             </div>
           ))}

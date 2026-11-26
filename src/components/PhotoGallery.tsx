@@ -1,8 +1,16 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { IoClose, IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdPhotoLibrary, MdAdd, MdDelete, MdPlayCircle, MdInsertDriveFile } from "react-icons/md";
 import { RiImageLine, RiVideoLine, RiApps2Line } from "react-icons/ri";
+import GlassSurface from "./GlassSurface";
 import "./styles/PhotoGallery.css";
+import {
+  EDITORIAL_EASE,
+  SOFT_SPRING,
+  TACTILE_SPRING,
+  staggerDelay,
+} from "./utils/motionPresets";
 
 const CLOUD_NAME = "dm0ocjzhd";
 const UPLOAD_PRESET = "portfolio_uploads";
@@ -29,37 +37,308 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function getContrastOnAccent(hex: string): "#050810" | "#ffffff" {
+  const clean = hex.trim().replace("#", "");
+  if (clean.length !== 6) return "#ffffff";
+  const r = parseInt(clean.slice(0, 2), 16) / 255;
+  const g = parseInt(clean.slice(2, 4), 16) / 255;
+  const b = parseInt(clean.slice(4, 6), 16) / 255;
+  if ([r, g, b].some(Number.isNaN)) return "#ffffff";
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return luminance > 0.55 ? "#050810" : "#ffffff";
+}
+
+interface MasonryPosition {
+  left: number;
+  top: number;
+  width: number;
+}
+
+const SKELETON_RATIOS = [0.76, 1.15, 0.85, 1.32, 0.94, 0.72, 1.22, 0.8, 1.08, 0.88, 1.26, 0.9];
+const SKELETON_KEYS = SKELETON_RATIOS.map((_, i) => `pg-skeleton-${i}`);
+
+function getPlaceholderRatio(key: string): number {
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash = (hash * 31 + key.charCodeAt(i)) | 0;
+  }
+  return SKELETON_RATIOS[Math.abs(hash) % SKELETON_RATIOS.length];
+}
+
+function getMasonryMetrics(width: number): { cols: number; gap: number } {
+  if (width < 600) return { cols: 2, gap: 10 };
+  if (width < 900) return { cols: 3, gap: 12 };
+  if (width < 1240) return { cols: 4, gap: 14 };
+  if (width < 1600) return { cols: 5, gap: 14 };
+  return { cols: 6, gap: 16 };
+}
+
+function useMasonryLayout(itemKeys: string[]) {
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const keysRef = useRef<string[]>(itemKeys);
+  keysRef.current = itemKeys;
+
+  const [layout, setLayout] = useState<{
+    positions: Record<string, MasonryPosition>;
+    height: number;
+    colWidth: number;
+  }>({ positions: {}, height: 0, colWidth: 200 });
+
+  const rafRef = useRef<number | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  const measureAndPlace = useCallback(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const containerWidth = grid.clientWidth;
+    if (containerWidth <= 0) return;
+
+    const keys = keysRef.current;
+    if (keys.length === 0) {
+      setLayout((prev) =>
+        prev.height === 0 && Object.keys(prev.positions).length === 0
+          ? prev
+          : { positions: {}, height: 0, colWidth: containerWidth },
+      );
+      return;
+    }
+
+    const { cols, gap } = getMasonryMetrics(containerWidth);
+    const colWidth = Math.max(80, (containerWidth - gap * (cols - 1)) / cols);
+    const colHeights = new Array<number>(cols).fill(0);
+    const nextPositions: Record<string, MasonryPosition> = {};
+
+    for (const key of keys) {
+      const el = itemRefs.current.get(key);
+      if (el) {
+        // Synchronize column width before measuring card height so reflow is exact on resize
+        el.style.width = `${colWidth}px`;
+      }
+      const measuredHeight = el ? el.offsetHeight : 0;
+      const cardHeight =
+        measuredHeight > 0
+          ? measuredHeight
+          : Math.round(colWidth / getPlaceholderRatio(key));
+
+      let shortestCol = 0;
+      for (let c = 1; c < cols; c++) {
+        if (colHeights[c] < colHeights[shortestCol]) {
+          shortestCol = c;
+        }
+      }
+
+      nextPositions[key] = {
+        left: shortestCol * (colWidth + gap),
+        top: colHeights[shortestCol],
+        width: colWidth,
+      };
+      colHeights[shortestCol] += cardHeight + gap;
+    }
+
+    const totalHeight = Math.max(0, Math.max(...colHeights) - gap);
+    setLayout((prev) => {
+      if (
+        prev.height === totalHeight &&
+        prev.colWidth === colWidth &&
+        Object.keys(prev.positions).length === keys.length
+      ) {
+        let same = true;
+        for (const k of keys) {
+          const a = prev.positions[k];
+          const b = nextPositions[k];
+          if (!a || !b || a.left !== b.left || a.top !== b.top || a.width !== b.width) {
+            same = false;
+            break;
+          }
+        }
+        if (same) return prev;
+      }
+      return { positions: nextPositions, height: totalHeight, colWidth };
+    });
+  }, []);
+
+  const scheduleMeasure = useCallback(() => {
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      measureAndPlace();
+    });
+  }, [measureAndPlace]);
+
+  useEffect(() => {
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      scheduleMeasure();
+    });
+    resizeObserverRef.current = ro;
+    if (gridRef.current) ro.observe(gridRef.current);
+    itemRefs.current.forEach((el) => ro.observe(el));
+
+    return () => {
+      ro.disconnect();
+      resizeObserverRef.current = null;
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, [scheduleMeasure]);
+
+  const itemKeysSignature = itemKeys.join("|");
+  useLayoutEffect(() => {
+    measureAndPlace();
+  }, [itemKeysSignature, measureAndPlace]);
+
+  const setGridRef = useCallback(
+    (el: HTMLDivElement | null) => {
+      if (gridRef.current && gridRef.current !== el) {
+        resizeObserverRef.current?.unobserve(gridRef.current);
+      }
+      gridRef.current = el;
+      if (el) {
+        resizeObserverRef.current?.observe(el);
+        measureAndPlace();
+      }
+    },
+    [measureAndPlace],
+  );
+
+  const setItemRef = useCallback((key: string, el: HTMLDivElement | null) => {
+    const prevEl = itemRefs.current.get(key);
+    if (prevEl && prevEl !== el) {
+      resizeObserverRef.current?.unobserve(prevEl);
+      itemRefs.current.delete(key);
+    }
+    if (el) {
+      itemRefs.current.set(key, el);
+      resizeObserverRef.current?.observe(el);
+    }
+  }, []);
+
+  return { setGridRef, layout, setItemRef, scheduleMeasure };
+}
+
 // ── Media Thumbnail ───────────────────────────────────────────────────────────
-function MediaThumb({ item, onClick, isDeleting }: {
-  item: MediaItem; onClick: () => void; isDeleting: boolean;
+function MediaThumb({ item, index, onClick, isDeleting, onMediaReady }: {
+  item: MediaItem;
+  index: number;
+  onClick: () => void;
+  isDeleting: boolean;
+  onMediaReady: () => void;
 }) {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(item.resourceType === "raw");
+  const [errored, setErrored] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const placeholderRatio = getPlaceholderRatio(item.publicId);
+
+  useEffect(() => {
+    if (item.resourceType === "raw") {
+      setLoaded(true);
+      setErrored(false);
+      return;
+    }
+    if (item.resourceType === "image") {
+      const img = imgRef.current;
+      if (img?.complete && img.naturalWidth > 0) {
+        setLoaded(true);
+        onMediaReady();
+      } else {
+        setLoaded(false);
+      }
+    } else {
+      const vid = videoRef.current;
+      if (vid && vid.readyState >= 1) {
+        setLoaded(true);
+        onMediaReady();
+      } else {
+        setLoaded(false);
+      }
+    }
+    setErrored(false);
+  }, [item.url, item.resourceType, onMediaReady]);
+
+  const handleLoadComplete = () => {
+    setLoaded(true);
+    onMediaReady();
+  };
+
+  const handleLoadError = () => {
+    setErrored(true);
+    setLoaded(true);
+    onMediaReady();
+  };
+
+  const lockPlaceholderAspect = !loaded && item.resourceType !== "raw";
+
   return (
-    <div
+    <motion.div
       className={`pg-card ${item.resourceType === "video" ? "pg-card--video" : ""} ${isDeleting ? "pg-card--deleting" : ""}`}
+      style={
+        lockPlaceholderAspect
+          ? { aspectRatio: String(placeholderRatio) }
+          : undefined
+      }
+      initial={{ opacity: 0, y: 14, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{
+        duration: 0.4,
+        delay: staggerDelay(index, 0.025, 0.25),
+        ease: EDITORIAL_EASE,
+      }}
+      whileTap={{ scale: 0.985 }}
       onClick={onClick} role="button" tabIndex={0}
       onKeyDown={e => e.key === "Enter" && onClick()}
     >
-      {!loaded && <div className="pg-card-skeleton" />}
+      {!loaded && <div className="pg-card-skeleton" aria-hidden="true" />}
       {item.resourceType === "video" ? (
-        <>
-          <video src={item.url} muted preload="metadata"
-            onLoadedData={() => setLoaded(true)}
-            style={{ opacity: loaded ? 1 : 0 }} />
-          {loaded && <div className="pg-card-play"><MdPlayCircle /></div>}
-        </>
+        errored ? (
+          <div className="pg-card--file-inner">
+            <MdPlayCircle className="pg-file-icon" />
+            <span className="pg-file-name">Video unavailable</span>
+          </div>
+        ) : (
+          <>
+            <video
+              ref={videoRef}
+              src={item.url}
+              muted
+              preload="metadata"
+              onLoadedData={handleLoadComplete}
+              onLoadedMetadata={handleLoadComplete}
+              onError={handleLoadError}
+              className={`pg-media ${loaded ? "is-loaded" : "is-loading"}`}
+            />
+            {loaded && <div className="pg-card-play"><MdPlayCircle /></div>}
+          </>
+        )
       ) : item.resourceType === "raw" ? (
         <div className="pg-card--file-inner">
           <MdInsertDriveFile className="pg-file-icon" />
           <span className="pg-file-name">{item.filename || "File"}</span>
           <span className="pg-file-ext">.{item.format?.toUpperCase()}</span>
         </div>
+      ) : errored ? (
+        <div className="pg-card--file-inner">
+          <MdPhotoLibrary className="pg-file-icon" />
+          <span className="pg-file-name">{item.filename || "Image unavailable"}</span>
+        </div>
       ) : (
-        <img src={item.url} alt="" draggable={false} loading="lazy"
-          onLoad={() => setLoaded(true)}
-          style={{ opacity: loaded ? 1 : 0 }} />
+        <img
+          ref={imgRef}
+          src={item.url}
+          alt=""
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+          onLoad={handleLoadComplete}
+          onError={handleLoadError}
+          className={`pg-media ${loaded ? "is-loaded" : "is-loading"}`}
+        />
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -115,8 +394,18 @@ function Lightbox({ items, startIdx, onClose, onDelete }: {
   const current = items[idx];
 
   return (
-    <div className="lb-overlay" onClick={showConfirm ? undefined : onClose}
-      onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+    <motion.div
+      className="lb-overlay"
+      data-lenis-prevent="true"
+      onClick={showConfirm ? undefined : onClose}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.24, ease: EDITORIAL_EASE }}
+    >
       <div className="lb-header-pill">
         <button className="lb-pill-delete" onClick={e => { e.stopPropagation(); setShowConfirm(true); }}><MdDelete /></button>
         <div className="lb-pill-divider" />
@@ -134,19 +423,44 @@ function Lightbox({ items, startIdx, onClose, onDelete }: {
           opacity: isDragging ? Math.max(0.1, 1 - Math.abs(dragY) / 400) : 1,
         }}>
         {!loaded && <div className="lb-loader"><div className="lb-spinner" /></div>}
-        {current?.resourceType === "video" ? (
-          <video key={idx} src={current.url} className={`lb-img lb-img--${direction}`}
-            controls autoPlay playsInline onLoadedData={() => setLoaded(true)} style={{ opacity: loaded ? 1 : 0 }} />
-        ) : current?.resourceType === "raw" ? (
-          <div className="lb-file-preview">
-            <MdInsertDriveFile className="lb-file-icon" />
-            <span>{current.filename}</span>
-            <a href={current.url} target="_blank" rel="noopener noreferrer" className="lb-file-download">Download File</a>
-          </div>
-        ) : (
-          <img key={idx} src={current?.url} className={`lb-img lb-img--${direction}`}
-            alt="" draggable={false} onLoad={() => setLoaded(true)} style={{ opacity: loaded ? 1 : 0 }} />
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={idx}
+            initial={{
+              opacity: 0,
+              x: direction === "next" ? 42 : direction === "prev" ? -42 : 0,
+              scale: 0.98,
+            }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{
+              opacity: 0,
+              x: direction === "next" ? -42 : direction === "prev" ? 42 : 0,
+              scale: 0.98,
+            }}
+            transition={{ duration: 0.24, ease: EDITORIAL_EASE }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              maxWidth: "100%",
+              maxHeight: "88vh",
+            }}
+          >
+            {current?.resourceType === "video" ? (
+              <video src={current.url} className={`lb-img lb-img--${direction}`}
+                controls autoPlay playsInline onLoadedData={() => setLoaded(true)} style={{ opacity: loaded ? 1 : 0 }} />
+            ) : current?.resourceType === "raw" ? (
+              <div className="lb-file-preview">
+                <MdInsertDriveFile className="lb-file-icon" />
+                <span>{current.filename}</span>
+                <a href={current.url} target="_blank" rel="noopener noreferrer" className="lb-file-download">Download File</a>
+              </div>
+            ) : (
+              <img src={current?.url} className={`lb-img lb-img--${direction}`}
+                alt="" draggable={false} onLoad={() => setLoaded(true)} style={{ opacity: loaded ? 1 : 0 }} />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
       {items.length > 1 && (
         <>
@@ -154,45 +468,237 @@ function Lightbox({ items, startIdx, onClose, onDelete }: {
           <button className="lb-arrow lb-next" onClick={e => { e.stopPropagation(); next(); }}><IoChevronForward /></button>
         </>
       )}
-      {showConfirm && (
-        <div className="lb-confirm-overlay" onClick={e => { e.stopPropagation(); setShowConfirm(false); }}>
-          <div className="lb-confirm-card" onClick={e => e.stopPropagation()}>
-            <button className="lb-confirm-close" onClick={() => setShowConfirm(false)}><IoClose /></button>
-            <div className="lb-confirm-icon"><MdDelete /></div>
-            <h3 className="lb-confirm-title">Permanently delete this?</h3>
-            <p className="lb-confirm-msg">This will remove the file from Cloudinary forever.</p>
-            <div className="lb-confirm-actions">
-              <button className="lb-confirm-delete" onClick={confirmDelete}>Delete</button>
-              <button className="lb-confirm-cancel" onClick={() => setShowConfirm(false)}>Keep</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <AnimatePresence>
+        {showConfirm && (
+          <motion.div
+            className="lb-confirm-overlay"
+            onClick={e => { e.stopPropagation(); setShowConfirm(false); }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div
+              className="lb-confirm-card"
+              onClick={e => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.92, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 8 }}
+              transition={SOFT_SPRING}
+            >
+              <button className="lb-confirm-close" onClick={() => setShowConfirm(false)}><IoClose /></button>
+              <div className="lb-confirm-icon"><MdDelete /></div>
+              <h3 className="lb-confirm-title">Permanently delete this?</h3>
+              <p className="lb-confirm-msg">This will remove the file from Cloudinary forever.</p>
+              <div className="lb-confirm-actions">
+                <button className="lb-confirm-delete" onClick={confirmDelete}>Delete</button>
+                <button className="lb-confirm-cancel" onClick={() => setShowConfirm(false)}>Keep</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
 // ── Upload Modal ──────────────────────────────────────────────────────────────
 function UploadModal({ progress, filename, onCancel }: { progress: number; filename: string; onCancel: () => void }) {
-  return (
-    <div className="pg-upload-overlay">
-      <div className="pg-upload-card">
-        <img
-          src="/images/Uploading to cloud.gif"
-          alt="Uploading to cloud"
-          className="pg-cloud-gif"
-        />
+  const clamped = Math.min(100, Math.max(0, progress));
+  const radius = 78;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (circumference * clamped) / 100;
+  const isComplete = clamped >= 100;
 
-        <p className="pg-upload-label">Uploading to Cloud</p>
-        <p className="pg-upload-fname">{filename}</p>
-        <div className="pg-upload-track">
-          <div className="pg-upload-fill" style={{ width: `${progress}%` }} />
+  return (
+    <motion.div
+      className="pg-upload-overlay"
+      data-lenis-prevent="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.24 }}
+    >
+      <motion.div
+        className="pg-upload-card"
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94, y: 12 }}
+        transition={SOFT_SPRING}
+      >
+        <div className="pg-upload-emblem" aria-hidden="true">
+          <motion.div
+            className="pg-upload-aura"
+            animate={{ scale: [0.92, 1.08, 0.92], opacity: [0.5, 0.95, 0.5] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {!isComplete && (
+            <>
+              <motion.span
+                className="pg-upload-pulse"
+                animate={{ scale: [0.78, 1.24], opacity: [0.55, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+              />
+              <motion.span
+                className="pg-upload-pulse"
+                animate={{ scale: [0.78, 1.24], opacity: [0.45, 0] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 1, ease: "easeOut" }}
+              />
+            </>
+          )}
+
+          <motion.svg
+            className="pg-upload-orbit"
+            viewBox="0 0 194 194"
+            fill="none"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+          >
+            <circle
+              className="pg-upload-orbit-circle"
+              cx="97"
+              cy="97"
+              r="91"
+              strokeWidth="1.5"
+              strokeDasharray="6 10"
+              strokeLinecap="round"
+            />
+          </motion.svg>
+
+          <svg className="pg-upload-ring" viewBox="0 0 176 176" fill="none">
+            <circle
+              className="pg-upload-ring-track"
+              cx="88"
+              cy="88"
+              r={radius}
+              strokeWidth="6"
+            />
+            <motion.circle
+              className="pg-upload-ring-progress"
+              cx="88"
+              cy="88"
+              r={radius}
+              strokeWidth="6.5"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              initial={{ strokeDashoffset: circumference }}
+              animate={{ strokeDashoffset }}
+              transition={{ duration: 0.28, ease: EDITORIAL_EASE }}
+              transform="rotate(-90 88 88)"
+            />
+          </svg>
+
+          <motion.div
+            className="pg-upload-icon-wrap"
+            animate={isComplete ? { scale: [0.92, 1.06, 1] } : { y: [0, -3.5, 0] }}
+            transition={
+              isComplete
+                ? TACTILE_SPRING
+                : { duration: 2.6, repeat: Infinity, ease: "easeInOut" }
+            }
+          >
+            <svg className="pg-upload-cloud-svg" viewBox="0 0 80 80" fill="none">
+              <path
+                d="M19 63H61C69.8 63 77 56.2 77 47.8C77 40.2 71.1 33.9 63.6 32.9C61.1 21.2 50.9 13 39 13C25.3 13 14.2 23.8 14 37.3C7.8 38.8 3 44.1 3 50.6C3 57.6 10.1 63 19 63Z"
+                className="pg-upload-cloud-shape"
+              />
+              {isComplete ? (
+                <motion.path
+                  d="M32.5 46.5L37.5 51.5L48.5 39.5"
+                  className="pg-upload-cloud-check"
+                  strokeWidth="3.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 0.35, ease: EDITORIAL_EASE }}
+                />
+              ) : (
+                <>
+                  <motion.circle
+                    cx="28"
+                    cy="53"
+                    r="1.5"
+                    className="pg-upload-particle"
+                    animate={{ y: [0, -12], opacity: [0, 0.85, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+                  />
+                  <motion.circle
+                    cx="52"
+                    cy="53"
+                    r="1.5"
+                    className="pg-upload-particle"
+                    animate={{ y: [0, -12], opacity: [0, 0.85, 0] }}
+                    transition={{ duration: 1.5, delay: 0.55, repeat: Infinity, ease: "easeOut" }}
+                  />
+                  <motion.g
+                    animate={{ y: [3.5, -3.5, 3.5], opacity: [0.88, 1, 0.88] }}
+                    transition={{ duration: 1.35, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <path
+                      d="M40 53V39"
+                      className="pg-upload-cloud-arrow"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M34.5 44.5L40 38.5L45.5 44.5"
+                      className="pg-upload-cloud-arrow"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </motion.g>
+                </>
+              )}
+            </svg>
+          </motion.div>
         </div>
-        <p className="pg-upload-pct">{progress}<span>%</span></p>
-        <button className="pg-upload-cancel" onClick={onCancel}>Cancel</button>
-      </div>
-    </div>
+
+        <div className="pg-upload-meta">
+          <p className="pg-upload-label">{isComplete ? "Finishing Upload" : "Uploading to Cloud"}</p>
+          <div className="pg-upload-fname-pill" title={filename}>
+            <p className="pg-upload-fname">{filename}</p>
+          </div>
+        </div>
+
+        <div className="pg-upload-progress-block">
+          <div className="pg-upload-track">
+            <motion.div
+              className="pg-upload-fill"
+              animate={{ width: `${clamped}%` }}
+              transition={{ duration: 0.25, ease: EDITORIAL_EASE }}
+            />
+          </div>
+          <p className="pg-upload-pct">{clamped}<span>%</span></p>
+        </div>
+
+        <motion.button
+          className="pg-upload-cancel"
+          onClick={onCancel}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
+          transition={TACTILE_SPRING}
+        >
+          Cancel Upload
+        </motion.button>
+      </motion.div>
+    </motion.div>
   );
+}
+
+interface LenisController {
+  stop?: () => void;
+  start?: () => void;
+}
+
+function getLenisInstance(): LenisController | undefined {
+  const win = window as Window & {
+    __lenisInstance?: LenisController;
+    lenis?: LenisController;
+  };
+  return win.__lenisInstance || win.lenis;
 }
 
 // ── Gallery ───────────────────────────────────────────────────────────────────
@@ -220,6 +726,30 @@ export default function PhotoGallery({ onClose }: Props) {
   // ── Ref to always access current media inside polling without stale closure
   const mediaRef = useRef<MediaItem[]>([]);
   useEffect(() => { mediaRef.current = media; }, [media]);
+
+  // ── Sync readable foreground contrast with active portfolio accent color
+  useEffect(() => {
+    const syncAccentContrast = (accentHex?: string) => {
+      const hex =
+        accentHex ||
+        getComputedStyle(document.documentElement)
+          .getPropertyValue("--accentColor")
+          .trim() ||
+        "#F97316";
+      document.documentElement.style.setProperty(
+        "--pg-on-accent",
+        getContrastOnAccent(hex),
+      );
+    };
+
+    syncAccentContrast();
+    const onAccentChange = (e: Event) => {
+      const custom = e as CustomEvent<string>;
+      syncAccentContrast(custom.detail);
+    };
+    window.addEventListener("accentColorChange", onAccentChange);
+    return () => window.removeEventListener("accentColorChange", onAccentChange);
+  }, []);
 
   // ── Initial load ──────────────────────────────────────────────────────────
   const loadMedia = useCallback(async () => {
@@ -371,6 +901,29 @@ export default function PhotoGallery({ onClose }: Props) {
     return () => window.removeEventListener("keydown", h);
   }, [onClose, lightboxIdx]);
 
+  // ── Lock main site Lenis + body scroll only while gallery overlay is mounted
+  useEffect(() => {
+    const lenis = getLenisInstance();
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverscroll = document.body.style.overscrollBehavior;
+    const prevHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+
+    lenis?.stop?.();
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    document.documentElement.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overscrollBehavior = prevBodyOverscroll;
+      document.documentElement.style.overscrollBehavior = prevHtmlOverscroll;
+      getLenisInstance()?.start?.();
+    };
+  }, []);
+
   const onTouchStart = (e: React.TouchEvent) => {
     const scrollEl = e.currentTarget.querySelector(".pg-scroll");
     if (scrollEl && scrollEl.scrollTop > 0) return;
@@ -379,7 +932,12 @@ export default function PhotoGallery({ onClose }: Props) {
   const onTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
     const dy = e.touches[0].clientY - touchStartY.current;
-    if (dy > 0) setDragY(dy);
+    if (dy <= 0) {
+      setIsDragging(false);
+      setDragY(0);
+      return;
+    }
+    setDragY(dy);
   };
   const onTouchEnd = () => { if (dragY > 150) onClose(); else setDragY(0); setIsDragging(false); };
 
@@ -390,6 +948,9 @@ export default function PhotoGallery({ onClose }: Props) {
   };
 
   const filtered = filter === "all" ? media : media.filter(m => m.resourceType === filter);
+  const masonryKeys = loading ? SKELETON_KEYS : filtered.map((m) => m.publicId);
+  const { setGridRef, layout: masonry, setItemRef, scheduleMeasure } =
+    useMasonryLayout(masonryKeys);
 
   const tabs: { key: FilterType; icon: React.ReactNode; label: string }[] = [
     { key: "all", icon: <RiApps2Line />, label: "All" },
@@ -401,6 +962,8 @@ export default function PhotoGallery({ onClose }: Props) {
   return (
     <>
       <div className="pg-overlay"
+        data-lenis-prevent="true"
+        onWheel={(e) => e.stopPropagation()}
         onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
         style={{
           transform: dragY > 0 ? `translateY(${dragY}px)` : undefined,
@@ -408,8 +971,23 @@ export default function PhotoGallery({ onClose }: Props) {
           opacity: isDragging ? Math.max(0.4, 1 - dragY / 600) : 1,
         }}>
 
-        {/* ── Main Header Pill ── */}
+        {/* ── iPhone Photos-style progressive top blur gradient ── */}
+        <div className="pg-top-blur" aria-hidden="true" />
+
+        {/* ── Main Center Pill (GlassSurface) ── */}
         <header className="pg-header">
+          <div className="pg-glass-bg" aria-hidden="true">
+            <GlassSurface
+              width="100%"
+              height="100%"
+              borderRadius={50}
+              distortionScale={-180}
+              displace={0.5}
+              backgroundOpacity={0.14}
+              saturation={1.45}
+              className="pg-glass-surface"
+            />
+          </div>
           <div className="pg-header-left" onClick={() => setIsMenuOpen(!isMenuOpen)} role="button" tabIndex={0}>
             <MdPhotoLibrary className="pg-header-icon" />
             <span className="pg-title">Ashish's Gallery</span>
@@ -443,14 +1021,54 @@ export default function PhotoGallery({ onClose }: Props) {
           accept="image/*,video/*,.pdf,.doc,.docx,.zip,.mp3,.wav"
           multiple className="pg-upload-input" onChange={handleUpload} />
         <button className="pg-fab" onClick={() => fileInputRef.current?.click()} aria-label="Add files">
-          <MdAdd />
+          <div className="pg-glass-bg pg-glass-bg--fab" aria-hidden="true">
+            <GlassSurface
+              width="100%"
+              height="100%"
+              borderRadius={50}
+              distortionScale={-180}
+              displace={0.5}
+              backgroundOpacity={0.14}
+              saturation={1.5}
+              className="pg-glass-surface"
+            />
+          </div>
+          <span className="pg-fab-accent-ring" aria-hidden="true" />
+          <MdAdd className="pg-fab-icon" />
         </button>
 
-        <div className="pg-scroll">
+        <div className="pg-scroll" data-lenis-prevent="true">
           {loading ? (
-            <div className="pg-empty">
-              <div className="pg-loading-spinner" />
-              <p>Loading from Cloudinary...</p>
+            <div
+              className="pg-grid"
+              ref={setGridRef}
+              style={{ height: `${masonry.height}px` }}
+              aria-busy="true"
+              aria-label="Loading gallery media"
+            >
+              {SKELETON_KEYS.map((key, i) => {
+                const pos = masonry.positions[key];
+                return (
+                  <div
+                    key={key}
+                    ref={(el) => setItemRef(key, el)}
+                    className="pg-masonry-item"
+                    style={{
+                      left: pos ? `${pos.left}px` : 0,
+                      top: pos ? `${pos.top}px` : 0,
+                      width: `${pos ? pos.width : masonry.colWidth}px`,
+                      opacity: pos ? 1 : 0,
+                    }}
+                  >
+                    <div
+                      className="pg-card pg-card--skeleton-placeholder"
+                      style={{ aspectRatio: String(SKELETON_RATIOS[i]) }}
+                    >
+                      <div className="pg-card-skeleton" />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ) : filtered.length === 0 ? (
             <div className="pg-empty">
@@ -459,25 +1077,52 @@ export default function PhotoGallery({ onClose }: Props) {
               <p>Click <strong>+</strong> to upload photos or videos</p>
             </div>
           ) : (
-            <div className="pg-grid">
-              {filtered.map((item, i) => (
-                <MediaThumb key={item.publicId} item={item}
-                  onClick={() => setLightboxIdx(i)}
-                  isDeleting={deletingId === item.publicId} />
-              ))}
+            <div
+              className="pg-grid"
+              ref={setGridRef}
+              style={{ height: `${masonry.height}px` }}
+            >
+              {filtered.map((item, i) => {
+                const pos = masonry.positions[item.publicId];
+                return (
+                  <div
+                    key={item.publicId}
+                    ref={(el) => setItemRef(item.publicId, el)}
+                    className="pg-masonry-item"
+                    style={{
+                      left: pos ? `${pos.left}px` : 0,
+                      top: pos ? `${pos.top}px` : 0,
+                      width: `${pos ? pos.width : masonry.colWidth}px`,
+                      opacity: pos ? 1 : 0,
+                    }}
+                  >
+                    <MediaThumb
+                      item={item}
+                      index={i}
+                      onClick={() => setLightboxIdx(i)}
+                      isDeleting={deletingId === item.publicId}
+                      onMediaReady={scheduleMeasure}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
       </div>
 
-      {uploading && (
-        <UploadModal progress={uploading.progress} filename={uploading.filename} onCancel={handleCancelUpload} />
-      )}
+      <AnimatePresence>
+        {uploading && (
+          <UploadModal key="upload-modal" progress={uploading.progress} filename={uploading.filename} onCancel={handleCancelUpload} />
+        )}
+      </AnimatePresence>
 
-      {lightboxIdx !== null && (
-        <Lightbox items={filtered} startIdx={lightboxIdx}
-          onClose={() => setLightboxIdx(null)} onDelete={handleDelete} />
-      )}
+      <AnimatePresence>
+        {lightboxIdx !== null && (
+          <Lightbox key="lightbox" items={filtered} startIdx={lightboxIdx}
+            onClose={() => setLightboxIdx(null)} onDelete={handleDelete} />
+        )}
+      </AnimatePresence>
     </>
   );
 }

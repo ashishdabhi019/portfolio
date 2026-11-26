@@ -1,6 +1,34 @@
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import "./styles/WhatIDo.css";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  EDITORIAL_EASE,
+  TACTILE_SPRING,
+  VIEWPORT_REVEAL,
+} from "./utils/motionPresets";
+
+const AI_TAGS = [
+  "Python",
+  "LangChain",
+  "LangGraph",
+  "CrewAI",
+  "OpenAI",
+  "Hugging Face",
+  "N8N",
+  "RAG",
+];
+
+const FULLSTACK_TAGS = [
+  "Django",
+  "FastAPI",
+  "Flask",
+  "React",
+  "Node.js",
+  "PostgreSQL",
+  "MongoDB",
+  "REST APIs",
+];
 
 const WhatIDo = () => {
   const containerRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -39,11 +67,17 @@ const WhatIDo = () => {
   return (
     <div id="whatido" className="whatIDO">
       <div className="what-box">
-        <h2 className="title what-title">
+        <motion.h2
+          className="title what-title"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={VIEWPORT_REVEAL}
+          transition={{ duration: 0.65, ease: EDITORIAL_EASE }}
+        >
           What <br />
           I <em className="what-title-serif">do</em>
           <span className="what-title-dot">.</span>
-        </h2>
+        </motion.h2>
       </div>
       <div className="what-box">
         <div className="what-box-in">
@@ -103,14 +137,17 @@ const WhatIDo = () => {
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">Python</div>
-                <div className="what-tags">LangChain</div>
-                <div className="what-tags">LangGraph</div>
-                <div className="what-tags">CrewAI</div>
-                <div className="what-tags">OpenAI</div>
-                <div className="what-tags">Hugging Face</div>
-                <div className="what-tags">N8N</div>
-                <div className="what-tags">RAG</div>
+                {AI_TAGS.map((tag) => (
+                  <motion.div
+                    key={tag}
+                    className="what-tags"
+                    whileHover={{ y: -2, scale: 1.04 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={TACTILE_SPRING}
+                  >
+                    {tag}
+                  </motion.div>
+                ))}
               </div>
               <div className="what-arrow"></div>
             </div>
@@ -142,14 +179,17 @@ const WhatIDo = () => {
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">Django</div>
-                <div className="what-tags">FastAPI</div>
-                <div className="what-tags">Flask</div>
-                <div className="what-tags">React</div>
-                <div className="what-tags">Node.js</div>
-                <div className="what-tags">PostgreSQL</div>
-                <div className="what-tags">MongoDB</div>
-                <div className="what-tags">REST APIs</div>
+                {FULLSTACK_TAGS.map((tag) => (
+                  <motion.div
+                    key={tag}
+                    className="what-tags"
+                    whileHover={{ y: -2, scale: 1.04 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={TACTILE_SPRING}
+                  >
+                    {tag}
+                  </motion.div>
+                ))}
               </div>
               <div className="what-arrow"></div>
             </div>

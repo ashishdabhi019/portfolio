@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { MdArrowOutward } from "react-icons/md";
 import "./styles/Footer.css";
 import SecretModal from "./SecretModal";
 import PhotoGallery from "./PhotoGallery";
 import { useScrollLineReveal } from "./utils/useScrollReveal";
+import { EDITORIAL_EASE, VIEWPORT_REVEAL } from "./utils/motionPresets";
 
 /* ── Split string into individual letter <span>s for per-letter hover ── */
 const SplitText = ({
@@ -84,7 +86,15 @@ const Footer = () => {
 
           <div className="footer-cta-inner">
             {/* Eyebrow */}
-            <p className="footer-cta-eyebrow">HAVE A PROJECT IN MIND?</p>
+            <motion.p
+              className="footer-cta-eyebrow"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.55, ease: EDITORIAL_EASE }}
+            >
+              HAVE A PROJECT IN MIND?
+            </motion.p>
 
             {/* Big headline with clean masked line scroll font reveal (older look & position) */}
             <h2 ref={ctaTitleRef} className="footer-cta-heading">
@@ -109,7 +119,13 @@ const Footer = () => {
             </h2>
 
             {/* CTA row */}
-            <div className="footer-cta-actions">
+            <motion.div
+              className="footer-cta-actions"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.6, delay: 0.1, ease: EDITORIAL_EASE }}
+            >
               <a
                 href="#contact-form"
                 onClick={handleScrollToForm}
@@ -157,7 +173,7 @@ const Footer = () => {
               >
                 ashishdabhi2003@gmail.com
               </a>
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -170,7 +186,13 @@ const Footer = () => {
             {/* ── Three-column info row (perfect Swiss editorial alignment) ── */}
             <div className="footer-top">
               {/* Col 1 — Contact */}
-              <div className="footer-col">
+              <motion.div
+                className="footer-col"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, ease: EDITORIAL_EASE }}
+              >
                 <p className="footer-col-label">CONTACT</p>
                 <div className="footer-col-content">
                   <a
@@ -189,10 +211,16 @@ const Footer = () => {
                   </a>
                   <span className="footer-location">Gujarat, India</span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Col 2 — Socials */}
-              <div className="footer-col">
+              <motion.div
+                className="footer-col"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, delay: 0.08, ease: EDITORIAL_EASE }}
+              >
                 <p className="footer-col-label">SOCIALS</p>
                 <div className="footer-col-content">
                   {[
@@ -229,10 +257,16 @@ const Footer = () => {
                     </a>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* Col 3 — Role & Availability */}
-              <div className="footer-col footer-col-role footer-col-about">
+              <motion.div
+                className="footer-col footer-col-role footer-col-about"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, delay: 0.16, ease: EDITORIAL_EASE }}
+              >
                 <p className="footer-col-label">ROLE</p>
                 <div className="footer-col-content">
                   <p className="footer-about-text">
@@ -245,47 +279,69 @@ const Footer = () => {
                     Open to freelance &amp; full-time opportunities
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
           {/* ── Big name — full-width, centered, zero clipping ──
               🔒 Secret easter egg: clicking the name opens SecretModal */}
-          <div className="footer-name-wrap">
+          <motion.div
+            className="footer-name-wrap"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={VIEWPORT_REVEAL}
+            transition={{ duration: 0.7, ease: EDITORIAL_EASE }}
+          >
             <SplitText text="ASHISH DABHI" onClick={() => setShowModal(true)} />
-          </div>
+          </motion.div>
 
           {/* ── Full-width edge-to-edge bottom line ── */}
           <div className="footer-bottom-divider" aria-hidden="true" />
 
           {/* ── Bottom bar ── */}
           <div className="footer-bottom">
-            <div className="footer-bottom-inner">
+            <motion.div
+              className="footer-bottom-inner"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.55, delay: 0.08, ease: EDITORIAL_EASE }}
+            >
               <span className="footer-copy">
                 © 2026 Ashish Dabhi. All rights reserved.
               </span>
               <span className="footer-made">
                 Designed &amp; Developed by Ashish Dabhi
               </span>
-            </div>
+            </motion.div>
           </div>
         </div>
       </footer>
 
-      {showModal &&
-        createPortal(
-          <SecretModal
-            onUnlock={handleUnlock}
-            onClose={() => setShowModal(false)}
-          />,
-          document.body,
-        )}
+      {createPortal(
+        <AnimatePresence>
+          {showModal && (
+            <SecretModal
+              key="secret-modal"
+              onUnlock={handleUnlock}
+              onClose={() => setShowModal(false)}
+            />
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
 
-      {showGallery &&
-        createPortal(
-          <PhotoGallery onClose={() => setShowGallery(false)} />,
-          document.body,
-        )}
+      {createPortal(
+        <AnimatePresence>
+          {showGallery && (
+            <PhotoGallery
+              key="photo-gallery"
+              onClose={() => setShowGallery(false)}
+            />
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 };

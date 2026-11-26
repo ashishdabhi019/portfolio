@@ -1,5 +1,7 @@
 import { useRef } from "react";
+import { motion } from "framer-motion";
 import { useScrollLineReveal } from "./utils/useScrollReveal";
+import { EDITORIAL_EASE, VIEWPORT_REVEAL } from "./utils/motionPresets";
 import "./styles/Career.css";
 
 const LordiconLocationPin = () => (
@@ -82,11 +84,17 @@ const Career = () => {
 
           {/* Subtitle description */}
           <div className="career-desc-mask">
-            <p className="career-intro-desc">
+            <motion.p
+              className="career-intro-desc"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.65, delay: 0.12, ease: EDITORIAL_EASE }}
+            >
               An overview of my professional journey, from software development
               to engineering intelligent AI systems, autonomous agents, and
               scalable solutions.
-            </p>
+            </motion.p>
           </div>
         </div>
 
@@ -98,7 +106,13 @@ const Career = () => {
 
           {/* ITEM 1: AI Engineer @ Drytis.ai */}
           <div className="career-info-box">
-            <div className="career-info-in">
+            <motion.div
+              className="career-info-in"
+              initial={{ y: 20 }}
+              whileInView={{ y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.6, ease: EDITORIAL_EASE }}
+            >
               <div className="career-role">
                 <h4 className="career-role-title">AI Engineer</h4>
                 <div className="career-company-badge">
@@ -110,8 +124,14 @@ const Career = () => {
                 </div>
               </div>
               <h3 className="career-year">2026</h3>
-            </div>
-            <p className="career-desc">
+            </motion.div>
+            <motion.p
+              className="career-desc"
+              initial={{ y: 20 }}
+              whileInView={{ y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.65, delay: 0.08, ease: EDITORIAL_EASE }}
+            >
               Working as an AI Engineer designing, building, and optimizing
               production-grade AI/ML pipelines and model integrations.
               Developing voice-based AI chatbots, conversational agents, and
@@ -119,12 +139,18 @@ const Career = () => {
               Collaborating with cross-functional teams utilizing LLMs, RAG
               pipelines, and modern AI/ML frameworks to deliver scalable,
               high-performance solutions.
-            </p>
+            </motion.p>
           </div>
 
           {/* ITEM 2: Software Developer @ Stackyzer Technologies */}
           <div className="career-info-box">
-            <div className="career-info-in">
+            <motion.div
+              className="career-info-in"
+              initial={{ y: 20 }}
+              whileInView={{ y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.6, ease: EDITORIAL_EASE }}
+            >
               <div className="career-role">
                 <h4 className="career-role-title">
                   Software Developer – Python &amp; AI/ML
@@ -138,8 +164,14 @@ const Career = () => {
                 </div>
               </div>
               <h3 className="career-year">2024</h3>
-            </div>
-            <p className="career-desc">
+            </motion.div>
+            <motion.p
+              className="career-desc"
+              initial={{ y: 20 }}
+              whileInView={{ y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.65, delay: 0.08, ease: EDITORIAL_EASE }}
+            >
               Gained 1+ year of hands-on experience in Python &amp; AI/ML
               product development. Built Lumina — an AI-powered RAG
               conversational assistant, the FirststepAI Crate Tracker
@@ -147,7 +179,7 @@ const Career = () => {
               system via PDF upload. Deployed ML models on NVIDIA Jetson edge
               hardware for real-time inference. Participated in agile sprints
               delivering scalable AI/ML solutions.
-            </p>
+            </motion.p>
           </div>
         </div>
       </div>

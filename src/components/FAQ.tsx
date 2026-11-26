@@ -1,6 +1,12 @@
 import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "./styles/FAQ.css";
 import { useScrollLineReveal } from "./utils/useScrollReveal";
+import {
+  EDITORIAL_EASE,
+  VIEWPORT_REVEAL,
+  staggerDelay,
+} from "./utils/motionPresets";
 
 interface FAQItem {
   question: string;
@@ -42,15 +48,29 @@ const FAQ_DATA: FAQItem[] = [
 
 interface FAQItemAccordionProps {
   item: FAQItem;
+  index: number;
   isOpen: boolean;
   onToggle: () => void;
 }
 
-const FAQItemAccordion = ({ item, isOpen, onToggle }: FAQItemAccordionProps) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-
+const FAQItemAccordion = ({
+  item,
+  index,
+  isOpen,
+  onToggle,
+}: FAQItemAccordionProps) => {
   return (
-    <div className={`faq-item${isOpen ? " faq-item--open" : ""}`}>
+    <motion.div
+      className={`faq-item${isOpen ? " faq-item--open" : ""}`}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={VIEWPORT_REVEAL}
+      transition={{
+        duration: 0.55,
+        delay: staggerDelay(index, 0.045, 0.25),
+        ease: EDITORIAL_EASE,
+      }}
+    >
       <button
         className="faq-question"
         onClick={onToggle}
@@ -59,27 +79,64 @@ const FAQItemAccordion = ({ item, isOpen, onToggle }: FAQItemAccordionProps) => 
       >
         <span className="faq-question-text">{item.question}</span>
         <span className="faq-toggle" aria-hidden="true">
-          {isOpen ? (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          )}
+          <motion.svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.35, ease: EDITORIAL_EASE }}
+          >
+            <line
+              x1="2"
+              y1="8"
+              x2="14"
+              y2="8"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <motion.line
+              x1="8"
+              y1="2"
+              x2="8"
+              y2="14"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              initial={false}
+              animate={{
+                opacity: isOpen ? 0 : 1,
+                scaleY: isOpen ? 0 : 1,
+              }}
+              style={{ originX: "8px", originY: "8px" }}
+              transition={{ duration: 0.22, ease: EDITORIAL_EASE }}
+            />
+          </motion.svg>
         </span>
       </button>
-      <div
-        ref={contentRef}
-        className="faq-answer-wrap"
-        style={{ maxHeight: isOpen ? (contentRef.current?.scrollHeight ?? 400) + "px" : "0px" }}
-      >
-        <p className="faq-answer">{item.answer}</p>
-      </div>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="faq-answer"
+            className="faq-answer-wrap"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.42, ease: EDITORIAL_EASE },
+              opacity: { duration: 0.26, ease: "easeOut" },
+            }}
+            style={{ overflow: "hidden" }}
+          >
+            <p className="faq-answer">{item.answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="faq-divider" aria-hidden="true" />
-    </div>
+    </motion.div>
   );
 };
 
@@ -123,6 +180,7 @@ const FAQ = () => {
               <FAQItemAccordion
                 key={i}
                 item={item}
+                index={i}
                 isOpen={openIndex === i}
                 onToggle={() => setOpenIndex((prev) => (prev === i ? null : i))}
               />

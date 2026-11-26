@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import "./styles/ContactForm.css";
 import { COUNTRIES } from "../data/formOptions";
 import { useScrollLineReveal } from "./utils/useScrollReveal";
+import {
+  EDITORIAL_EASE,
+  TACTILE_SPRING,
+  VIEWPORT_REVEAL,
+} from "./utils/motionPresets";
 
 // ──────────────────────────────────────────────────────────────
 //  ⚙️  EMAILJS CONFIG
@@ -148,70 +154,112 @@ const ContactForm = () => {
               </span>
             </h2>
 
-            <p className="nf-book-subtitle">
+            <motion.p
+              className="nf-book-subtitle"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT_REVEAL}
+              transition={{ duration: 0.6, delay: 0.14, ease: EDITORIAL_EASE }}
+            >
               Share a few details about your idea and I will get back to you soon.
-            </p>
+            </motion.p>
           </div>
 
           {/* ── Right Column: The Form OR State Screen ──────── */}
           <div className="nf-book-right">
-            {status.type === "success" ? (
-              <div className="nf-state-screen nf-state-screen--success">
-                <div className="nf-state-badge">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#ffffff"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+            <AnimatePresence mode="wait" initial={false}>
+              {status.type === "success" ? (
+                <motion.div
+                  key="success"
+                  className="nf-state-screen nf-state-screen--success"
+                  initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                  transition={{ duration: 0.42, ease: EDITORIAL_EASE }}
+                >
+                  <motion.div
+                    className="nf-state-badge"
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ ...TACTILE_SPRING, delay: 0.08 }}
                   >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <h3 className="nf-state-title">Message sent!</h3>
-                <p className="nf-state-desc">
-                  Thank you for reaching out. I have received your message and will get back to you soon.
-                </p>
-                <button
-                  type="button"
-                  className="nf-state-action"
-                  onClick={handleReset}
-                  data-cursor="disable"
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#ffffff"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </motion.div>
+                  <h3 className="nf-state-title">Message sent!</h3>
+                  <p className="nf-state-desc">
+                    Thank you for reaching out. I have received your message and will get back to you soon.
+                  </p>
+                  <button
+                    type="button"
+                    className="nf-state-action"
+                    onClick={handleReset}
+                    data-cursor="disable"
+                  >
+                    SEND ANOTHER MESSAGE
+                  </button>
+                </motion.div>
+              ) : status.type === "error" ? (
+                <motion.div
+                  key="error"
+                  className="nf-state-screen nf-state-screen--error"
+                  initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                  transition={{ duration: 0.42, ease: EDITORIAL_EASE }}
                 >
-                  SEND ANOTHER MESSAGE
-                </button>
-              </div>
-            ) : status.type === "error" ? (
-              <div className="nf-state-screen nf-state-screen--error">
-                <div className="nf-state-badge">
-                  <span className="nf-state-badge__exclamation">!</span>
-                </div>
-                <h3 className="nf-state-title">Connection error</h3>
-                <p className="nf-state-desc">
-                  Unable to send your message. Please check your internet connection and try again.
-                </p>
-                <button
-                  type="button"
-                  className="nf-state-action"
-                  onClick={handleReset}
+                  <motion.div
+                    className="nf-state-badge"
+                    initial={{ scale: 0.6, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ ...TACTILE_SPRING, delay: 0.08 }}
+                  >
+                    <span className="nf-state-badge__exclamation">!</span>
+                  </motion.div>
+                  <h3 className="nf-state-title">Connection error</h3>
+                  <p className="nf-state-desc">
+                    Unable to send your message. Please check your internet connection and try again.
+                  </p>
+                  <button
+                    type="button"
+                    className="nf-state-action"
+                    onClick={handleReset}
+                    data-cursor="disable"
+                  >
+                    TRY AGAIN
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  ref={formRef}
+                  onSubmit={handleSubmit}
+                  className="nf-book-form"
+                  autoComplete="off"
                   data-cursor="disable"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35, ease: EDITORIAL_EASE }}
                 >
-                  TRY AGAIN
-                </button>
-              </div>
-            ) : (
-              <form
-                ref={formRef}
-                onSubmit={handleSubmit}
-                className="nf-book-form"
-                autoComplete="off"
-                data-cursor="disable"
-              >
               {/* Row 1: Full name & Email address */}
-              <div className="nf-form-row">
+              <motion.div
+                className="nf-form-row"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, ease: EDITORIAL_EASE }}
+              >
                 <div className={`nf-input-group ${formData.from_name ? "is-filled" : ""}`}>
                   <label htmlFor="nf-name" className="nf-input-label">
                     <span className="nf-label-rest">Full name</span>
@@ -247,10 +295,16 @@ const ContactForm = () => {
                     data-cursor="disable"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Row 2: CODE select + WhatsApp number */}
-              <div className="nf-form-row nf-form-row--phone">
+              <motion.div
+                className="nf-form-row nf-form-row--phone"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, delay: 0.06, ease: EDITORIAL_EASE }}
+              >
                 {/* Country Code Trigger */}
                 <div className="nf-code-group" ref={dropdownRef}>
                   <span className="nf-accent-label">CODE</span>
@@ -280,46 +334,57 @@ const ContactForm = () => {
                   </div>
 
                   {/* Dropdown Menu */}
-                  {showCountryDropdown && (
-                    <div className="nf-country-dropdown" data-lenis-prevent="true">
-                      <div className="nf-country-search-wrap">
-                        <input
-                          type="text"
-                          className="nf-country-search"
-                          placeholder="Search country or code..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          autoFocus
-                          onClick={(e) => e.stopPropagation()}
-                          data-cursor="disable"
-                        />
-                      </div>
-                      <div className="nf-country-list">
-                        {filteredCountries.length > 0 ? (
-                          filteredCountries.map((c) => (
-                            <div
-                              key={`${c.country}-${c.code}-${c.name}`}
-                              className={`nf-country-item ${
-                                selectedCountry?.country === c.country ? "is-selected" : ""
-                              }`}
-                              onClick={() => {
-                                setSelectedCountry(c);
-                                setShowCountryDropdown(false);
-                                setSearchQuery("");
-                              }}
-                              data-cursor="disable"
-                            >
-                              <span className="nf-country-item__flag">{c.country}</span>
-                              <span className="nf-country-item__name">{c.name}</span>
-                              <span className="nf-country-item__code">{c.code}</span>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="nf-country-empty">No results found</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  <AnimatePresence>
+                    {showCountryDropdown && (
+                      <motion.div
+                        key="country-dropdown"
+                        className="nf-country-dropdown"
+                        data-lenis-prevent="true"
+                        initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                        style={{ transformOrigin: "top left" }}
+                        transition={{ duration: 0.22, ease: EDITORIAL_EASE }}
+                      >
+                        <div className="nf-country-search-wrap">
+                          <input
+                            type="text"
+                            className="nf-country-search"
+                            placeholder="Search country or code..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            autoFocus
+                            onClick={(e) => e.stopPropagation()}
+                            data-cursor="disable"
+                          />
+                        </div>
+                        <div className="nf-country-list">
+                          {filteredCountries.length > 0 ? (
+                            filteredCountries.map((c) => (
+                              <div
+                                key={`${c.country}-${c.code}-${c.name}`}
+                                className={`nf-country-item ${
+                                  selectedCountry?.country === c.country ? "is-selected" : ""
+                                }`}
+                                onClick={() => {
+                                  setSelectedCountry(c);
+                                  setShowCountryDropdown(false);
+                                  setSearchQuery("");
+                                }}
+                                data-cursor="disable"
+                              >
+                                <span className="nf-country-item__flag">{c.country}</span>
+                                <span className="nf-country-item__name">{c.name}</span>
+                                <span className="nf-country-item__code">{c.code}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="nf-country-empty">No results found</div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* WhatsApp number input */}
@@ -339,10 +404,16 @@ const ContactForm = () => {
                     data-cursor="disable"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Row 3: Tell us about your project */}
-              <div className="nf-form-row nf-form-row--full">
+              <motion.div
+                className="nf-form-row nf-form-row--full"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, delay: 0.12, ease: EDITORIAL_EASE }}
+              >
                 <div className={`nf-input-group ${formData.message ? "is-filled" : ""}`}>
                   <label htmlFor="nf-message" className="nf-input-label">
                     <span className="nf-label-rest">Tell us about your project</span>
@@ -359,7 +430,7 @@ const ContactForm = () => {
                     data-cursor="disable"
                   />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Hidden inputs to guarantee EmailJS receives all expected variables */}
               <input
@@ -372,7 +443,13 @@ const ContactForm = () => {
               <input type="hidden" name="location" value={selectedCountry ? `${selectedCountry.name} (${selectedCountry.code})` : "General"} />
 
               {/* Row 4: Privacy policy note & Submit pill */}
-              <div className="nf-form-footer">
+              <motion.div
+                className="nf-form-footer"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={VIEWPORT_REVEAL}
+                transition={{ duration: 0.55, delay: 0.16, ease: EDITORIAL_EASE }}
+              >
                 <p className="nf-privacy-note">
                   Your details are handled under our privacy policy.
                 </p>
@@ -425,9 +502,10 @@ const ContactForm = () => {
                     </>
                   )}
                 </button>
-              </div>
-            </form>
+              </motion.div>
+            </motion.form>
           )}
+        </AnimatePresence>
         </div>
       </div>
       </div>

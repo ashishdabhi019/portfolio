@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { MdLock, MdLockOpen, MdClose, MdBackspace, MdAutoAwesome, MdStars } from "react-icons/md";
 import "./styles/SecretModal.css";
+import { EDITORIAL_EASE, TACTILE_SPRING } from "./utils/motionPresets";
 
 const CORRECT_PIN = "171003";
 
@@ -93,7 +95,16 @@ export default function SecretModal({ onUnlock, onClose }: Props) {
   const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "del"];
 
   return (
-    <div className="sm-overlay" ref={overlayRef} onClick={handleBackdrop}>
+    <motion.div
+      className="sm-overlay"
+      data-lenis-prevent="true"
+      ref={overlayRef}
+      onClick={handleBackdrop}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.24, ease: EDITORIAL_EASE }}
+    >
       <div 
         className={`sm-card ${shake ? "sm-shake" : ""} ${status === "unlocking" ? "sm-unlock" : ""}`}
         style={{ 
@@ -114,28 +125,53 @@ export default function SecretModal({ onUnlock, onClose }: Props) {
 
         <h2 className="sm-title">Something Secret<br /><span>Just For You</span></h2>
 
-        <p className="sm-hint">
-          {status === "wrong" ? (
-            <span className="sm-hint-row">
-              <MdClose className="sm-hint-icon sm-hint-error" /> Wrong code. Try again.
-            </span>
-          ) : status === "unlocking" ? (
-            <span className="sm-hint-row">
-              <MdAutoAwesome className="sm-hint-icon sm-hint-accent" /> Unlocking...
-            </span>
-          ) : (
-            <span className="sm-hint-row">
-              <MdStars className="sm-hint-icon sm-hint-accent" /> Enter the code to reveal a hidden world
-            </span>
-          )}
-        </p>
+        <div className="sm-hint">
+          <AnimatePresence mode="wait" initial={false}>
+            {status === "wrong" ? (
+              <motion.span
+                key="wrong"
+                className="sm-hint-row"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18 }}
+              >
+                <MdClose className="sm-hint-icon sm-hint-error" /> Wrong code. Try again.
+              </motion.span>
+            ) : status === "unlocking" ? (
+              <motion.span
+                key="unlocking"
+                className="sm-hint-row"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18 }}
+              >
+                <MdAutoAwesome className="sm-hint-icon sm-hint-accent" /> Unlocking...
+              </motion.span>
+            ) : (
+              <motion.span
+                key="idle"
+                className="sm-hint-row"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18 }}
+              >
+                <MdStars className="sm-hint-icon sm-hint-accent" /> Enter the code to reveal a hidden world
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* PIN dots */}
         <div className="sm-dots">
           {[0, 1, 2, 3, 4, 5].map(i => (
-            <div
+            <motion.div
               key={i}
               className={`sm-dot ${i < pin.length ? "sm-dot-filled" : ""} ${status === "wrong" ? "sm-dot-wrong" : ""} ${status === "unlocking" ? "sm-dot-unlock" : ""}`}
+              animate={{ scale: i < pin.length ? 1.18 : 1 }}
+              transition={TACTILE_SPRING}
             />
           ))}
         </div>
@@ -143,9 +179,12 @@ export default function SecretModal({ onUnlock, onClose }: Props) {
         {/* Numpad */}
         <div className="sm-numpad">
           {KEYS.map((k, idx) => (
-            <button
+            <motion.button
               key={idx}
               className={`sm-key ${k === "" ? "sm-key-empty" : ""} ${k === "del" ? "sm-key-del" : ""}`}
+              whileHover={k !== "" ? { scale: 1.06 } : undefined}
+              whileTap={k !== "" ? { scale: 0.9 } : undefined}
+              transition={TACTILE_SPRING}
               onClick={() => {
                 if (k === "del") del();
                 else if (k !== "") addDigit(k);
@@ -154,12 +193,12 @@ export default function SecretModal({ onUnlock, onClose }: Props) {
               aria-label={k === "del" ? "Delete" : k === "" ? "" : k}
             >
               {k === "del" ? <MdBackspace className="sm-backspace-icon" /> : k}
-            </button>
+            </motion.button>
           ))}
         </div>
 
         <button className="sm-cancel" onClick={onClose}>Cancel</button>
       </div>
-    </div>
+    </motion.div>
   );
 }
