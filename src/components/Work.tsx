@@ -67,8 +67,12 @@ const projects: Project[] = [
 
 const Work = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [scrollDistance, setScrollDistance] = useState(0);
+  const [stageHeight, setStageHeight] = useState(
+    typeof window !== "undefined" ? window.innerHeight : 900,
+  );
 
   // Detect whether to use horizontal desktop scroll or vertical mobile/tablet scroll
   const checkIsDesktop = useCallback(() => {
@@ -82,8 +86,14 @@ const Work = () => {
 
   const [isDesktop, setIsDesktop] = useState(checkIsDesktop);
 
-  // Measure dynamic horizontal scroll distance (active only on desktop)
+  // Measure dynamic horizontal scroll distance & exact pin stage height (active only on desktop)
   const updateDistance = useCallback(() => {
+    if (stageRef.current) {
+      setStageHeight(stageRef.current.offsetHeight || window.innerHeight);
+    } else if (typeof window !== "undefined") {
+      setStageHeight(window.innerHeight);
+    }
+
     if (!checkIsDesktop()) {
       setScrollDistance(0);
       return;
@@ -126,16 +136,18 @@ const Work = () => {
     offset: ["start start", "end end"],
   });
 
-  // Custom spring physics matching website's Framer Motion settings
+  // High-damping spring stays tightly synced with Lenis without exit overshoot
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 25,
-    mass: 0.15,
+    stiffness: 220,
+    damping: 34,
+    mass: 0.08,
     restDelta: 0.0001,
   });
 
-  // Transform spring progress into horizontal translation (desktop only)
-  const x = useTransform(smoothProgress, [0, 1], [0, -scrollDistance]);
+  // Finish horizontal pan cleanly at 90% so the last card settles before vertical unstick into WorkStats
+  const x = useTransform(smoothProgress, [0, 0.9], [0, -scrollDistance], {
+    clamp: true,
+  });
 
   return (
     <section
@@ -145,11 +157,11 @@ const Work = () => {
       style={{
         height:
           isDesktop && scrollDistance > 0
-            ? `${scrollDistance + window.innerHeight}px`
+            ? `${Math.round(scrollDistance * 1.14) + stageHeight}px`
             : undefined,
       }}
     >
-      <div className="work-pin-stage">
+      <div className="work-pin-stage" ref={stageRef}>
         {/* Track: animated horizontally on desktop, natural vertical stack on phone & iPad vertical */}
         <motion.div
           className="work-horizontal-track"

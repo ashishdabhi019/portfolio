@@ -178,7 +178,8 @@ const TechStack = () => {
       ([entry]) => {
         setIsActive(entry.isIntersecting);
       },
-      { rootMargin: "250px" },
+      // Wake physics/WebGL early so shader warmup happens before scrolling through WorkStats
+      { rootMargin: "750px 0px" },
     );
     if (containerRef.current) {
       observer.observe(containerRef.current);
@@ -210,7 +211,8 @@ const TechStack = () => {
 
       <Canvas
         shadows
-        gl={{ alpha: true, stencil: false, depth: false, antialias: false }}
+        dpr={[1, 1.5]}
+        gl={{ alpha: true, stencil: false, depth: false, antialias: false, powerPreference: "high-performance" }}
         camera={{ position: [0, isMobile ? -0.5 : 0, isMobile ? 24 : 20], fov: 32.5, near: 1, far: 100 }}
         onCreated={(state) => (state.gl.toneMappingExposure = 1.5)}
         className="tech-canvas"

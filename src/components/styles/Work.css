@@ -21,6 +21,8 @@
   overflow: hidden;
   box-sizing: border-box;
   background-color: #07080b;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 

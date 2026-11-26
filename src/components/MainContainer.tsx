@@ -11,13 +11,16 @@ import Navbar from "./Navbar";
 import SocialIcons from "./SocialIcons";
 import WhatIDo from "./WhatIDo";
 import Work from "./Work";
+import WorkStats from "./WorkStats";
 import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLoading } from "../context/LoadingProvider";
 
 gsap.registerPlugin(ScrollTrigger);
-const TechStack = lazy(() => import("./TechStack"));
+const preloadTechStack = () => import("./TechStack");
+const TechStack = lazy(preloadTechStack);
 
 const checkIsDesktopView = () => {
   if (typeof window === "undefined") return true;
@@ -43,13 +46,13 @@ const MainContainer = ({ children }: PropsWithChildren) => {
     
     // Initialize Lenis for premium smooth scroll
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.35,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1.8,
     });
 
     (window as any).__lenisInstance = lenis;
@@ -63,18 +66,25 @@ const MainContainer = ({ children }: PropsWithChildren) => {
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const rafCb = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(rafCb);
     gsap.ticker.lagSmoothing(0);
+
+    // Preload 3D TechStack chunk silently so entering from WorkStats never stutters
+    const preloadTimer = window.setTimeout(() => {
+      void preloadTechStack();
+    }, 1200);
 
     return () => {
       window.removeEventListener("resize", resizeHandler);
       clearTimeout(timeoutId);
+      clearTimeout(preloadTimer);
       (window as any).__lenisInstance = null;
       (window as any).lenis = null;
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(rafCb);
     };
   }, []);
 
@@ -110,6 +120,7 @@ const MainContainer = ({ children }: PropsWithChildren) => {
         <WhatIDo />
         <Career />
         <Work />
+        <WorkStats />
         <div id="techstack" style={{ minHeight: "var(--vh, 100vh)", position: "relative", margin: 0, padding: 0 }}>
           <Suspense fallback={<div style={{ height: "var(--vh, 100vh)" }}>Loading...</div>}>
             <TechStack />

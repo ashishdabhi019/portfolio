@@ -10,6 +10,10 @@ html {
   scroll-padding-top: 100px;
 }
 
+html.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
 body {
   min-height: 100vh;
   min-height: 100svh;
