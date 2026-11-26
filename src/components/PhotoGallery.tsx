@@ -14,9 +14,14 @@ import {
 
 const CLOUD_NAME = "dm0ocjzhd";
 const UPLOAD_PRESET = "portfolio_uploads";
-// Use the live Render backend URL in production, or localhost during local development.
-const SERVER_URL = (import.meta as any).env?.VITE_SERVER_URL || 
-  (import.meta.env.PROD ? "https://portfolio-n9c9.onrender.com" : "http://localhost:3001");
+const PROD_SERVER_URL = "https://portfolio-n9c9.onrender.com";
+const LOCAL_SERVER_URL = "http://localhost:3001";
+const EXPLICIT_SERVER_URL = (import.meta as any).env?.VITE_SERVER_URL as string | undefined;
+const PRIMARY_SERVER_URL = EXPLICIT_SERVER_URL || (import.meta.env.PROD ? PROD_SERVER_URL : LOCAL_SERVER_URL);
+const POLL_INTERVAL_MS = 15_000;
+const UPLOAD_GRACE_MS = 90_000;
+const DELETE_GRACE_MS = 60_000;
+const LOCAL_CACHE_KEY = "cloudinary_media";
 
 
 interface MediaItem {
@@ -705,6 +710,36 @@ function getLenisInstance(): LenisController | undefined {
 type FilterType = "all" | "image" | "video";
 type Props = { onClose: () => void };
 
+function readLocalMedia(): MediaItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_CACHE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocalMedia(items: MediaItem[]): void {
+  try {
+    if (items.length > 0) {
+      localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(items));
+    } else {
+      localStorage.removeItem(LOCAL_CACHE_KEY);
+    }
+  } catch {
+    // Ignore storage quota / private mode failures
+  }
+}
+
+function getBackendCandidates(): string[] {
+  if (EXPLICIT_SERVER_URL || import.meta.env.PROD) {
+    return [PRIMARY_SERVER_URL];
+  }
+  return [LOCAL_SERVER_URL, PROD_SERVER_URL];
+}
+
 export default function PhotoGallery({ onClose }: Props) {
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
@@ -712,10 +747,15 @@ export default function PhotoGallery({ onClose }: Props) {
   const [uploading, setUploading] = useState<{ filename: string; progress: number } | null>(null);
   const [filter, setFilter] = useState<FilterType>("all");
   const [loading, setLoading] = useState(true);
+  const [syncError, setSyncError] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // ── Sync state ────────────────────────────────────────────────────────────
   const lastKnownTotal = useRef(0);
+  const hasSyncedOnce = useRef(false);
+  const activeServerRef = useRef<string | null>(null);
+  const recentUploadsRef = useRef<Map<string, { item: MediaItem; expiresAt: number }>>(new Map());
+  const recentDeletesRef = useRef<Map<string, number>>(new Map());
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const xhrRef = useRef<XMLHttpRequest | null>(null);
@@ -751,82 +791,147 @@ export default function PhotoGallery({ onClose }: Props) {
     return () => window.removeEventListener("accentColorChange", onAccentChange);
   }, []);
 
+  const fetchBackend = useCallback(async (path: string, init?: RequestInit): Promise<Response> => {
+    const candidates = activeServerRef.current
+      ? [activeServerRef.current, ...getBackendCandidates().filter((u) => u !== activeServerRef.current)]
+      : getBackendCandidates();
+
+    let lastNetworkError: unknown = null;
+    for (const base of candidates) {
+      try {
+        const res = await fetch(`${base}${path}`, init);
+        activeServerRef.current = base;
+        return res;
+      } catch (err) {
+        lastNetworkError = err;
+      }
+    }
+    throw lastNetworkError ?? new Error("Unable to reach media server");
+  }, []);
+
+  const mergeServerMedia = useCallback((serverItems: MediaItem[]): MediaItem[] => {
+    const now = Date.now();
+    for (const [id, entry] of recentUploadsRef.current.entries()) {
+      if (entry.expiresAt <= now) recentUploadsRef.current.delete(id);
+    }
+    for (const [id, expiresAt] of recentDeletesRef.current.entries()) {
+      if (expiresAt <= now) recentDeletesRef.current.delete(id);
+    }
+
+    const filteredServer = serverItems.filter((item) => !recentDeletesRef.current.has(item.publicId));
+    const serverIds = new Set(filteredServer.map((item) => item.publicId));
+    const pendingLocal: MediaItem[] = [];
+    for (const [id, entry] of recentUploadsRef.current.entries()) {
+      if (serverIds.has(id)) {
+        recentUploadsRef.current.delete(id);
+      } else if (!recentDeletesRef.current.has(id)) {
+        pendingLocal.push(entry.item);
+      }
+    }
+
+    return [...pendingLocal, ...filteredServer];
+  }, []);
+
   // ── Initial load ──────────────────────────────────────────────────────────
   const loadMedia = useCallback(async () => {
+    setLoading((prev) => prev || mediaRef.current.length === 0);
     try {
-      const res = await fetch(`${SERVER_URL}/api/media`);
-      const data = await res.json();
-      const items: MediaItem[] = data.media || [];
-      setMedia(shuffle(items));
-      lastKnownTotal.current = items.length;
-    } catch {
-      const saved = localStorage.getItem("cloudinary_media");
-      if (saved) {
-        const items = JSON.parse(saved);
-        setMedia(shuffle(items));
-        lastKnownTotal.current = items.length;
+      const res = await fetchBackend("/api/media");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const reason = data?.rateLimited
+          ? "Cloud sync paused (Cloudinary hourly API limit reached). Retrying automatically…"
+          : data?.details || data?.error || `Sync server error (${res.status})`;
+        throw new Error(reason);
+      }
+
+      const items: MediaItem[] = Array.isArray(data?.media) ? data.media : [];
+      const merged = mergeServerMedia(shuffle(items));
+      hasSyncedOnce.current = true;
+      setSyncError(null);
+      setMedia(merged);
+      writeLocalMedia(merged);
+      lastKnownTotal.current = merged.length;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not connect to sync server";
+      setSyncError(msg);
+      const saved = readLocalMedia();
+      if (saved.length > 0 && mediaRef.current.length === 0) {
+        setMedia(shuffle(saved));
+        lastKnownTotal.current = saved.length;
       }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchBackend, mergeServerMedia]);
 
   useEffect(() => { loadMedia(); }, [loadMedia]);
 
-  // ── Auto-polling: full sync every 5s — detects additions AND deletions ────
+  // ── Auto-polling: syncs additions & deletions while protecting recent uploads
   useEffect(() => {
     const poll = async () => {
+      if (document.hidden) return;
       try {
-        const res = await fetch(`${SERVER_URL}/api/media`);
-        if (!res.ok) return;
-        const data = await res.json();
-        const serverItems: MediaItem[] = data.media || [];
+        const res = await fetchBackend("/api/media");
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const reason = data?.rateLimited
+            ? "Cloud sync paused (Cloudinary hourly API limit reached). Retrying automatically…"
+            : data?.details || data?.error || `Sync server error (${res.status})`;
+          setSyncError(reason);
+          return;
+        }
+
+        const serverItems: MediaItem[] = Array.isArray(data?.media) ? data.media : [];
+        const merged = mergeServerMedia(serverItems);
+        hasSyncedOnce.current = true;
+        setSyncError(null);
 
         const current = mediaRef.current;
-        const currentIds = new Set(current.map(m => m.publicId));
-        const serverIds = new Set(serverItems.map(m => m.publicId));
+        const currentIds = new Set(current.map((m) => m.publicId));
+        const mergedIds = new Set(merged.map((m) => m.publicId));
 
-        const hasAddition = serverItems.some(m => !currentIds.has(m.publicId));
-        const hasDeletion = current.some(m => !serverIds.has(m.publicId));
+        const hasAddition = merged.some((m) => !currentIds.has(m.publicId));
+        const hasDeletion = current.some((m) => !mergedIds.has(m.publicId));
 
         if (hasAddition || hasDeletion) {
-          setMedia(serverItems);
-          localStorage.setItem("cloudinary_media", JSON.stringify(serverItems));
-          lastKnownTotal.current = serverItems.length;
+          setMedia(merged);
+          writeLocalMedia(merged);
+          lastKnownTotal.current = merged.length;
         }
       } catch {
         // Fallback to localStorage sync for cross-tab updates when server is unreachable
-        const saved = localStorage.getItem("cloudinary_media");
-        if (saved) {
-          try {
-            const localItems = JSON.parse(saved);
-            if (localItems.length !== mediaRef.current.length) {
-              setMedia(localItems);
-            }
-          } catch (e) {}
+        const localItems = readLocalMedia();
+        if (localItems.length > 0 && localItems.length !== mediaRef.current.length && !hasSyncedOnce.current) {
+          setMedia(localItems);
         }
       }
     };
 
-    const interval = setInterval(poll, 5_000); // every 5 seconds
-    return () => clearInterval(interval);
-  }, []); // empty deps — uses mediaRef to avoid stale closure
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
+    const onVisibilityChange = () => {
+      if (!document.hidden) poll();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [fetchBackend, mergeServerMedia]);
 
   // ── Sync across tabs instantly using Storage Event ────────────────────────
   useEffect(() => {
     const handleStorage = (e: StorageEvent) => {
-      if (e.key === "cloudinary_media" && e.newValue) {
-        try { setMedia(JSON.parse(e.newValue)); } catch {}
+      if (e.key === LOCAL_CACHE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed)) setMedia(parsed);
+        } catch {}
       }
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
-
-  // ── Save to localStorage whenever media changes ───────────────────────────
-  useEffect(() => {
-    if (media.length > 0) localStorage.setItem("cloudinary_media", JSON.stringify(media));
-  }, [media]);
 
   // ── Upload ────────────────────────────────────────────────────────────────
   const handleCancelUpload = () => { xhrRef.current?.abort(); setUploading(null); };
@@ -855,13 +960,25 @@ export default function PhotoGallery({ onClose }: Props) {
                 url: data.secure_url, publicId: data.public_id,
                 resourceType: data.resource_type as "image" | "video" | "raw",
                 format: data.format, filename: file.name,
-                createdAt: new Date().toISOString(),
+                createdAt: data.created_at || new Date().toISOString(),
               };
+              recentDeletesRef.current.delete(newItem.publicId);
+              recentUploadsRef.current.set(newItem.publicId, {
+                item: newItem,
+                expiresAt: Date.now() + UPLOAD_GRACE_MS,
+              });
               setMedia(prev => {
-                const updated = [newItem, ...prev];
+                const updated = [newItem, ...prev.filter(m => m.publicId !== newItem.publicId)];
                 lastKnownTotal.current = updated.length;
+                writeLocalMedia(updated);
                 return updated;
               });
+              // Notify backend cache immediately so other devices see it within seconds
+              void fetchBackend("/api/media/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newItem),
+              }).catch(() => {});
               resolve();
             } else reject(new Error("Upload failed"));
           };
@@ -874,13 +991,15 @@ export default function PhotoGallery({ onClose }: Props) {
     }
     setUploading(null);
     e.target.value = "";
-  }, []);
+  }, [fetchBackend]);
 
   // ── Delete ────────────────────────────────────────────────────────────────
   const handleDelete = useCallback(async (item: MediaItem) => {
     setDeletingId(item.publicId);
+    recentUploadsRef.current.delete(item.publicId);
+    recentDeletesRef.current.set(item.publicId, Date.now() + DELETE_GRACE_MS);
     try {
-      await fetch(`${SERVER_URL}/api/media/${encodeURIComponent(item.publicId)}`, {
+      await fetchBackend(`/api/media/${encodeURIComponent(item.publicId)}`, {
         method: "DELETE", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resourceType: item.resourceType }),
       });
@@ -889,11 +1008,12 @@ export default function PhotoGallery({ onClose }: Props) {
       setMedia(prev => {
         const updated = prev.filter(m => m.publicId !== item.publicId);
         lastKnownTotal.current = updated.length;
+        writeLocalMedia(updated);
         return updated;
       });
       setDeletingId(null);
     }, 300);
-  }, []);
+  }, [fetchBackend]);
 
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === "Escape" && lightboxIdx === null) onClose(); };
@@ -1073,8 +1193,21 @@ export default function PhotoGallery({ onClose }: Props) {
           ) : filtered.length === 0 ? (
             <div className="pg-empty">
               <MdPhotoLibrary className="pg-empty-icon" />
-              <h3>No {filter === "all" ? "media" : filter + "s"} yet</h3>
-              <p>Click <strong>+</strong> to upload photos or videos</p>
+              <h3>
+                {syncError
+                  ? "Gallery sync unavailable"
+                  : `No ${filter === "all" ? "media" : filter + "s"} yet`}
+              </h3>
+              <p>
+                {syncError
+                  ? syncError
+                  : <>Click <strong>+</strong> to upload photos or videos</>}
+              </p>
+              {syncError && (
+                <button type="button" className="pg-empty-retry" onClick={loadMedia}>
+                  Retry sync
+                </button>
+              )}
             </div>
           ) : (
             <div
