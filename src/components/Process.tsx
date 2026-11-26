@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import "./styles/Process.css";
 import { useScrollLineReveal } from "./utils/useScrollReveal";
 
@@ -43,7 +43,116 @@ const PROCESS_STEPS: ProcessStep[] = [
 
 const Process = () => {
   const headerRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const probeRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   useScrollLineReveal(headerRef);
+
+  useEffect(() => {
+    const container = cardsContainerRef.current;
+    const probe = probeRef.current;
+    if (!container || !probe) return;
+
+    let stackBaseTop = 96;
+    let stackStep = 22.4;
+    let offsets: number[] = [];
+    let heights: number[] = [];
+    let isMobileMode = false;
+
+    const updateStickyState = () => {
+      const cards = cardRefs.current;
+      if (!isMobileMode) {
+        for (let i = 0; i < cards.length; i++) {
+          cards[i]?.classList.remove("is-stack-sticky");
+        }
+        return;
+      }
+
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const containerRect = container.getBoundingClientRect();
+
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        if (!card) continue;
+        const cardHeight = heights[i] || 270;
+        const stackTop = stackBaseTop + i * stackStep;
+        const naturalTop = containerRect.top + (offsets[i] || 0);
+
+        // Only activate position:sticky once the card has scrolled well above Safari's
+        // bottom toolbar zone, so sticky layers never intersect the bottom viewport edge.
+        const isAboveBottomZone = stackTop + cardHeight < vh - 65;
+        const shouldStick =
+          isAboveBottomZone &&
+          naturalTop <= stackTop + 70 &&
+          containerRect.bottom > 0;
+
+        card.classList.toggle("is-stack-sticky", shouldStick);
+      }
+    };
+
+    const measureFlowGeometry = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      isMobileMode = vw <= 1024 && vh > 500;
+
+      if (!isMobileMode) {
+        updateStickyState();
+        return;
+      }
+
+      const probeStyle = getComputedStyle(probe);
+      stackBaseTop = parseFloat(probeStyle.top) || 96;
+      stackStep = parseFloat(probeStyle.height) || 22.4;
+
+      const cards = cardRefs.current;
+      const nextOffsets: number[] = [];
+      const nextHeights: number[] = [];
+      let y = 0;
+
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        if (!card) continue;
+        nextOffsets[i] = y;
+        const h = card.getBoundingClientRect().height;
+        nextHeights[i] = h;
+        const mb = parseFloat(getComputedStyle(card).marginBottom) || 0;
+        y += h + mb;
+      }
+
+      offsets = nextOffsets;
+      heights = nextHeights;
+      updateStickyState();
+    };
+
+    measureFlowGeometry();
+
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measureFlowGeometry)
+        : null;
+    ro?.observe(container);
+
+    window.addEventListener("scroll", updateStickyState, { passive: true });
+    window.addEventListener("resize", measureFlowGeometry, { passive: true });
+
+    let lenisUnsub: (() => void) | undefined;
+    const attachLenis = () => {
+      const lenis = (window as any).__lenisInstance || (window as any).lenis;
+      if (lenis && typeof lenis.on === "function") {
+        lenis.on("scroll", updateStickyState);
+        lenisUnsub = () => lenis.off?.("scroll", updateStickyState);
+      }
+    };
+    const rafId = requestAnimationFrame(attachLenis);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro?.disconnect();
+      window.removeEventListener("scroll", updateStickyState);
+      window.removeEventListener("resize", measureFlowGeometry);
+      lenisUnsub?.();
+    };
+  }, []);
 
   return (
     <section className="process-section" id="process">
@@ -87,10 +196,14 @@ const Process = () => {
         </div>
 
         {/* ── Stacking Cards List ── */}
-        <div className="process-cards-container">
+        <div className="process-cards-container" ref={cardsContainerRef}>
+          <div className="process-stack-probe" ref={probeRef} aria-hidden="true" />
           {PROCESS_STEPS.map((step, index) => (
             <div
               key={step.number}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
               className="process-card"
               style={
                 {

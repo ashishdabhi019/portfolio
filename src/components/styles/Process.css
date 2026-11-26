@@ -192,8 +192,8 @@
    Sticky: top: calc(var(--stack-base-top) + var(--card-index) * var(--stack-step))
 */
 .process-card {
-  position: sticky;
-  top: calc(var(--stack-base-top) + var(--card-index, 0) * var(--stack-step));
+  position: relative;
+  top: auto;
   z-index: calc(var(--card-index, 0) + 1);
   /* Keep sticky element border box < 90% viewport width so WebKit's
      fixedContainerEdges() skips it and doesn't latch white onto Safari's bottom bar */
@@ -205,6 +205,28 @@
   box-shadow: none;
   padding: 0;
   box-sizing: border-box;
+}
+
+@media (min-width: 1025px) and (min-height: 501px) {
+  .process-card {
+    position: sticky;
+    top: calc(var(--stack-base-top) + var(--card-index, 0) * var(--stack-step));
+  }
+}
+
+.process-card.is-stack-sticky {
+  position: sticky;
+  top: calc(var(--stack-base-top) + var(--card-index, 0) * var(--stack-step));
+}
+
+.process-stack-probe {
+  position: absolute;
+  left: 0;
+  top: var(--stack-base-top);
+  width: 0;
+  height: var(--stack-step);
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .process-card:not(:last-child) {
@@ -426,8 +448,8 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 20px;
-    width: 100%;
-    margin-left: 0;
+    width: 200%;
+    margin-left: -50%;
   }
 
   .process-card-left {
@@ -501,26 +523,10 @@
   }
 }
 
-@media (max-width: 1023px), (orientation: portrait) and (max-width: 1050px), (max-height: 500px) {
-  .process-cards-container {
-    padding-bottom: clamp(72px, 10vh, 100px);
-  }
-
-  .process-card {
+@media (max-height: 500px) {
+  .process-card,
+  .process-card.is-stack-sticky {
     position: relative;
     top: auto;
-    z-index: auto;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  .process-card:not(:last-child) {
-    margin-bottom: 18px;
-  }
-
-  .process-card-inner {
-    width: 100%;
-    margin-left: 0;
   }
 }
