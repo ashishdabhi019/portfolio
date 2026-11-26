@@ -426,7 +426,8 @@
     align-items: flex-start;
     justify-content: flex-start;
     gap: 20px;
-    width: 200%;
+    width: 100%;
+    margin-left: 0;
   }
 
   .process-card-left {
@@ -500,9 +501,26 @@
   }
 }
 
-@media (max-height: 500px) {
+@media (max-width: 1023px), (orientation: portrait) and (max-width: 1050px), (max-height: 500px) {
+  .process-cards-container {
+    padding-bottom: clamp(72px, 10vh, 100px);
+  }
+
   .process-card {
     position: relative;
     top: auto;
+    z-index: auto;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .process-card:not(:last-child) {
+    margin-bottom: 18px;
+  }
+
+  .process-card-inner {
+    width: 100%;
+    margin-left: 0;
   }
 }
